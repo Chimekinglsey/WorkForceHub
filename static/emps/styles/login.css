@@ -1,0 +1,403 @@
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Inika:wght@400;700&family=Marko+One&display=swap');
+
+
+.login_container{
+    min-height: 100vh;
+    display:flex;
+    justify-content: center;
+}
+
+.login_container_inputs{
+    margin: auto auto;
+    min-width: 300px;
+    width: 50%;
+    min-height: 50vh;
+    /* height: 550px; */
+    border: 2px solid #5882C1;
+    border-radius: 40px;
+    background-color: #5882c13a;
+    padding: 50px;
+}
+
+.login_container_inputs input{
+    width: 96%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 2px solid #5882c1;
+    box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.368);
+}
+
+.login_container_inputs input[type="submit"]{
+    background-color: rgba(3, 3, 80, 0.49);
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.289);
+    font-weight: 700;
+    color:white;
+    box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.17);
+    padding-top: 15px;
+    border-radius: 50px;
+    padding-bottom: 15px;
+    cursor: pointer;
+}
+
+.login_container_inputs input:focus{
+   outline: none;
+}
+
+label{
+    padding-left: 10px;
+    color: white;
+    font-size: 18px;
+    text-shadow: 2px 2px 10px 2px black;
+}
+
+.login_header{
+    font-family: 'Inika', serif;
+    font-size: xx-large;
+    font-weight: 600;
+    color: white;
+}
+
+.forgetPasscode{
+    float: right;
+    padding-right: 10px;
+    border: 1px solid rgba(242, 237, 237, 0.748);
+    background-color: rgba(131, 73, 73, 0.482);
+    border-radius: 30px;
+    padding: 5px 10px 5px 10px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+.forgetPasscode:hover{
+    background-color: rgba(95, 43, 43, 0.79);
+}
+.link_box_container{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.link_box{
+    margin-top: 10px;
+    padding: 5px 30px 5px 30px;
+    background-color: white;
+    border: 1px solid black;
+    width: 15%;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.link_box img{
+    width: 25xpx;
+    height: 20px;
+}
+
+.ending{
+    padding-top: 10px;
+}
+
+.ending p{
+    font-style: italic;
+}
+
+.ending a{
+    font-weight: 700;
+    color: white;
+    text-decoration: underline;
+    font-style: normal;
+}
+
+.logo{
+    float:right;
+}
+
+.logo img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.change_color {
+    color: rgb(205, 228, 242);
+}
+/* Email response */
+/* Add your modal styles here */
+.modal, .reset_password {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+#emailSentModalForm .continue, #resetPasswordForm .continue {
+    margin-left: 75%;
+}
+.modal-content {
+	background-color: #e2ece4b2;
+	margin: 10% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+	max-width: 600px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+#allSubjectsView .modal-content {
+    margin: 5% auto;
+}
+
+.modal-content a {
+    color: #333;
+    text-decoration: none;
+}
+.modal-content a:hover {
+    text-decoration: none;
+}
+
+.back-to-home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+}
+.modal-content .continue {
+    background-color: #ddd;
+    color: black;
+    border: none;
+    border-radius: 50px;
+    margin: 0 5px;
+    padding: 2% 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+    display: inline-block;
+    height: 55px;
+    font-weight: bold;
+}
+
+
+/* CSS for modal button copied */
+.modal-content .continue {
+  background-color: #c2fbd7;
+  border-radius: 100px;
+  box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+  color: green;
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.modal-content .continue:hover {
+  box-shadow: rgba(44,187,99,.35) 0 -25px 18px -14px inset,rgba(44,187,99,.25) 0 1px 2px,rgba(44,187,99,.25) 0 2px 4px,rgba(44,187,99,.25) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
+.closeModal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal-content .moreTutors {
+  background-color: #0078d0;
+  border: 0;
+  border-radius: 56px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: system-ui,-apple-system,system-ui,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  outline: 0;
+  padding: 16px 21px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.modal-content .moreTutors:before {
+  background-color: initial;
+  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
+  border-radius: 125px;
+  content: "";
+  height: 50%;
+  left: 4%;
+  opacity: .5;
+  position: absolute;
+  top: 0;
+  transition: all .3s;
+  width: 92%;
+}
+
+.modal-content .moreTutors:hover {
+  box-shadow: rgba(255, 255, 255, .2) 0 3px 15px inset, rgba(0, 0, 0, .1) 0 3px 5px, rgba(0, 0, 0, .1) 0 10px 13px;
+  transform: scale(1.05);
+}
+
+.forgot_password_container, .reset_password_container {
+    background-color: #141460c2 !important;
+}
+.resetLink {
+    background: rgba(58, 112, 146, 0.593) !important;
+}
+.resetLink:hover {
+    background: rgba(58, 93, 146, 0.8);
+}
+@media (max-width: 1060px) {
+    .UserBioData {
+        padding-top: 1px;
+        line-height: 20px;
+    }
+    .body{
+        font-size: 0.95em;
+    }
+    .ul .list_item {
+        line-height: 1.5;
+        font-family: 'Sora', Arial, Helvetica, sans-serif;
+        font-weight: 400;
+        margin-right: 15px;
+    }
+}
+
+
+@media (min-width: 768px) {
+  .modal-content .moreTutors {
+    padding: 16px 48px;
+  }
+}
+.sendingEmail {
+    display: block;
+    position: absolute;
+    width: 10%;
+    height: 10%;
+    left: 45%;
+    top: 42%;
+    z-index: 100;
+  }
+  .sendingEmail div {
+    animation: sendingEmail 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+  }
+  .sendingEmail div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fcfafa;
+    margin: -4px 0 0 -4px;
+  }
+  .sendingEmail div:nth-child(1) {
+    animation-delay: -0.036s;
+  }
+  .sendingEmail div:nth-child(1):after {
+    top: 63px;
+    left: 63px;
+  }
+  .sendingEmail div:nth-child(2) {
+    animation-delay: -0.072s;
+  }
+  .sendingEmail div:nth-child(2):after {
+    top: 68px;
+    left: 56px;
+  }
+  .sendingEmail div:nth-child(3) {
+    animation-delay: -0.108s;
+  }
+  .sendingEmail div:nth-child(3):after {
+    top: 71px;
+    left: 48px;
+  }
+  .sendingEmail div:nth-child(4) {
+    animation-delay: -0.144s;
+  }
+  .sendingEmail div:nth-child(4):after {
+    top: 72px;
+    left: 40px;
+  }
+  .sendingEmail div:nth-child(5) {
+    animation-delay: -0.18s;
+  }
+  .sendingEmail div:nth-child(5):after {
+    top: 71px;
+    left: 32px;
+  }
+  .sendingEmail div:nth-child(6) {
+    animation-delay: -0.216s;
+  }
+  .sendingEmail div:nth-child(6):after {
+    top: 68px;
+    left: 24px;
+  }
+  .sendingEmail div:nth-child(7) {
+    animation-delay: -0.252s;
+  }
+  .sendingEmail div:nth-child(7):after {
+    top: 63px;
+    left: 17px;
+  }
+  .sendingEmail div:nth-child(8) {
+    animation-delay: -0.288s;
+  }
+  .sendingEmail div:nth-child(8):after {
+    top: 56px;
+    left: 12px;
+  }
+  @keyframes sendingEmail {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+.closeModal:hover,
+.closeModal:focus {
+    color: rgb(147, 20, 20);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.success-message {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+    padding: 15px;
+    margin-top: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.error-message {
+    color: #e74c3c;
+}

@@ -1,44 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'base/base.css' %}">
-    {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
-    <script> window.jQuery || document.write('<script src="{% static 'base/jQuery.js' %}"><\/script>')</script>
-    <script src="{% static 'base/base.js' %}"></script>
-    {% block title %}<title>Home WorkForceHub</title>{% endblock title %}
-</head>
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <script src="{% static 'base/jQuery.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'base/base.js' %}"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'base/base.css' %}">
+        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{% static 'base/flash.css' %}">
+        <script src="{% static 'base/flash.js'%}"></script>
+        {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
+        {% block title %}<title>Home WorkForceHub</title>{% endblock title %}
+        {% block head %}
+        {% endblock head %}
+    </head>
 <body>
     <header>
         {% block WorkForceHub %}<h1>WorkForceHub</h1>{% endblock WorkForceHub %}
         {% block menu %}<button id="menu-toggle">Menu</button>{% endblock menu %}
 
         <nav class="header-nav">
-            {% block home %}<a href="#">Home</a>{% endblock home %}
+            {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
             {% block FunTest %}<a href="#">Fun</a>{% endblock FunTest %}
             {% block about %}<a href="#">About</a>{% endblock about %}
             {% block contact %}<a href="#">Contact Us</a>{% endblock contact %}
-            {% block item1 %} <a href="#">Item 1</a>{% endblock item1 %}
-            {% block item2 %} <a href="#">Item 2</a>{% endblock item2 %}
+            {% block signUp %}<a class="registerBtn btn" href="{% url 'signUp' %}">Sign Up</a>{% endblock signUp %}
+            {% block signIn %}<a class="loginBtn btn" href="{% url 'login' %}" >Login</a>{% endblock signIn %}
         </nav>
     </header>
-    {% block content %}
-    <div>
-        <!-- Your content goes here -->
-        <p>This is your content.</p>
+    {% block flash %}
+    <div class="flash-container">
+        {% if messages %}
+            {% for message in messages %}
+                {% if forloop.last %}
+                <div class="flash-message {% if message.tags %}flash-{{ message.tags }}{% endif %}">
+                    <p style="font-weight: bold;">{{ message }}</p>
+                    <button class="flash-close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
+    {% endblock flash %}
+    {% block content %}
+        <div class="base_content">
+            <h2>This is base.html</h2>
+        </div>    
     {% endblock content %}
     <footer>
         <nav class="footer-nav">
             <a href="#">Developers</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
-            <a href="#">Privacy Policy</a>
+            <a href="#">Privacy</a>
             <a href="#">Terms</a>
+            <a href="#">FAQ</a>
         </nav>
-        <p>All rights reserved @WorkForceHub</p>
+        <p>All rights reserved &copy; WorkForceHub 2024</p>
     </footer>
 </body>
 </html>

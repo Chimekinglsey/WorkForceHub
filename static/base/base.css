@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Inika:wght@400;700&family=Marko+One&family=Saira&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Inika:wght@400;700&family=Marko+One&family=Rowdies&family=Saira&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Cookie&family=Diphylleia&family=Domine&family=Dosis:wght@400;500&family=El+Messiri&family=Montserrat:wght@600&family=Roboto+Flex:opsz@8..144&family=Sora:wght@200;400;600&display=swap');
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -32,18 +35,70 @@ nav a {
     text-decoration: none;
     padding: 0 15px;
     transition: color 0.3s ease;
+    margin-top: 0;
 }
 nav a:hover {
     color: #ffd700;
     text-decoration: underline;
-    /* border-bottom: 1.5px solid #d9d6c3; */
 }
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    margin-left: 10px;
+}
+.registerBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.loginBtn {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.8;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+#menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #a4cef1;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#menu-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.base_content{
+    height: 70vh;
+    text-align: center;
+}
+/* footer */
 footer {
     background-color: #232f3e;
     color: #fff;
     text-align: center;
     padding: 20px 0;
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
 }
@@ -69,22 +124,12 @@ footer nav a:hover {
 
 }
 
-#menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    transition: transform 1.3s ease;
 
-}
-#menu-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
+/* 
+========================
+Media Queries 
+========================
+*/
 @media screen and (max-width: 900px) {
     #menu-toggle {
         display: block;
@@ -97,7 +142,7 @@ footer nav a:hover {
         right: 0;
         background-color: #232f3e;
         width: 15%;
-        padding: 10px 0;
+        padding: 5px 0;
         text-align: center;
         align-items: flex-end;
         padding-right: 3%;
@@ -113,7 +158,23 @@ footer nav a:hover {
     }
     nav a {
         display: block;
-        padding: 10px 0;
+        padding: 5px 0;
+    }
+    .btn {
+        text-transform:capitalize;
+        margin-left: 0;
+        padding: 5px  0%;
+    }
+    .registerBtn {
+        background: transparent;
+        color: #32dc38;
+        font-weight: bold;
+    }
+    
+    .loginBtn {
+        background: transparent;
+        color: #a4cef1;
+        font-weight: bold;
     }
 }
 @media screen and (max-width: 600px) {

@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'emps/styles/signUp.css' %}">
+    <style>
+        .inputField {
+            border-radius: 10px;
+        }
+    </style>
+{% endblock head %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+   <div class="register_container">
+        <div class="register_container_inputs">
+            <div class="logo">
+               <img src="{% static 'emps/images/logo/logo_icon.png' %}" alt="">
+            </div>
+            <h3 class="register_header">
+               Sign Up
+            </h3>
+            <hr class="wide_hr">
+            <p class="register_subheader">
+                Create an account to get started
+            </p>         
+            <form class="learner_form" action="{% url 'signUp' %}" method="POST">
+                {% csrf_token %}
+                <label for="useremail">
+                    Email
+                </label>
+                <!-- <input type="text" name="useremail" placeholder="enter email" id=""><br><br> -->
+                {{ form.email }} <br>
+                <label for="username">
+                    Username
+                </label><br>
+                <!-- <input type="text" name="username" placeholder="enter username"><br> -->
+                {{ form.username }} <br>
+                <label for="password">
+                    Password
+                </label><br>
+                <!-- <input type="password" name="password" placeholder="enter password" id=""><br> -->
+                {{ form.password1 }} <br>
+                <label for="confirm_password">
+                    Confirm Password
+                </label><br>
+                <!-- <input type="confirm_password" name="confirm_password" placeholder="****" id="" pattern=""><br><br> -->
+                {{ form.password2 }} <br>
+                <br>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+            
+            
+            <br>
+            <center><p class="change_color hide_signup">or signup with</p></center>
+            <div class="link_box_container">
+                <div class="link_box">
+                    <a href=""><img src="{% static 'emps/images/socialLinks/google.png' %}" alt=""></a>
+                </div>
+                <div class="link_box">
+                    <a href=""><img src="{% static 'emps/images/socialLinks/facebook.png' %}" alt=""></a>
+                </div>
+                <div class="link_box">
+                    <a href=""><img src="{% static 'emps/images/socialLinks/github.png' %}" alt=""></a>
+                </div>  
+            </div>
+            <div class="ending">
+                <center>
+                    <p>Already have an account? <a href="{% url 'login' %}"><b>Login here</b></a></p>
+                </center>
+            </div>
+        </div>
+   </div>
+</div>
+{% endblock content %}

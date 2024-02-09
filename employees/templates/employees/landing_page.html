@@ -1,0 +1,109 @@
+    {% extends 'base/base.html'%}
+    {% load static %}
+
+    {% block head %}
+        <script src="{% static 'emps/scripts/landing_page.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'emps/styles/landing_page.css' %}">
+    {% endblock head %}
+
+    {% block title %}<title>Landing Page</title>{% endblock title %}
+<body>
+    {% block content %}
+        <div class="landing-page">
+            <div class="landing-left">
+                    <h1 id="welcome">Welcome to WorkForceHub</h1>
+                    <h6 class="script">. . . your one-stop solution to employee management</h6>
+        
+                <div class="image-slider">
+                    <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
+                    <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
+                    <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
+                    <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
+                    <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
+                    <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
+                    <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
+                    <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
+                    <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
+                    <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
+                    <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
+                    <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
+                </div>
+            </div>
+            <div class="landing-right">
+                <div class="card">
+                    <center><h2>Streamline Your Workforce Management</h2></center>
+                    <p>Welcome to WorkForceHub, your all-in-one digital solution designed to revolutionize the way organizations manage their workforce. With WorkForceHub, you can seamlessly oversee your entire workforce across multiple branches, ensuring efficiency, accuracy, and compliance.</p>
+                    
+                    <p>Our platform offers a comprehensive suite of tools and features tailored to meet the unique needs of modern businesses. From managing employee data to processing payroll and facilitating seamless communication, WorkForceHub empowers organizations to streamline their operations and drive productivity.</p>
+                    
+                    <p>At WorkForceHub, we understand the importance of empowering organizations to effectively manage their most valuable asset—their people.
+                        Our user-friendly interface, robust features, and unparalleled customer support make us the ideal partner for organizations looking to optimize their workforce management processes and drive success.</p>
+                </div>
+            </div>
+        </div>
+        <div class="more-contents">
+            <div class="card features">
+            <center> <h2>Why many businesses choose us</h2></center>
+                        
+                <ul>
+                    <li><strong>Centralized Employee Database:</strong> Easily store and access all employee information in one secure location, eliminating the need for disparate spreadsheets and manual record-keeping.</li>
+                    
+                    <li><strong>Effortless Leave Management:</strong> Simplify the process of requesting, approving, and tracking employee leave, ensuring optimal staffing levels and minimizing scheduling conflicts.</li>
+                    
+                    <li><strong>Accurate Payroll Processing:</strong> Automate payroll calculations, deductions, and tax filings, saving time and reducing the risk of errors associated with manual payroll processing.</li>
+                    
+                    <li><strong>Seamless Transfer and Onboarding:</strong> Facilitate smooth employee transfers between branches and streamline the onboarding process for new hires, ensuring a seamless transition and optimal employee experience.</li>
+                    
+                    <li><strong>Comprehensive Work History Tracking:</strong> Keep a detailed record of each employee's work history, including performance reviews, promotions, and disciplinary actions, to support informed decision-making and employee development.</li>
+                    
+                    <li><strong>Robust Reporting and Analytics:</strong> Gain valuable insights into workforce trends, performance metrics, and compliance requirements through customizable reports and analytics tools, enabling data-driven decision-making and strategic planning.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="break"></div>
+        <div class="faq-section">
+            <div class="faq-content">
+                <h1>Frequently Asked Questions</h1>
+            
+                <div class="faq-item">
+                    <h3 class="question">What is WorkForceHub? <span class="fa fa-chevron-down" aria-hidden="true"></span></h3>
+                    <div class="answer">
+                        <p>WorkForceHub is a comprehensive digital solution designed to help organizations efficiently manage their workforce across multiple branches. It provides tools for managing employee data, leave, payroll, transfer, work history, and much more.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="question">How can I get started with WorkForceHub? <span class="fa fa-chevron-down" aria-hidden="true"></span></h3>
+                    <div class="answer">
+                        <p>Getting started with WorkForceHub is easy! Simply sign up for an account on our website, and our team will guide you through the setup process. We offer comprehensive onboarding assistance and ongoing support to ensure a smooth transition.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="question">Is WorkForceHub compatible with my existing HR software? <span class="fa fa-chevron-down" aria-hidden="true"></span></h3>
+                    <div class="answer">
+                        <p>Yes, WorkForceHub is designed to integrate seamlessly with various HR software solutions. Our team can work with you to ensure a smooth integration process and provide any necessary support or customization.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="question">Can I customize WorkForceHub to fit my organization's specific needs? <span class="fa fa-chevron-down" aria-hidden="true"></span></h3>
+                    <div class="answer">
+                        <p>Absolutely! WorkForceHub offers extensive customization options to accommodate your organization's unique requirements. From custom fields and workflows to branding and user permissions, we can tailor the platform to meet your specific needs.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="question">What kind of support is available for WorkForceHub users? <span class="fa fa-chevron-down" aria-hidden="true"></span></h3>
+                    <div class="answer">
+                        <p>We provide comprehensive support for WorkForceHub users, including online documentation, video tutorials, and responsive customer support via email and live chat. Our team is dedicated to ensuring that you get the most out of our platform.</p>
+                </div>
+            </div>
+        </div>
+        
+        
+            <!-- Add more FAQ items as needed -->
+        
+        </div>
+    {% endblock content %}
+</body>

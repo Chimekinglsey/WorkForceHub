@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group, Permission
 from datetime import datetime
+from django.utils import timezone
 from organizations.models import Branch
 from PIL import Image
 
@@ -206,7 +207,16 @@ class Employee(models.Model):
 
     def __str__(self):
         return f'{self.last_name} {self.first_name}'
-    
+
+class PasswordResetToken(models.Model):
+    user = models.OneToOneField(AdminUser, on_delete=models.CASCADE)
+    token = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        # Check if the token has expired (e.g., one-hour expiry)
+        return (timezone.now() - self.created_at).total_seconds() > 3600
+
 class Appointments(models.Model):
     """Model for employee appointments"""
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='appointments')
