@@ -55,7 +55,7 @@ def login_view(request):
             login(request, user, backend='employees.backends.AdminUserAuthBackend')  # Authenticate the user
             messages.success(request, 'Login successful')
 
-            if user.first_name is None:
+            if user.employee_id is None:
                 return redirect('profile_update')
             return redirect('create_org')
         else:
@@ -71,7 +71,8 @@ def profile_update(request):
         if form.is_valid():
             # Replace old profile picture with new one
             if 'profile_picture' in form.cleaned_data:
-                request.user.profile_picture.delete()
+                if request.user.profile_picture:
+                    request.user.profile_picture.delete()
             form.instance.employee_id = request.user.employee_id  # Set employee_id from logged-in user
             form.save()
             # Redirect to a success page or any other desired view
@@ -91,6 +92,7 @@ def org_dashboard(request):
     form = BranchForm(request.user)
     org = Organization.objects.filter(admin_user=request.user).first()
     branches = Branch.objects.filter(organization=org)
+    admin = request.user
 
     if request.method == 'POST':
         admin_user = get_object_or_404(AdminUser, id=request.user.id)
@@ -101,9 +103,9 @@ def org_dashboard(request):
         org.save()
         
         messages.success(request, 'Organization created successfully')
-        return render(request, 'employees/org_dashboard.html', {'org': org, 'branches': branches, 'form': form})
+        return render(request, 'employees/org_dashboard.html', {'org': org, 'branches': branches, 'form': form, 'user': admin})
     
-    return render(request, 'employees/org_dashboard.html', {'form': form, 'org': org, 'branches': branches})
+    return render(request, 'employees/org_dashboard.html', {'form': form, 'org': org, 'branches': branches, 'user': admin})
 
 # create branch of organization
 @login_required(login_url='login')

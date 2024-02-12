@@ -141,7 +141,13 @@ nav a:hover {
     color: #e74c3c;
 }
 
+.asteriskField {
+    color: red !important;
+}
 
+.list-group-item {
+    padding: 0.25rem 1.5rem;
+}
 .success-message {
     background-color: #d4edda;
     border-color: #c3e6cb;

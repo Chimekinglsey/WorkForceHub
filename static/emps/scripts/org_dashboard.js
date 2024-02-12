@@ -55,15 +55,9 @@ $(document).ready(function() {
             data: formData,
             success: function(response) {
                 // Handle success response, e.g., redirect to branch creation
-                $('.spinner-container').hide();
-                
-                $('.backdrop').hide();
                 form.trigger('reset');
-                form.hide()
-                $('#successModal').show()
-                $('.create-org').show();
-
                 // reload the page
+                window.location.href = '/createOrg/';
             },
             error: function(xhr, status, error) {
                 // Handle error response

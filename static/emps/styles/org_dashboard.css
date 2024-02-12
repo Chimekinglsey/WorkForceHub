@@ -96,6 +96,7 @@
 .close {
     margin-right: 10px;
     padding: 5px;
+    cursor: pointer;
 }
 .close:hover {
     color: red;
@@ -150,6 +151,28 @@ ul li a:hover {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* left_section */
+.tiny_images{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    object-fit: cover;
+    object-position: top;
+}
+
+.user_details{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'el messiri', 'Saira', sans-serif;
+    font-size: 14px;
+    line-height: 0px;
+    margin-bottom: 0px;
+    /* font-size: medium; */
+} 
 
 /* spinner */
 

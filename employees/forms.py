@@ -55,6 +55,7 @@ class ProfileUpdateForm(forms.ModelForm):
                         Column('joining_date', css_class='form-group col-md-6 mb-0'),
                         css_class='form-row'
                     ),
+                    Submit('submit', 'Submit', css_class='btn btn-primary mr-5') 
                 ),
             )
         )
@@ -126,5 +127,5 @@ class BranchForm(forms.ModelForm):
                 Column('description', css_class='form-group col-md-6 mb-0', placeholder='Branch Description'),
                 css_class='form-row'
             ),
-            Submit('submit', 'Submit', css_class='btn btn-primary') 
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5') 
         )

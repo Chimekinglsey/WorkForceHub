@@ -187,8 +187,16 @@
         <!-- Left Pane -->
             <div class="left-pane">
                     <div class="left-pane-content">
-                        {% if org %}
-                            <div class="cardie">
+                        <div class="cardie">
+                            <section class="user_details">
+                                {% if user.profile_picture and user.profile_picture.url %}
+                                <img class="tiny_images" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                                {% else %}
+                                <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="{{ user.username }}'s pic">
+                                {% endif %}
+                                <center><p>{{ user.username }}</p></center>
+                            </section>
+                            {% if org %}
                             <p> Welcome Back,  <span><b style="font-size: 1.23m; color: darkblue;">{{ org.name }}</b></span> </p>
                             </div>
                             <h4> Your Organization</h4>

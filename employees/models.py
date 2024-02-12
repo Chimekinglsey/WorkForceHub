@@ -170,7 +170,6 @@ class AdminUser(BaseUser, AbstractUser):
     adminuser = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='administrator')
     is_admin = models.BooleanField(_('Admin status'), default=True, help_text=_('Designates whether the user can log into this admin site.'))
     is_superuser = models.BooleanField(_('superuser status'), default=True, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
-    is_staff = models.BooleanField(_('is staff'), default=True, help_text=_("Can log into admin site"))
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='admin_user_permissions')
     groups = models.ManyToManyField(Group, blank=True, related_name='admin_user_groups')
 
