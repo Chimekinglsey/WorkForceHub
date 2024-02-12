@@ -11,11 +11,14 @@ router.register(r'organizatons', org_views.OrganizationViewSet, basename='organi
 urlpatterns = [
     path('', emp_view.landing_page, name='landing_page'),
     path('signUp/', emp_view.signup, name='signUp'),
-    path('login/', emp_view.login, name='login'),
-    path('forgot_password/', emp_view.forgot_password, name='forgot_password'),
-    path('reset_token/', emp_view.confirm_password_reset_token, name='reset_token'),
-    path('reset_password/', emp_view.reset_password, name='reset_password'),
-    path('logout/', emp_view.logout, name='logout'),
+    path('login/', emp_view.login_view, name='login'),
+    path('logout/', emp_view.logout_view, name='logout'),
+    path('profileUpdate/', emp_view.profile_update, name='profile_update'),
+    path('createOrg/', emp_view.org_dashboard, name="create_org"),
+    path('org/createBranch/', emp_view.create_branch, name="create_branch"),
+    path('forgotPassword/', emp_view.forgot_password, name='forgot_password'),
+    path('resetToken/', emp_view.confirm_password_reset_token, name='reset_token'),
+    path('resetPassword/', emp_view.reset_password, name='reset_password'),
 
     # API URLS
     path('api/', include(router.urls)),

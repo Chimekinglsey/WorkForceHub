@@ -1,0 +1,285 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'emps/styles/landing_page.css' %}">
+    <script src="{% static 'emps/scripts/landing_page.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'emps/styles/org_dashboard.css'%}">
+    <script src="{% static 'emps/scripts/org_dashboard.js'%}"></script>
+{% endblock head %}
+{% block title %}Dashboard{% endblock title %}
+
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<div class="host-container">
+    <div class="backdrop"></div>
+    {% comment %} Create Organization Form {% endcomment %}
+    <form id="organization-form" method="post" class="container mt-5">
+        <div class="close-btn">
+            <span class="close">&times;</span>
+        </div>
+        <h3>Organization Information</h3>
+        <hr>
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-control" required placeholder="Organization/Business name" title="">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="industry">Industry</label>
+                <select id="industry" name="industry" class="form-control" required>
+                    <option value="">--Select--</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Education">Education</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Hospitality">Hospitality</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="sector">Sector</label>
+                <input type="text" id="sector" name="sector" class="form-control" required placeholder="Enter Industry sector">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="size">Size</label>
+                <select id="size" name="size" class="form-control" required>
+                    <option value="">--Select--</option>
+                    <option value="1 - 20">1 - 20</option>
+                    <option value="21 - 100">21 - 100</option>
+                    <option value="101 - 500">101 - 500</option>
+                    <option value="501 - 1000">501 - 1000</option>
+                    <option value="Above 1000">Above 1000</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="branches">Branches</label>
+                <select id="branches" name="branches" class="form-control" required>
+                    <option value="">--Select--</option>
+                    <option value="1 - 10">1 - 10</option>
+                    <option value="10 - 50">10 - 50</option>
+                    <option value="51 - 100">51 - 100</option>
+                    <option value="101 - 500">101 - 500</option>
+                    <option value="Above 500">Above 500</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="headquarter">Headquarter</label>
+                <input type="text" id="headquarter" name="headquarter" class="form-control" required placeholder="Location of head office">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="website">Website</label>
+                <input type="url" id="website" name="website" class="form-control" required placeholder="e.g https://example.org">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" placeholder="Optional, describe your organization or business"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="contact_phone">Contact Phone</label>
+                <input type="tel" id="contact_phone" name="contact_phone" class="form-control" required placeholder="Enter your business contact phone number">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="contact_email">Contact Email</label>
+                <input type="email" id="contact_email" name="contact_email" class="form-control" required placeholder="Enter your business contact email address">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="mailing_address">Mailing Address</label>
+                <input type="text" id="mailing_address" name="mailing_address" class="form-control" placeholder="Optional, enter mailing address">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="revenue">Annual Revenue</label>
+                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Optional">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="profit">Annual Profit</label>
+                <input type="number" id="profit" name="profit" class="form-control" placeholder="Optional">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="employee_benefits">Employee Benefits</label>
+                <textarea id="employee_benefits" name="employee_benefits" class="form-control" placeholder="Enter Employee Benefits (Optional)"></textarea>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="facebook">Facebook</label>
+                <input type="url" id="facebook" name="facebook" class="form-control"  placeholder="Optional, enter Facebook Page">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="twitter">Twitter</label>
+                <input type="url" id="twitter" name="twitter" class="form-control"  placeholder="Optional, enter X handle">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="linkedin">Linkedin</label>
+                <input type="url" id="linkedin" name="linkedin" class="form-control"  placeholder="Optional, enter LinkedIn Page">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="certifications">Certifications</label>
+                <textarea id="certifications" name="certifications" class="form-control" placeholder="Enter acquired certifications e.g ISO, SON"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+            </div>
+            <div class="form-group col-md-6 btnHandle">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+    {% comment %} Create Branch Form {% endcomment %}
+    <form id="branch-form" class="container mt-5" method="post" enctype="multipart/form-data">
+        <div class="close-btn">
+            <span class="close">&times;</span>
+        </div>
+        <h3>Branch Information</h3>
+        <hr>
+        {% csrf_token %}
+        {% crispy form %}
+    </form>
+    <div class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+        
+    <!-- error modal -->
+    <div id="ErrorModal" class="modal">
+        <div class="modal-content">
+            <span class="closeModal">&times;</span>
+            <h1 class="error-message"> An Error Occurred</h1>
+            <p >There was an issue processing your request. Please try again.</p>
+        </div>
+    </div>
+    <!-- success modal -->
+    <div id="SuccessModal" class="modal">
+        <div class="modal-content">
+            <span class="closeModal">&times;</span>
+            <h1 class="success-message"> Success!</h1>
+            <p >Completed Successfully</p>
+        </div> 
+    </div>
+
+    <div class="create-org">
+        <!-- Left Pane -->
+            <div class="left-pane">
+                    <div class="left-pane-content">
+                        {% if org %}
+                            <div class="cardie">
+                            <p> Welcome Back,  <span><b style="font-size: 1.23m; color: darkblue;">{{ org.name }}</b></span> </p>
+                            </div>
+                            <h4> Your Organization</h4>
+                            <ul>
+                                <li><button class="createBranchBtn">Create Branch</button></li>
+                        {% else %}
+                            <h2>Organization Dashboard</h2>
+                            <ul>
+                            <li><button class="createOrgBtn">Create Organization</button></li>
+                        {% endif %}
+                            <li><a class="listBranches list-group">Branches</a></li>
+                            <div class="showBranches">
+                                {% if branches %}
+                                <ul>
+                                    {% for branch in branches %}
+                                        <li class="list-group-item list-color"><a href="">{{ branch.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {%else%}
+                                <ul>
+                                        <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
+                                </ul>
+                                {% endif %}
+                            </div>
+                            <li><a href="">Reports</a></li>
+                            <li><a href="">Transfer</a></li>
+                        </ul>
+                    </div>
+            </div>
+
+        <!-- Right Pane -->
+            <div class="right-pane">
+                <!-- Create Organization Card -->
+
+                <div class="cardie">
+                    {% if org %}
+                        <h3>Create Branch</h3>
+                        <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
+                        <button class="createBranchBtn">Create Branch</button>
+                        {% else %}
+                        <h3>Create Organization</h3>
+                        <p>Start managing your organization's workforce efficiently. Create an organization to consolidate and centralize your employee data across branches.</p>
+                        <button class="createOrgBtn">Create Organization</button>
+                    {% endif %}
+                </div>
+                {% comment %} floating images {% endcomment %}
+                <div class="landing-left">
+                    <h6 class="script">. . . your one-stop solution to employee management</h6>
+
+                    <div class="image-slider">
+                        <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
+                        <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
+                        <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
+                        <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
+                        <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
+                        <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
+                        <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
+                        <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
+                        <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
+                        <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
+                        <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
+                        <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
+                    </div>
+                </div>
+                <!-- About Card -->
+                <div class="cardie clearfix">
+                    <h3>About WorkForceHub</h3>
+                    <p>WorkForceHub provides a comprehensive solution for managing your organization's workforce. From payroll to leave management, WorkForceHub streamlines all your HR processes.</p>
+                </div>
+
+                <!-- How it Works Card -->
+                <div class="cardie">
+                    <h3>How it Works</h3>
+                    <p>After creating your organization, easily manage your employees across branches. Utilize features like payroll management, leave tracking, and inter-branch transfers.</p>
+                </div>
+
+                <!-- Get Started Card -->
+                <div class="cardie">
+                    <h3>Get Started</h3>
+                    <p>Follow these five simple steps to get started: Sign up for WorkForceHub, Create your organization, Add branches, Invite team members, Start managing your workforce seamlessly.</p>
+                    <button>Sign Up Now</button>
+                </div>
+
+                <!-- Why Choose WorkForceHub Card -->
+                <div class="cardie">
+                    <h3>Why Choose WorkForceHub</h3>
+                    <p>Join thousands of organizations that trust WorkForceHub for their HR needs. Experience efficient workforce management, robust security, and exceptional support.</p>
+                </div>
+            </div> 
+        </div>
+{% comment %} Create Organization Modal Form {% endcomment %}
+</div>
+{% endblock content %}
+<br>

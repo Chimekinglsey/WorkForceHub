@@ -2,43 +2,59 @@
 
 
 .login_container{
-    min-height: 100vh;
-    display:flex;
-    justify-content: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.login_header{
+  font-family: 'Inika', serif;
+  font-size: xx-large;
+  font-weight: 600;
+  color: white;
+  margin: 0 8px;
+  text-shadow:
+        -1px -1px 0 black,
+        -1px 1px 0 black,
+        1px -1px 0 black,
+        1px 1px 0 black;
 }
 
 .login_container_inputs{
-    margin: auto auto;
-    min-width: 300px;
-    width: 50%;
-    min-height: 50vh;
-    /* height: 550px; */
-    border: 2px solid #5882C1;
-    border-radius: 40px;
-    background-color: #5882c13a;
-    padding: 50px;
+  width: 35%;
+  border: 2px solid #46494c;
+  border-radius: 40px;
+  background: linear-gradient(90deg, rgba(88, 130, 193, 0.767), rgba(4, 9, 17, 0.231), rgba(88, 130, 193, 0.767));
+  /* background-color: #0a15208a; */
+  padding: 3%;
+  margin: auto auto auto 5%;
 }
 
 .login_container_inputs input{
-    width: 96%;
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 10px;
-    border: 2px solid #5882c1;
-    box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.368);
+  width: 96%;
+  padding: 5px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 2px solid #5882c1;
+  box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.368);
+  margin-bottom: 10px;
 }
 
 .login_container_inputs input[type="submit"]{
-    background-color: rgba(3, 3, 80, 0.49);
-    width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.289);
-    font-weight: 700;
-    color:white;
-    box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.17);
-    padding-top: 15px;
-    border-radius: 50px;
-    padding-bottom: 15px;
-    cursor: pointer;
+  background-color: rgba(3, 3, 80, 0.49);
+  border: 1px solid rgba(255, 255, 255, 0.289);
+  font-weight: 700;
+  font-size: 1.2em;
+  color:white;
+  box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.17);
+  padding-top: 5px;
+  border-radius: 50px;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+.login_container_inputs input[type="submit"]:hover{
+  background-color: rgba(3, 3, 80, 0.83);
+  box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.568);
 }
 
 .login_container_inputs input:focus{
@@ -46,17 +62,17 @@
 }
 
 label{
-    padding-left: 10px;
-    color: white;
-    font-size: 18px;
-    text-shadow: 2px 2px 10px 2px black;
+  padding-left: 10px;
+  color: #333;
+  font-size: 18px;
+  text-shadow: 2px 2px 10px 2px black;
+  margin: 0;
+  margin-top: 0.5rem;
 }
 
-.login_header{
-    font-family: 'Inika', serif;
-    font-size: xx-large;
-    font-weight: 600;
-    color: white;
+.change_color {
+  clear: both;
+  color: #333;
 }
 
 .forgetPasscode{
@@ -68,6 +84,7 @@ label{
     padding: 5px 10px 5px 10px;
     color: rgb(255, 255, 255);
     cursor: pointer;
+    margin-right: 4%;
 }
 .forgetPasscode:hover{
     background-color: rgba(95, 43, 43, 0.79);
@@ -93,33 +110,6 @@ label{
     height: 20px;
 }
 
-.ending{
-    padding-top: 10px;
-}
-
-.ending p{
-    font-style: italic;
-}
-
-.ending a{
-    font-weight: 700;
-    color: white;
-    text-decoration: underline;
-    font-style: normal;
-}
-
-.logo{
-    float:right;
-}
-
-.logo img{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-.change_color {
-    color: rgb(205, 228, 242);
-}
 /* Email response */
 /* Add your modal styles here */
 .modal, .reset_password {
@@ -147,9 +137,6 @@ label{
 	border-radius: 8px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-#allSubjectsView .modal-content {
-    margin: 5% auto;
-}
 
 .modal-content a {
     color: #333;
@@ -159,12 +146,6 @@ label{
     text-decoration: none;
 }
 
-.back-to-home {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 100px;
-}
 .modal-content .continue {
     background-color: #ddd;
     color: black;
@@ -212,46 +193,6 @@ label{
     font-weight: bold;
 }
 
-.modal-content .moreTutors {
-  background-color: #0078d0;
-  border: 0;
-  border-radius: 56px;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  font-family: system-ui,-apple-system,system-ui,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  outline: 0;
-  padding: 16px 21px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  transition: all .3s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-.modal-content .moreTutors:before {
-  background-color: initial;
-  background-image: linear-gradient(#fff 0, rgba(255, 255, 255, 0) 100%);
-  border-radius: 125px;
-  content: "";
-  height: 50%;
-  left: 4%;
-  opacity: .5;
-  position: absolute;
-  top: 0;
-  transition: all .3s;
-  width: 92%;
-}
-
-.modal-content .moreTutors:hover {
-  box-shadow: rgba(255, 255, 255, .2) 0 3px 15px inset, rgba(0, 0, 0, .1) 0 3px 5px, rgba(0, 0, 0, .1) 0 10px 13px;
-  transform: scale(1.05);
-}
-
 .forgot_password_container, .reset_password_container {
     background-color: #141460c2 !important;
 }
@@ -261,28 +202,7 @@ label{
 .resetLink:hover {
     background: rgba(58, 93, 146, 0.8);
 }
-@media (max-width: 1060px) {
-    .UserBioData {
-        padding-top: 1px;
-        line-height: 20px;
-    }
-    .body{
-        font-size: 0.95em;
-    }
-    .ul .list_item {
-        line-height: 1.5;
-        font-family: 'Sora', Arial, Helvetica, sans-serif;
-        font-weight: 400;
-        margin-right: 15px;
-    }
-}
 
-
-@media (min-width: 768px) {
-  .modal-content .moreTutors {
-    padding: 16px 48px;
-  }
-}
 .sendingEmail {
     display: block;
     position: absolute;
@@ -388,16 +308,59 @@ label{
 }
 
 
-.success-message {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-    color: #155724;
-    padding: 15px;
-    margin-top: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
+
+
+/* Media Query */
+/* media query */
+@media screen and (max-width: 900px) {
+  .register_container, .login_container {
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+  }
+  .register_container_inputs, .login_container_inputs {
+      width: 80%;
+      margin: auto auto;
+  }
+  .login_container_inputs input{
+    font-size: 13px;
+  }
+  .landing-left {
+      margin: 5% 0;
+  }
+  .image-slider {
+    width: 500px;
+    min-width: 400px;
+  }
+  .btn{
+      padding: 2%;
+  }
+  footer {
+      display: none;
+  }
 }
 
-.error-message {
-    color: #e74c3c;
+@media screen and (max-width: 530px){
+.landing-left {
+  display: none
+}
+.register_container_inputs, .login_container_inputs{
+  width: 95%
+}
+};
+  
+@media (max-width: 1060px) {
+  .UserBioData {
+      padding-top: 1px;
+      line-height: 20px;
+  }
+  .body{
+      font-size: 0.95em;
+  }
+  .ul .list_item {
+      line-height: 1.5;
+      font-family: 'Sora', Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      margin-right: 15px;
+  }
 }

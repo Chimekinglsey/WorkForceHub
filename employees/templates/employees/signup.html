@@ -1,13 +1,17 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'emps/styles/signUp.css' %}">
+<link rel="stylesheet" href="{% static 'emps/styles/landing_page.css' %}">
+<link rel="stylesheet" href="{% static 'emps/styles/signUp.css' %}">
+    <script src="{% static 'emps/scripts/landing_page.js' %}"></script>
+    <script src="{% static 'emps/scripts/signUp.js' %}"></script>
     <style>
         .inputField {
             border-radius: 10px;
         }
     </style>
 {% endblock head %}
+{% block title %}Register{% endblock title %}
 {% block signUp %}{% endblock signUp %}
 
 {% block content %}
@@ -20,30 +24,23 @@
                Sign Up
             </h3>
             <hr class="wide_hr">
-            <p class="register_subheader">
-                Create an account to get started
-            </p>         
             <form class="learner_form" action="{% url 'signUp' %}" method="POST">
                 {% csrf_token %}
-                <label for="useremail">
+                <label for="useremail" title="Your email will be used for password recovery, ensure it is valid and accessible">
                     Email
                 </label>
-                <!-- <input type="text" name="useremail" placeholder="enter email" id=""><br><br> -->
                 {{ form.email }} <br>
-                <label for="username">
+                <label for="username" title="Choose a memorable username">
                     Username
                 </label><br>
-                <!-- <input type="text" name="username" placeholder="enter username"><br> -->
                 {{ form.username }} <br>
-                <label for="password">
+                <label for="password" title="It is recommended that your password include 8 characeter with Uppercase, Lowercase, number, and special character">
                     Password
                 </label><br>
-                <!-- <input type="password" name="password" placeholder="enter password" id=""><br> -->
                 {{ form.password1 }} <br>
-                <label for="confirm_password">
+                <label for="confirm_password" title="Enter the above password again">
                     Confirm Password
                 </label><br>
-                <!-- <input type="confirm_password" name="confirm_password" placeholder="****" id="" pattern=""><br><br> -->
                 {{ form.password2 }} <br>
                 <br>
                 <button type="submit" class="btn btn-primary">Sign Up</button>
@@ -67,6 +64,25 @@
                 <center>
                     <p>Already have an account? <a href="{% url 'login' %}"><b>Login here</b></a></p>
                 </center>
+            </div>
+        </div>
+        <div class="landing-left">
+            <h1 id="welcome">Welcome to WorkForceHub</h1>
+            <h6 class="script">. . . your one-stop solution to employee management</h6>
+
+            <div class="image-slider">
+                <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
+                <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
+                <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
+                <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
+                <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
+                <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
+                <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
+                <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
+                <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
+                <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
+                <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
+                <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
             </div>
         </div>
    </div>

@@ -1,0 +1,27 @@
+<!-- admin_user_form.html -->
+{% extends 'base/base.html'%}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<style>
+    .container {
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock head %}
+{% block title %}Admin User Form{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+        <h2>Profile Update Form</h2>
+        <hr>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% crispy form %}
+        <div class="btnHandle">
+            <button type="submit" class="btn btn-primary mr-5">Submit</button>
+        </div>
+        </form>
+    </div>
+{% endblock content %}
+

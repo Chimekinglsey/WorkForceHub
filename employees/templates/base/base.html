@@ -15,11 +15,12 @@
         <link rel="stylesheet" href="{% static 'base/flash.css' %}">
         <script src="{% static 'base/flash.js'%}"></script>
         {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
-        {% block title %}<title>Home WorkForceHub</title>{% endblock title %}
+        <title>{% block title %}Home WorkForceHub{% endblock title %}</title>
         {% block head %}
         {% endblock head %}
     </head>
 <body>
+    <div class="wrapper-container">
     <header>
         {% block WorkForceHub %}<h1>WorkForceHub</h1>{% endblock WorkForceHub %}
         {% block menu %}<button id="menu-toggle">Menu</button>{% endblock menu %}
@@ -52,6 +53,7 @@
             <h2>This is base.html</h2>
         </div>    
     {% endblock content %}
+    </div>
     <footer>
         <nav class="footer-nav">
             <a href="#">Developers</a>

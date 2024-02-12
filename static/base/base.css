@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     border: 0;
-    background-color: #f4f4f4;
+    background-color: #f7f7f7;
     color: #333;
 }
 header {
@@ -18,8 +18,9 @@ header {
     align-items: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
+    max-height: 85px;
 }
-h1 {
+header h1 {
     margin: 0;
     font-size: 24px;
     font-weight: 700;
@@ -92,8 +93,73 @@ nav a:hover {
     height: 70vh;
     text-align: center;
 }
+.btnHandle {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+	background-color: #e2ece4b2;
+	margin: 10% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+	max-width: 600px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.closeModal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.closeModal:hover,
+.closeModal:focus {
+    color: rgb(147, 20, 20);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.error-message {
+    color: #e74c3c;
+}
+
+
+.success-message {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+    padding: 15px;
+    margin-top: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+
+/* fixing footer overflow */
+.wrapper-container{
+    min-height: calc(100vh - 100px);
+}
 /* footer */
 footer {
+    clear: both;
     background-color: #232f3e;
     color: #fff;
     text-align: center;
@@ -102,6 +168,7 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
 footer p {
     margin: 0;
     font-size: 14px;
@@ -124,6 +191,9 @@ footer nav a:hover {
 
 }
 
+.image-slider{
+    max-height: 300px;
+}
 
 /* 
 ========================
@@ -163,22 +233,45 @@ Media Queries
     .btn {
         text-transform:capitalize;
         margin-left: 0;
-        padding: 5px  0%;
+        /* padding: 5px; */
+        margin-bottom: 10px;
     }
     .registerBtn {
         background: transparent;
         color: #32dc38;
         font-weight: bold;
+        padding: 0px !important;
     }
     
     .loginBtn {
         background: transparent;
         color: #a4cef1;
         font-weight: bold;
+        padding: 0px !important;
+    }
+}
+@media screen and (max-width: 768px) {
+    .header-nav {
+        width: 18%;
+    }
+    .header-nav a {
+    font-family: 0.95em;
     }
 }
 @media screen and (max-width: 600px) {
     .header-nav {
-        width: 18%;
+        width: 20%;
+    }
+    .header-nav a {
+        font-size: 0.9em;
     }
 }
+@media screen and (max-width: 530px) {
+        .header-nav {
+            width: 22%;
+        }
+        .header-nav a{
+           font-size: 0.9em;
+        }
+}
+

@@ -1,12 +1,18 @@
     {% extends 'base/base.html'%}
     {% load static %}
 
+    {% block title %}Landing Page{% endblock title %}
     {% block head %}
         <script src="{% static 'emps/scripts/landing_page.js' %}"></script>
         <link rel="stylesheet" href="{% static 'emps/styles/landing_page.css' %}">
     {% endblock head %}
 
-    {% block title %}<title>Landing Page</title>{% endblock title %}
+    {% block home %}{% endblock home %}
+    {% comment %} {% if not user %}
+        {% block signUp %}<a class="registerBtn btn" href="{% url 'signUp' %}">Dashboard</a>{% endblock signUp %}
+        {% block signIn %}<a class="loginBtn btn" href="{% url 'logout' %}" >Logout</a>{% endblock signIn %}
+    {% endif %} {% endcomment %}
+    
 <body>
     {% block content %}
         <div class="landing-page">
@@ -99,11 +105,6 @@
                         <p>We provide comprehensive support for WorkForceHub users, including online documentation, video tutorials, and responsive customer support via email and live chat. Our team is dedicated to ensuring that you get the most out of our platform.</p>
                 </div>
             </div>
-        </div>
-        
-        
-            <!-- Add more FAQ items as needed -->
-        
         </div>
     {% endblock content %}
 </body>

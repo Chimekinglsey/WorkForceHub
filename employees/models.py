@@ -1,3 +1,4 @@
+from enum import unique
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -8,202 +9,202 @@ from organizations.models import Branch
 from PIL import Image
 
 
-class AdminUser(AbstractUser):
+# choices
+GENDER_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Male', _('Male')),
+    ('Female', _('Female')),
+    ('Other', _('Other'))
+)
+
+MARITAL_STATUS_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Single', _('Single')),
+    ('Married', _('Married')),
+    ('Divorced', _('Divorced')),
+    ('Widowed', _('Widowed')),
+    ('Separated', _('Separated')),
+    ('Other', _('Other'))
+)
+
+EMPLOYMENT_STATUS_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Active', _('Active')),
+    ('Inactive', _('Inactive')),
+    ('Suspended', _('Suspended')),
+    ('Terminated', _('Terminated')),
+    ('Resigned', _('Resigned')),
+    ('Retired', _('Retired')),
+    ('Deceased', _('Deceased')),
+    ('On Leave', _('On Leave')),
+    ('On Training', _('On Training')),
+    ('On Probation', _('On Probation')),        
+    ('Other', _('Other'))
+)
+
+EMPLOYMENT_TYPE_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Remote', _('Remote')),
+    ('Hybrid', _('Hybrid')),
+    ('On-site', _('On-site')),
+    ('Other', _('Other'))
+)
+
+EMPLOYEE_STATUS_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Full-time', _('Full-time')),
+    ('Part-time', _('Part-time')),
+    ('Contract', _('Contract')),
+    ('Intern', _('Intern')),
+    ('Volunteer', _('Volunteer')),
+    ('Temporary', _('Temporary')),
+    ('Seasonal', _('Seasonal')),
+    ('Freelance', _('Freelance')),
+    ('Remote', _('Remote')),
+    ('Disabled', _('Disabled')),
+    ('Other', _('Other'))
+)
+
+LEVEL_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Entry-level', _('Entry-level')),
+    ('Mid-level', _('Mid-level')),
+    ('Senior-level', _('Senior-level')),
+    ('Executive', _('Executive')),
+    ('Top-level', _('Top-level')),
+    ('Other', _('Other'))
+)
+
+DESIGNATION_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Employee', _('Employee')),
+    ('Intern', _('Intern')),
+    ('Trainee', _('Trainee')),
+    ('Associate', _('Associate')),
+    ('Assistant', _('Assistant')),
+    ('Officer', _('Officer')),
+    ('Analyst', _('Analyst')),
+    ('Coordinator', _('Coordinator')),
+    ('Specialist', _('Specialist')),
+    ('Consultant', _('Consultant')),
+    ('Advisor', _('Advisor')),
+    ('Supervisor', _('Supervisor')),
+    ('Manager', _('Manager')),
+    ('Director', _('Director')),
+    ('Executive', _('Executive')),
+    ('President', _('President')),
+    ('CEO', _('CEO')),
+    ('CFO', _('CFO')),
+    ('CTO', _('CTO')),
+    ('CIO', _('CIO')),
+    ('COO', _('COO')),
+    ('Chairman', _('Chairman')),
+    ('Board Member', _('Board Member')),
+    ('Other', _('Other'))
+)
+
+def resize_image(image_path):
+    """Resize the image located at image_path"""
+    img = Image.open(image_path)
+    if img.height > 300 or img.width > 300:
+        output_size = (300, 300)
+        img.thumbnail(output_size)
+        img.save(image_path)
+
+
+class BaseUser(models.Model):
+    """Base model containing common fields for AdminUser and Employee"""
+    # Personal Information
+    middle_name = models.CharField(_('Middle name'), max_length=30, null=True, blank=True)
+    dob = models.DateField(_('Date of birth'), null=True, blank=True)
+    gender = models.CharField(_('Gender'), max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+    marital_status = models.CharField(_('Marital status'), choices=MARITAL_STATUS_CHOICES, max_length=15, null=True, blank=True)
+    email = models.EmailField(_("email address"), unique=True, blank=True)
+    address = models.CharField(_('Address'), max_length=100, null=True, blank=True)
+    nationality = models.CharField(_('Nationality'), max_length=30, null=True, blank=True)
+    state_of_origin = models.CharField(_('State of origin'), max_length=30, null=True, blank=True)
+    phone_number = models.CharField(_('Phone number'), max_length=15, null=True, blank=True)
+    
+    # Employment Information
+    employee_id = models.CharField(_('Employee ID'), max_length=100, unique=True, null=True, blank=True)
+    department = models.CharField(_('Department/division'), max_length=100, null=True, blank=True)
+    job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
+    joining_date = models.DateField(_('Joining date'), default=datetime.today, null=True, blank=True)
+    employment_type = models.CharField(_('Employment type'), choices=EMPLOYMENT_TYPE_CHOICES, max_length=100, null=True, blank=True)
+    employment_status = models.CharField(_('Employment status'), choices=EMPLOYEE_STATUS_CHOICES, max_length=20, null=True, blank=True)
+    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=30, null=True, blank=True)
+    level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=30, null=True, blank=True)
+    last_promotion_date = models.DateField(_('Last promotion date'), null=True, blank=True)
+    next_promotion_date = models.DateField(_('Next promotion date'), null=True, blank=True)
+    salary = models.IntegerField(_('Salary'), null=True, blank=True)
+    
+    # Other Information
+    emergency_contacts = models.TextField(_('Emergency contacts'), null=True, blank=True)
+    termination_resignation_date = models.DateField(_('Date of termination/resignation'), null=True, blank=True)
+    highest_qualification = models.CharField(_('Highest qualification'), max_length=100, null=True, blank=True)
+    highest_certificate = models.FileField(_('Highest certificate'), upload_to='employees/highest_certificates/', null=True, blank=True)
+    employment_letter = models.FileField(_('Employment letter'), upload_to='employees/employment_letters/', null=True, blank=True)
+    skills_qualifications = models.TextField(_('Skills/qualifications'), null=True, blank=True)
+
+    # Next of kin
+    next_of_kin_name = models.CharField(_('Next of kin name'), max_length=100, null=True, blank=True)
+    next_of_kin_relationship = models.CharField(_('Next of kin relationship'), max_length=100, null=True, blank=True)
+    next_of_kin_phone_number = models.CharField(_('Next of kin phone number'), max_length=15, null=True, blank=True)
+    next_of_kin_address = models.CharField(_('Next of kin address'), max_length=100, null=True, blank=True)
+
+    
+    # Relationships
+    supervised_employees = models.ManyToManyField('self', blank=True)
+
+    # Timestamps
+    created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('Updated at'), auto_now=True)
+    
+    class Meta:
+        abstract = True
+
+class AdminUser(BaseUser, AbstractUser):
     """Custom User model for administrators"""
-    employee_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    department = models.CharField(max_length=100, null=True, blank=True)
-    dob = models.DateField(_('date of birth'), null=True, blank=True)
-    # company_name = models.CharField(_('company name'), max_length=250, null=True, blank=True)
-    # company_size = models.CharField(_('company size'), max_length=20, choices=COMPANY_SIZES, null=True, blank=True)
-    official_email = models.EmailField(_('official email'), unique=True, null=True, blank=True)
-    phone_number = models.CharField(_('phone number'), max_length=15, null=True, blank=True)
-    profile_picture = models.ImageField(_('profile picture'), upload_to='adminuser/', default='default_picture.png', null=True, blank=True)
-    job_role = models.CharField(_('job role'), max_length=100, null=True, blank=True)
-    department_division = models.CharField(_('department/division'), max_length=100, null=True, blank=True)
-    supervised_employees = models.ManyToManyField('Employee', related_name='supervisors', blank=True)
-    joining_date = models.DateField(_('joining date'), default=datetime.today, null=True, blank=True)
-    # manager_supervisor = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subordinates')
-    groups = models.ManyToManyField( Group, verbose_name=_('groups'), blank=True, help_text=_(
-            'The groups this user belongs to. A user will get all permissions '
-            'granted to each of their groups.'
-        ), related_name='admin_users'  # Add a unique related name
-    )
-    user_permissions = models.ManyToManyField( Permission, verbose_name=_('user permissions'), blank=True, 
-                                              help_text=_('Specific permissions for this user.'), related_name='admin_users')
-    
-    def __str__(self):
-        return self.username
-    
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='admin_user')
+    profile_picture = models.ImageField(_('Profile picture'), upload_to='adminuser/', default='default_picture.png', null=True, blank=True)
+    adminuser = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='administrator')
+    is_admin = models.BooleanField(_('Admin status'), default=True, help_text=_('Designates whether the user can log into this admin site.'))
+    is_superuser = models.BooleanField(_('superuser status'), default=True, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
+    is_staff = models.BooleanField(_('is staff'), default=True, help_text=_("Can log into admin site"))
+    user_permissions = models.ManyToManyField(Permission, blank=True, related_name='admin_user_permissions')
+    groups = models.ManyToManyField(Group, blank=True, related_name='admin_user_groups')
 
-        img = Image.open(self.profile_picture.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.profile_picture.path)
+    
     class Meta:
         verbose_name = _('Administrator')
         verbose_name_plural = _('Admins')
         ordering = ['last_name', 'first_name']
 
-class Employee(models.Model):
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        resize_image(self.profile_picture.path)
+
+    def __str__(self):
+        return self.username
+    
+
+class Employee(BaseUser):
     """Model for employees managed by users"""
-    GENDER_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Male', _('Male')),
-        ('Female', _('Female')),
-        ('Other', _('Other'))
-    )
-
-    MARITAL_STATUS_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Single', _('Single')),
-        ('Married', _('Married')),
-        ('Divorced', _('Divorced')),
-        ('Widowed', _('Widowed')),
-        ('Separated', _('Separated')),
-        ('Other', _('Other'))
-    )
-
-    EMPLOYMENT_STATUS_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Active', _('Active')),
-        ('Inactive', _('Inactive')),
-        ('Suspended', _('Suspended')),
-        ('Terminated', _('Terminated')),
-        ('Resigned', _('Resigned')),
-        ('Retired', _('Retired')),
-        ('Deceased', _('Deceased')),
-        ('On Leave', _('On Leave')),
-        ('On Training', _('On Training')),
-        ('On Probation', _('On Probation')),        
-        ('Other', _('Other'))
-    )
-
-    EMPLOYMENT_TYPE_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Remote', _('Remote')),
-        ('Hybrid', _('Hybrid')),
-        ('On-site', _('On-site')),
-        ('Other', _('Other'))
-    )
-
-    EMPLOYEE_STATUS_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Full-time', _('Full-time')),
-        ('Part-time', _('Part-time')),
-        ('Contract', _('Contract')),
-        ('Intern', _('Intern')),
-        ('Volunteer', _('Volunteer')),
-        ('Temporary', _('Temporary')),
-        ('Seasonal', _('Seasonal')),
-        ('Freelance', _('Freelance')),
-        ('Remote', _('Remote')),
-        ('Disabled', _('Disabled')),
-        ('Other', _('Other'))
-    )
-
-    LEVEL_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Entry-level', _('Entry-level')),
-        ('Mid-level', _('Mid-level')),
-        ('Senior-level', _('Senior-level')),
-        ('Executive', _('Executive')),
-        ('Top-level', _('Top-level')),
-        ('Other', _('Other'))
-    )
-
-    DESIGNATION_CHOICES = (
-        ('--Select--', _('--Select--')),
-        ('Employee', _('Employee')),
-        ('Intern', _('Intern')),
-        ('Trainee', _('Trainee')),
-        ('Associate', _('Associate')),
-        ('Assistant', _('Assistant')),
-        ('Officer', _('Officer')),
-        ('Analyst', _('Analyst')),
-        ('Coordinator', _('Coordinator')),
-        ('Specialist', _('Specialist')),
-        ('Consultant', _('Consultant')),
-        ('Advisor', _('Advisor')),
-        ('Supervisor', _('Supervisor')),
-        ('Manager', _('Manager')),
-        ('Director', _('Director')),
-        ('Executive', _('Executive')),
-        ('President', _('President')),
-        ('CEO', _('CEO')),
-        ('CFO', _('CFO')),
-        ('CTO', _('CTO')),
-        ('CIO', _('CIO')),
-        ('COO', _('COO')),
-        ('Chairman', _('Chairman')),
-        ('Board Member', _('Board Member')),
-        ('Other', _('Other'))
-    )
-
-    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
-    adminuser = models.ForeignKey(AdminUser, on_delete=models.CASCADE, related_name='subordinates')
-    # personal details
-    first_name = models.CharField(_('first name'), max_length=30)
-    middle_name = models.CharField(_('middle name'), max_length=30, null=True, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30)
-    email = models.EmailField(_('email'), null=True, blank=True)
-    phone_number = models.CharField(_('phone number'), max_length=15, null=True, blank=True)
-    address = models.CharField(_('address'), max_length=100, null=True, blank=True)
-    nationality = models.CharField(_('nationality'), max_length=30, null=True, blank=True)
-    state_of_origin = models.CharField(_('state of origin'), max_length=30, null=True, blank=True)
-    date_of_birth = models.DateField(_('date of birth'), null=True, blank=True)
-    gender = models.CharField(_('gender'), max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
-    marital_status = models.CharField(_('marital status'), choices=MARITAL_STATUS_CHOICES, max_length=15, null=True, blank=True)
-    profile_picture = models.ImageField(_('profile picture'), upload_to='employees/', default='default_picture.png', null=True, blank=True)
-    termination_resignation_date = models.DateField(_('date of termination/resignation'), null=True, blank=True)
-    emergency_contacts = models.TextField(_('emergency contacts'), null=True, blank=True)  # Store multiple contacts as JSON string or CSV 
+    adminuser = models.ForeignKey(AdminUser, on_delete=models.CASCADE, related_name='managed_employees')
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='employee')
+    first_name = models.CharField(_('First name'), max_length=30)
+    last_name = models.CharField(_('Last name'), max_length=30)
+    profile_picture = models.ImageField(_('Profile picture'), upload_to='employees/', default='default_picture.png', null=True, blank=True)
     
-    # employment details
-    employee_id = models.CharField(_('employee ID'), unique=True, max_length=30)
-    department = models.CharField(_('department'), max_length=30, null=True, blank=True)
-    date_of_employment = models.DateField(_('date of employment'), null=True, blank=True)
-    employment_status = models.CharField(_('employment status'),  choices=EMPLOYEE_STATUS_CHOICES, max_length=20, null=True, blank=True)
-    employment_type = models.CharField(_('employment type'), choices=EMPLOYMENT_TYPE_CHOICES, max_length=100, null=True, blank=True)
-    employee_status = models.CharField(_('employee status'),choices=EMPLOYMENT_STATUS_CHOICES,  max_length=20, null=True, blank=True)
-    designation = models.CharField(_('designation'), choices=DESIGNATION_CHOICES, max_length=30, null=True, blank=True)
-    level = models.CharField(_('level'), choices=LEVEL_CHOICES, max_length=30, null=True, blank=True)
-    # promotion details
-    last_promotion_date = models.DateField(_('last promotion date'), null=True, blank=True)
-    next_promotion_date = models.DateField(_('next promotion date'), null=True, blank=True)
-
-    # financial details
-    salary = models.IntegerField(_('salary'), null=True, blank=True)
-    pension_id = models.CharField(_('pension ID'), max_length=30, null=True, blank=True)
-    tax_id = models.CharField(_('tax ID'), max_length=30, null=True, blank=True)
-    # manager_supervisor = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subordinates')
-    
-    # certification details
-    highest_qualification = models.CharField(_('highest qualification'), max_length=100, null=True, blank=True)
-    highest_certificate = models.FileField(_('highest certificate'), upload_to='employees/highest_certificates/', null=True, blank=True)
-    employment_letter = models.FileField(_('employment letter'), upload_to='employees/employment_letters/', null=True, blank=True)
-    skills_qualifications = models.TextField(_('skills/qualifications'), null=True, blank=True)
-
-
-    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
-    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
-
     class Meta:
-        verbose_name = _('employee')
-        verbose_name_plural = _('employees')
+        verbose_name = _('Employee')
+        verbose_name_plural = _('Employees')
         ordering = ['last_name', 'first_name']
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        resize_image(self.profile_picture.path)
 
-        img = Image.open(self.profile_picture.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.profile_picture.path)
 
     def __str__(self):
         return f'{self.last_name} {self.first_name}'

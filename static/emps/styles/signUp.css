@@ -1,28 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Inika:wght@400;700&family=Marko+One&display=swap');
 
-body{
-    background-image: url("../images/logo/bgr.png");
-    background-repeat: repeat;
-    margin:0px;
-    background-size: 100%;
+.register_container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
 }
-
-.register_container{
-    display:flex;
-    /* justify-content: center; */
-}
-
 .register_header{
     font-family: 'Inika', serif;
     font-size: xx-large;
     font-weight: 600;
     color: white;
     margin: 0 8px;
+    text-shadow:
+          -1px -1px 0 black,
+          -1px 1px 0 black,
+          1px -1px 0 black,
+          1px 1px 0 black;
 }
 .wide_hr {
     display: block;
     width: 100%;
     margin-top: 20px;
+    color: white;
 }
 .register_as{
     width: 70%;
@@ -39,17 +38,19 @@ body{
 
 .register_as a{
     text-decoration: none;
-    color: white
+    color: rgb(157, 206, 230)
 }
 
-.register_container_inputs{
-    width: 40%;
-    border: 2px solid #5882C1;
+.register_container_inputs {
+    width: 35%;
+    border: 2px solid #46494c;
     border-radius: 40px;
-    background-color: #5882c13a;
+    background: linear-gradient(90deg, rgba(88, 130, 193, 0.767), rgba(4, 9, 17, 0.231), rgba(88, 130, 193, 0.767));
+    /* background-color: #0a15208a; */
     padding: 3%;
     margin: auto auto auto 5%;
 }
+
 
 .register_container_inputs input{
     width: 96%;
@@ -80,20 +81,11 @@ body{
 
 label{
     padding-left: 10px;
-    color: white;
+    color: #333;
     font-size: 18px;
     text-shadow: 2px 2px 10px 2px black;
-}
-
-
-.forgetPasscode{
-    float: right;
-    padding-right: 10px;
-    border: 1px solid rgba(242, 237, 237, 0.748);
-    background-color: rgba(131, 73, 73, 0.482);
-    border-radius: 30px;
-    padding: 5px 10px 5px 10px;
-    color: rgb(255, 255, 255)
+    margin: 0;
+    margin-top: 0.5rem;
 }
 
 .link_box_container{
@@ -126,7 +118,7 @@ label{
 
 .ending a{
     font-weight: 700;
-    color: white;
+    /* color: white; */
     text-decoration: underline;
     font-style: normal;
 }
@@ -141,57 +133,45 @@ label{
     border-radius: 50%;
 }
 
-.change_color {
-    color: rgb(143, 198, 233);
+
+/* right pane */
+.landing-left {
+    margin-left: 10%;
+}
+.landing-left h1 {
+    color: whitesmoke;
+}
+.landing-left p {
+    color: whitesmoke;
+}
+/* media query */
+@media screen and (max-width: 900px) {
+    .register_container, .login_container {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+    .register_container_inputs, .login_container_inputs {
+        width: 70%;
+        margin: auto auto;
+    }
+    .landing-left {
+        margin: 5% 0;
+    }
+    .btn{
+        padding: 2%;
+    }
+    footer {
+        display: none;
+    }
 }
 
-.tutor_detail {
- display: flex;
- border: 2px solid #5882c1;
- height: 37px;
- border-radius: 10px;
- background-color: white;
- margin-bottom: 20px;
- overflow: hidden;
- width: 100%;
+@media screen and (max-width: 530px){
+.landing-left {
+    display: none
 }
-
-/* Client and Tutor form toggle rules */
-.qualification, #specialization {
-    display: inline-block;
+.register_container_inputs, .login_container_inputs{
+    width: 95%
 }
-
-#high_qual{
-    border: none;
-    box-shadow: none;
-    width: 100%;
-}
-
-.qualification select{
-    height: 37px;
-    border: none;
-    border-radius:10px;
-    border-left: 2px solid darkblue;
-    color: rgb(4, 4, 64);
-    font-weight: bold;
-    margin-left: 16%;
-}
-#id_highest_qualification{
-    background-color: white;
-}
-.qualification select:focus{
-    outline: none;
-}
-
-.qualification select {
-    padding-left: 10px;
-}
-
-#registerBtn{
-    cursor: pointer;
-}
-
-.qualification {
-    margin: 0 auto;
-    margin-right: 0em;
-}
+};
+    

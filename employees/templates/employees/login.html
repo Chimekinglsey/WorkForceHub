@@ -2,11 +2,15 @@
 {% load static %}
 
 {% block head %} 
-    <link rel="stylesheet" href="{% static 'emps/styles/login.css' %}">
+<link rel="stylesheet" href="{% static 'emps/styles/landing_page.css' %}">
+<script src="{% static 'emps/scripts/landing_page.js' %}"></script>
+<link rel="stylesheet" href="{% static 'emps/styles/signUp.css' %}">
+<script src="{% static 'emps/scripts/signUp.js'%}"></script>
+<link rel="stylesheet" href="{% static 'emps/styles/login.css' %}">
 {% endblock head %}
-
 {% block title %}Login{% endblock title %}
-{% block login %}{% endblock login %}
+
+{% block signIn %}{% endblock signIn %}
 {% block content %}
 <div class="login_container">
     <div class="login_container_inputs">
@@ -14,15 +18,18 @@
             <img src="{% static 'emps/images/logo/logo_icon.png' %}" alt="">
         </div>
         <h3 class="login_header">Login</h3>
+        <hr class="wide_hr">
+
+        {% comment %} Form begins here {% endcomment %}
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             {% if error %}
                 <p class="error">{{ error }}</p>
             {% endif %} 
-            <label for="username">UserName or Email</label><br>
-            <input type="text" name="username" placeholder="enter username or email" id=""><br><br><br>
-            <label for="password">Password</label><br>
-            <input type="password" name="password" placeholder="********" id="password" autocomplete="on">
+            <label for="username" title="Enter your registered username and email address">UserName or Email</label><br>
+            <input type="text" name="username_or_email" required placeholder="enter username or email"><br>
+            <label for="password" title="Enter you Password">Password</label><br>
+            <input type="password" name="password" placeholder="********" id="password" required autocomplete="on">
             <span toggle="#password" class="password-toggle"></span><br><br>
             <input type="submit" value="Sign in"><br><br>
             <h5 id="forgotPasscode" class="forgetPasscode">Forget password</h5>
@@ -34,8 +41,8 @@
                     <h3 class="login_header">Reset Password</h3>
                     <form id="forgotPasswordForm">
                         {% csrf_token %}
-                        <label for="username_or_email">Enter Email</label><br>
-                        <input type="email" name="email" placeholder="Enter your email" id="" required><br><br><br>
+                        <label for="username_or_email" title="Enter your registered email address to receive reset token" >Enter Email</label><br>
+                        <input type="email" name="email" placeholder="Enter your email" required><br><br><br>
                         <input class="resetLink" type="submit" value="Send Reset Link">
                     </form>
             </div>
@@ -93,17 +100,36 @@
         <p><center class="change_color">or continue with</center></p>
         <div class="link_box_container">
             <div class="link_box">
-                <a href="{% static '' %}"><img src="{% static 'images/socialLinks/google.png' %}" alt=""></a>
+                <a href="{% static '' %}"><img src="{% static 'emps/images/socialLinks/google.png' %}" alt=""></a>
             </div>
             <div class="link_box">
-                <a href="{% static '' %}"><img src="{% static 'images/socialLinks/facebook.png' %}" alt=""></a>
+                <a href="{% static '' %}"><img src="{% static 'emps/images/socialLinks/facebook.png' %}" alt=""></a>
             </div>
             <div class="link_box">
-                <a href="{% static '' %}"><img src="{% static 'images/socialLinks/github.png' %}" alt=""></a>
+                <a href="{% static '' %}"><img src="{% static 'emps/images/socialLinks/github.png' %}" alt=""></a>
             </div>  
         </div>
         <div class="ending">
             <center><p class="change_color">Don't have an account yet? <span><a href="{% url 'signUp' %}">Register here</a></span></p></center>
+        </div>
+    </div>
+    <div class="landing-left">
+        <h1 id="welcome">Welcome to WorkForceHub</h1>
+        <h6 class="script">. . . your one-stop solution to employee management</h6>
+
+        <div class="image-slider">
+            <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
+            <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
+            <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
+            <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
+            <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
+            <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
+            <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
+            <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
+            <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
+            <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
+            <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
+            <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
         </div>
     </div>
 </div>

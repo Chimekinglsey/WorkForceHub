@@ -1,0 +1,288 @@
+/* create organization home*/
+.create-org {
+    display: flex;
+}
+
+.left-pane {
+    float: left;
+    width: 25%;
+    padding: 3%;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+    overflow: auto;
+}
+
+
+.left-pane h2 {
+    margin-bottom: 20px;
+}
+
+.left-pane ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.left-pane li {
+    margin-bottom: 10px;
+}
+
+.left-pane button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.left-pane button:hover {
+    background-color: #0056b3;
+}
+/* Styles for right pane */
+.right-pane {
+    float: right;
+    width: 65%;
+    padding: 5%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cardie {
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.cardie:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.cardie h3 {
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+.cardie p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.cardie button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cardie button:hover {
+    background-color: #0056b3;
+}
+
+.clearfix {
+    margin-top: 450px;
+}
+
+/* modal for creating organization */
+.close-btn {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.close {
+    margin-right: 10px;
+    padding: 5px;
+}
+.close:hover {
+    color: red;
+}
+
+/* Styles for backdrop */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 8;
+    display: none;
+}
+
+/* Styles for modal */
+#organization-form, #branch-form {
+    display: none;
+    width: 80%;
+    z-index: 9;
+    margin: 20px auto; 
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    position: relative;
+    max-height: 100vh; 
+    overflow: auto;
+}
+
+.showBranches{
+    display: none;
+}
+.showBranches .list-group-item {
+    margin-bottom: 2px;
+}
+.showBranches .list-color a {
+    color: #551A8B;
+}
+
+
+ul li a:hover {
+    text-decoration: none;
+    font-weight: bold;
+}
+/* image slider fix */
+
+.image-slider img{
+    max-height: 390px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* spinner */
+
+.spinner-container {
+    display: none;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: 64px;
+    height: 64px;
+    z-index: 10;
+}
+
+.spinner {
+    /* position: absolute; */
+    width: 64px;
+    height: 64px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #333; /* Change color as needed */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+
+
+
+
+/* media query */
+@media screen and (max-width: 1200px) {
+    .clearfix {
+        margin-top: 410px;
+    }
+    .left-pane button {
+        padding: 7px;
+    }
+
+}
+@media screen and (max-width: 1100px) {
+    .clearfix {
+        margin-top: 400px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    h2 {
+        font-weight: 500;
+        font-size: 1.8rem;
+    }
+    .clearfix {
+        margin-top: 360px;
+    }
+    .left-pane button {
+        padding: 5px;
+    }
+}
+@media screen and (max-width: 900px) {
+    .clearfix {
+        margin-top: 260px;
+    }
+    h2 {
+        font-size: 1.65rem;
+    }
+    h3 {
+        font-size: 1.5rem;
+    }
+    .left-pane button {
+        padding: 3px;
+    }
+}
+@media screen and (max-width: 850px) {
+    .left-pane  {
+        width: 30%;
+    }
+
+}
+
+@media screen and (max-width: 800px) {
+    .clearfix {
+        margin-top: 220px;
+    }
+}
+@media screen and (max-width: 750px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+
+}
+@media screen and (max-width: 650px) {
+    .right-pane {
+        width: 63%;
+    }
+    .left-pane {
+        width: 35%;
+    }
+    .left-pane button {
+        padding: 2px;
+    }
+
+}
+
+
+@media screen and (max-width: 600px) {
+    .right-pane {
+        width: 60%;
+    }
+    /* .left-pane {
+        width: 35%;
+    } */
+}
+@media screen and (max-width: 530px) {
+
+    .left-pane {
+        padding-right: 1.5%;
+    }
+}
+@media screen and (max-width: 510px) {
+
+    .right-pane {
+        width: 58%;
+        padding: 2%;
+    }
+    .left-pane {
+        width: 37%;
+        padding-left: 1.5%;
+    }
+
+}

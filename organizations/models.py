@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -31,6 +32,7 @@ class Organization(models.Model):
         ('Above 1000', _('Above 1000'))
     )
 
+    admin_user = models.ForeignKey('employees.AdminUser', on_delete=models.CASCADE, related_name='organizations')
     name = models.CharField(_('name'), max_length=250)
     industry = models.CharField(_('industry'), choices=INDUSTRY_CHOICES, max_length=100, blank=True)
     sector = models.CharField(_('sector'), max_length=200, blank=True)
@@ -44,7 +46,7 @@ class Organization(models.Model):
     mailing_address = models.CharField(_('mailing address'), max_length=250, null=True, blank=True)
     revenue = models.DecimalField(_('annual revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
     profit = models.DecimalField(_('annual profit'), max_digits=15, decimal_places=2, null=True, blank=True)
-    financial_year_end = models.DateField(_('financial year end'), null=True, blank=True)
+    # financial_year_end = models.DateField(_('financial year end'), null=True, blank=True)
     employee_benefits = models.TextField(_('employee benefits'), null=True, blank=True)
     hierarchy = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subsidiaries')
     facebook = models.URLField(_('facebook'), max_length=250, null=True, blank=True)
