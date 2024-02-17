@@ -1,5 +1,6 @@
-from turtle import back
+import re
 from django.shortcuts import render, redirect
+import json
 from rest_framework import status
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -9,11 +10,12 @@ from django.contrib.auth import login, logout
 from employees.models import Employee, AdminUser, PasswordResetToken, Education, WorkHistory,\
       Performance, BankDetails, EmployeeDocs, Payroll, Appointments, Attendance, Leave
 from organizations.models import Organization, Branch
-from .forms import SignUpForm, ProfileUpdateForm, BranchForm
+from .forms import EmployeeForm, SignUpForm, ProfileUpdateForm, BranchForm
 from django.http import JsonResponse, Http404
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from datetime import datetime
 from django.urls import reverse
 import random, string
 
@@ -48,7 +50,6 @@ def login_view(request):
     if request.method == 'POST':
         username_or_email = request.POST.get('username_or_email').strip()
         password = request.POST.get('password')
-        print('username_or_email:', username_or_email, 'password:', password)
 
         user = AdminUserAuthBackend().authenticate(request, username_or_email=username_or_email, password=password)
         if user is not None:
@@ -67,24 +68,19 @@ def login_view(request):
 def profile_update(request):
     """Update profile"""
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            # Replace old profile picture with new one
-            if 'profile_picture' in form.cleaned_data:
-                if request.user.profile_picture:
-                    request.user.profile_picture.delete()
-            form.instance.employee_id = request.user.employee_id  # Set employee_id from logged-in user
             form.save()
-            # Redirect to a success page or any other desired view
-
             messages.success(request, 'Profile updated successfully')
             return redirect('create_org')
     else:
-        # Initialize form with employee_id from logged-in user
-        form = ProfileUpdateForm(initial={'employee_id': request.user.employee_id})
-    return render(request, 'employees/profile_update.html', {'form': form})# AdminUser Logout   
+        # Initialize form with instance of the logged-in user
+        form = ProfileUpdateForm(instance=request.user)
+    return render(request, 'employees/profile_update.html', {'form': form})
 
 
+
+# create organization DASHBOARD
 @login_required(login_url='login')
 def org_dashboard(request):
     """Organization Dashboard"""
@@ -97,8 +93,17 @@ def org_dashboard(request):
     if request.method == 'POST':
         admin_user = get_object_or_404(AdminUser, id=request.user.id)
         org_data = request.POST.dict()
+        org_data.pop('csrfmiddlewaretoken')
         # Remove csrfmiddlewaretoken key from the dictionary
-        org_data.pop('csrfmiddlewaretoken', None)
+        if org:
+            for fields in ['name', 'industry', 'sector', 'size', 'branches', 'headquarter', 'website', 'description',
+                        'contact_phone', 'contact_email', 'mailing_address', 'revenue', 'profit', 'employee_benefits',
+                        'facebook', 'twitter', 'linkedin', 'certifications']:
+                if fields in org_data and org_data[fields] != '':
+                    setattr(org, fields, org_data[fields])
+            org.save()
+            messages.success(request, 'Organization updated successfully')
+            return render(request, 'employees/org_dashboard.html', {'org': org, 'branches': branches, 'form': form, 'user': admin})
         org = Organization(admin_user=admin_user, **org_data)
         org.save()
         
@@ -120,6 +125,126 @@ def create_branch(request):
     else:
         messages.error(request, 'Branch creation failed')
         return JsonResponse({'success': False, 'error_message': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+def parse_date(date_str):
+    """Parse a date string in the format yyyy-mm-dd to a date object.
+
+    Returns:
+        date: The parsed date object, or the oldest allowed date (`datetime.MINYEAR-1-1`)
+             if parsing fails.
+    """
+
+    try:
+        return datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return datetime.min.date()
+
+    
+
+# branch dashboard
+@login_required(login_url='login')
+@login_required(login_url='login')
+def branch_dashboard(request, branch_id):
+    """Branch Dashboard"""
+    branch = get_object_or_404(Branch, id=branch_id)
+    if branch.organization.admin_user != request.user:
+        raise Http404('Branch not found')
+
+    organization = branch.organization
+    branches = Branch.objects.filter(organization=organization)
+    employees = Employee.objects.filter(branch=branch, is_archived=False)
+    archived_employees = Employee.objects.filter(branch=branch, is_archived=True)
+    form = EmployeeForm(organization=organization, adminuser=request.user)
+
+    if request.method == 'POST':
+        form = EmployeeForm(organization=organization, adminuser=request.user, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            print(form.cleaned_data.get('email'))
+            messages.success(request, 'Employee created successfully')
+            return redirect('branch_dashboard', branch_id=branch.id)
+        else:
+            messages.error(request, 'Employee creation failed')
+            return render(request, 'employees/branch_dashboard.html', {'branch': branch, 'branches': branches, 'employees': employees,
+                                                                      'branch_id': branch.id, 'form': form, 'archived_employees': archived_employees})
+
+    return render(request, 'employees/branch_dashboard.html', {'branch': branch, 'branches': branches,
+                                                               'employees': employees, 'branch_id': branch.id,
+                                                               'form': form, 'archived_employees': archived_employees})
+
+
+# update employee
+@require_POST
+def update_employee(request, emp_id):
+    data = request.POST.dict()
+    try:
+        employee = Employee.objects.get(pk=emp_id)
+    except Employee.DoesNotExist:
+        return JsonResponse({'error': 'Employee not found'}, status=404)
+
+    for field in ['first_name', 'middle_name', 'last_name', 'phone_number',
+                    'dob', 'gender', 'marital_status', 'address', 'nationality', 'state_of_origin',
+                    'email', 'employee_id', 'branch', 'department', 'job_role', 'last_promotion_date', "next_promotion_date",
+                    'joining_date', 'next_of_kin_name', 'next_of_kin_relationship', 'next_of_kin_phone_number', 
+                    'next_of_kin_address', 'emergency_contacts', 'highest_qualification', 
+                    'skills_qualifications', 'employment_status', 'employment_type', 'designation',
+                    'employment_status', 'employment_type', 'designation', 'level', 'salary'
+                    ]:
+        if field in data and data[field] != '':
+            if field == 'email' and employee.email != data[field]:
+                try:
+                    Employee.objects.get(email=data[field])
+                    return JsonResponse({'type': 'error', 'message': 'Employee with this email already exists'}, status=400)
+                except Employee.DoesNotExist:
+                    pass
+            setattr(employee, field, data[field])
+        for field in ['profile_picture', 'employment_letter', 'highest_certificate']:
+            if field in request.FILES:
+                existing_file = getattr(employee, field)
+                if existing_file:
+                    existing_file.delete()
+                setattr(employee, field, request.FILES[field])
+    employee.save()
+    return JsonResponse({'type': 'success', 'message': 'Employee record updated successfully'}, status=200)
+
+
+# Delete employee
+@require_POST
+def delete_employee(request, emp_id):
+    try:
+        employee = Employee.objects.get(pk=emp_id)
+    except Employee.DoesNotExist:
+        return JsonResponse({'error': 'Employee not found'}, status=404)
+    employee.delete()
+    return JsonResponse({'type': 'success', 'message': 'Employee record deleted successfully'}, status=200)
+
+# archive employee
+@require_POST
+def archive_employee(request, emp_id):
+    try:
+        employee = Employee.objects.get(pk=emp_id)
+    except Employee.DoesNotExist:
+        return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
+    employee.is_archived = True
+    employee.archived_at = timezone.now()
+    employee.archived_by = request.user.get_full_name()
+    employee.archived_reason = request.POST.get('reason')
+    employee.employment_status = 'Inactive'
+    employee.save()
+    messages.success(request, f'Employee {employee.first_name} archived successfully')
+    return JsonResponse({'type': 'success', 'message': 'Employee record archived successfully'}, status=200)
+
+# unarchive employee
+@require_POST
+def unarchive_employee(request, emp_id):
+    try:
+        employee = Employee.objects.get(pk=emp_id)
+    except Employee.DoesNotExist:
+        return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
+    employee.is_archived = False
+    employee.save()
+    messages.success(request, f'Employee {employee.first_name} restored successfully')
+    return JsonResponse({'type': 'success', 'message': 'Employee record unarchived successfully'}, status=200)
 
 # Forgot Password
 def forgot_password(request):

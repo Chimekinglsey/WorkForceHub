@@ -129,4 +129,16 @@ $(document).ready(function() {
                 $('.showBranches').hide();
             }
         });
+
+        // TODO control left pane
+        function updateLeftPanePosition() {
+            $(window).scroll(function() {
+              let scrollTop = $(this).scrollTop();
+              if (scrollTop > 0) {
+                $('.spaceUp').css({'margin-top': 100 - scrollTop + 'px'})
+              }
+            });
+          }
+          
+        //   updateLeftPanePosition();
     });

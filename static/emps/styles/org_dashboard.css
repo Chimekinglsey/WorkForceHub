@@ -1,32 +1,46 @@
-/* create organization home*/
-.create-org {
-    display: flex;
+/* header {
+    position: fixed;
 }
 
-.left-pane {
-    float: left;
+.header-wrapper {
+    padding-top: 85px;
+} */
+
+/* create organization home*/
+/* .create-org {
+    display: flex;
+} */
+
+/* Styles for left pane */
+.left-pane-org {
+    position: fixed; 
+    left: 0; 
+    top: 84.5px;
     width: 25%;
     padding: 3%;
+    padding-top: 1.5%;
     background-color: #f0f0f0;
-    min-height: 100vh;
-    overflow: auto;
+    overflow: hidden; 
+    bottom: 0; 
 }
 
-
-.left-pane h2 {
+.left-pane-org:hover {
+    background-color: #e6e6e6;
+}
+.left-pane-org h2 {
     margin-bottom: 20px;
 }
 
-.left-pane ul {
+.left-pane-org ul {
     list-style-type: none;
     padding: 0;
 }
 
-.left-pane li {
+.left-pane-org li {
     margin-bottom: 10px;
 }
 
-.left-pane button {
+.left-pane-org button {
     padding: 10px;
     background-color: #007bff;
     color: #fff;
@@ -35,16 +49,15 @@
     cursor: pointer;
 }
 
-.left-pane button:hover {
+.left-pane-org button:hover {
     background-color: #0056b3;
 }
 /* Styles for right pane */
-.right-pane {
-    float: right;
-    width: 65%;
+.right-pane-org {
+    margin-left: 25%; /* Adjust based on left pane width */
     padding: 5%;
-    margin-left: auto;
-    margin-right: auto;
+    padding-top: 2.5%;
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .cardie {
@@ -114,6 +127,7 @@
     display: none;
 }
 
+
 /* Styles for modal */
 #organization-form, #branch-form {
     display: none;
@@ -162,7 +176,13 @@ ul li a:hover {
     object-fit: cover;
     object-position: top;
 }
-
+ .org_name {
+    font-size: 1.23m;
+    color: darkblue;
+ }
+ .user_name {
+    padding: 5px;
+ }
 .user_details{
     display: flex;
     flex-direction: column;
@@ -173,34 +193,6 @@ ul li a:hover {
     margin-bottom: 0px;
     /* font-size: medium; */
 } 
-
-/* spinner */
-
-.spinner-container {
-    display: none;
-    position: fixed;
-    inset: 0;
-    margin: auto;
-    width: 64px;
-    height: 64px;
-    z-index: 10;
-}
-
-.spinner {
-    /* position: absolute; */
-    width: 64px;
-    height: 64px;
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top-color: #333; /* Change color as needed */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
 
 
 
@@ -214,7 +206,7 @@ ul li a:hover {
     .clearfix {
         margin-top: 410px;
     }
-    .left-pane button {
+    .left-pane-org button {
         padding: 7px;
     }
 
@@ -233,7 +225,7 @@ ul li a:hover {
     .clearfix {
         margin-top: 360px;
     }
-    .left-pane button {
+    .left-pane-org button {
         padding: 5px;
     }
 }
@@ -247,15 +239,28 @@ ul li a:hover {
     h3 {
         font-size: 1.5rem;
     }
-    .left-pane button {
+    h4 {
+        font-size: 1.3rem;
+    }
+    .left-pane-org button {
         padding: 3px;
+    }
+    .right-pane-org {
+        margin-left: 27%;
+    }
+    
+    .left-pane-org  {
+        width: 27%;
     }
 }
 @media screen and (max-width: 850px) {
-    .left-pane  {
+    .right-pane-org {
+        margin-left: 30%;
+    }
+    
+    .left-pane-org  {
         width: 30%;
     }
-
 }
 
 @media screen and (max-width: 800px) {
@@ -270,13 +275,13 @@ ul li a:hover {
 
 }
 @media screen and (max-width: 650px) {
-    .right-pane {
-        width: 63%;
+    .right-pane-org {
+        margin-left: 35%;
     }
-    .left-pane {
+    .left-pane-org {
         width: 35%;
     }
-    .left-pane button {
+    .left-pane-org button {
         padding: 2px;
     }
 
@@ -284,26 +289,26 @@ ul li a:hover {
 
 
 @media screen and (max-width: 600px) {
-    .right-pane {
+    /* .right-pane-org {
         width: 60%;
-    }
-    /* .left-pane {
+    } */
+    /* .left-pane-org {
         width: 35%;
     } */
 }
 @media screen and (max-width: 530px) {
 
-    .left-pane {
+    .left-pane-org {
         padding-right: 1.5%;
     }
 }
 @media screen and (max-width: 510px) {
 
-    .right-pane {
-        width: 58%;
+    .right-pane-org {
+        margin-left: 37%;
         padding: 2%;
     }
-    .left-pane {
+    .left-pane-org {
         width: 37%;
         padding-left: 1.5%;
     }

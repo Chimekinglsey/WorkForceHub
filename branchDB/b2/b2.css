@@ -1,0 +1,438 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz@9..40&family=Hedvig+Letters+Sans&family=Inika:wght@400;700&family=Marko+One&family=Rowdies&family=Saira&display=swap');
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+    display: flex;
+    margin: auto;
+    background-color: #fff;
+    min-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.left-pane {
+    flex: 1;
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px;
+}
+
+.left-pane h2 {
+    margin-top: 0;
+}
+
+.left-pane ul {
+    list-style: none;
+    padding: 0;
+}
+
+.left-pane li {
+    margin-bottom: 10px;
+}
+
+.left-pane li a {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.left-pane li a:hover {
+    background-color: #0056b3;
+}
+
+.right-pane {
+    flex: 2;
+    padding: 20px;
+}
+
+.right-pane h2 {
+    margin-top: 0;
+}
+
+/* Styles for leave management */
+.actions {
+    margin-bottom: 20px;
+}
+
+.nav-tab, .actions .nav-tab {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.nav-tab, .actions .tab.active{
+    background-color: #0056b3;
+}
+
+.tab-content {
+    margin-top: 20px;
+}
+
+
+.mgt {
+    padding: 20px;
+}
+
+.mgt h2 {
+    color: #333;
+    text-align: center;
+    margin-top: 0;
+}
+
+.leave-requests, .apply-leave {
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.approve, .reject {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 5px 7px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 3px;
+    transition: background-color 0.3s ease;
+}
+.reject {
+    background-color: #dc3545;
+}
+
+.approve:hover, .reject:hover {
+    background-color: #218838;
+}
+
+.apply-leave form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.apply-leave label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.apply-leave input, .apply-leave select, .apply-leave textarea{
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.apply-leave select {
+    width: 100%;
+}
+.apply-leave input:active, .apply-leave input:focus, .apply-leave select:active, .apply-leave select:focus, .apply-leave textarea:active, .apply-leave textarea:focus{
+    outline-color: #007bff86 ;
+    outline-offset: 2px;
+    /* outline: none; */
+}
+
+.apply-leave button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.apply-leave button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.view-leave-list, .leave-history {
+    margin-top: 30px;
+}
+
+.leave-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leave-list th, .leave-list td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.leave-list th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.leave-list tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.menuToggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-toggle-icon {
+    display: none;
+    /* position: absolute;
+    top: 10px;
+    left: 10px; */
+    cursor: pointer;
+}
+
+.actions {
+    margin-bottom: 20px;
+}
+
+
+.tab-content {
+    margin-top: 20px;
+}
+
+/* Leave statistics */
+/* leave_statistics.css */
+.leave-statistics {
+    font-family: 'Saira', sans-serif;
+    margin-bottom: 30px;
+}
+
+.leave-statistics h2 {
+    text-align: center;
+    font-family:  'Rowdies';
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #343a40;
+}
+
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.statistic-item {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.statistic-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.statistic-item:hover > .statistic-info .statsVal{
+   font-weight: bolder;
+   font-size: 1.5rem;
+   color: #0056b3;
+}
+
+.statistic-icon {
+    font-size: 36px;
+    color: #007bff;
+    text-align: center;
+}
+.statistic-info {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.statistic-info h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.statistic-info p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.controlButton {
+   text-align: center;
+}
+
+/* search bar for leave */
+.searchFlex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+/* leave_request.css */
+.search-bar {
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto;
+    background: linear-gradient(to right, #fff, #f0f0f0);
+    border-radius: 25px;
+    padding: 7px 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.search-bar:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+}
+
+.search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.search-bar button:hover {
+    color: #0056b3;
+}
+
+.search-bar input:focus {
+    outline: none;
+}
+
+
+/* Employee Management.html */
+.employee-nav .tab {
+    width: 19%;
+}
+
+
+
+
+
+
+/* media query  */
+@media screen and (max-width: 1100px){
+ .right-pane {
+    flex: 2.2;
+ }   
+}
+@media screen and (max-width: 1050px){
+    .right-pane {
+       flex: 2.5;
+    }   
+    .leave-management {
+        padding: 10px;
+    }
+    .approve, .reject {
+        width: 90%;
+    }
+
+   }
+   @media screen and (max-width: 1000px){
+    .actions .tab {
+        padding: 10px;
+    }
+   }
+@media screen and (max-width: 900px) {
+    .employee-nav .tab {
+        width: 100%;
+    }
+    .dashboard-container {
+    font-size: 0.95em;    }
+    .controlButton {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 2px;
+    }
+    .controlButton button {
+        margin-bottom: 3px;
+    };
+    .menu-toggle-icon  {
+        display: block;
+    }
+
+    .tab {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .tab-content {
+        display: none;
+    }
+}
+@media screen and (max-width: 768px) {
+.actions {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+}
+.employee-nav .tab {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.dashboard-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+.menu-toggle-icon {
+    display: block;
+}
+
+.tab {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.tab-content {
+    display: none;
+}
+}
+
+
+
+
+/* media query */

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkforceHub Dashboard</title>
+    <script src="../jQuery.js"></script>
+    <link rel="stylesheet" href="../fontawesome-free-6.5.1-web/css/all.min.css">
+    <link rel="stylesheet" href="b3Styles.css">
+    <script src="b3Scripts.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>WorkforceHub</h2>
+            <ul>
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a class="employeesLink" href="#">Employees</a></li>
+                <li><a href="#">Leave</a></li>
+                <li><a href="#">Payroll</a></li>
+                <li><a href="#">Performance Reports</a></li>
+                <li><a href="#">Account Settings</a></li>
+            </ul>
+        </div>
+
+        <div class="main">
+            <h2>Welcome Admin</h2>
+            <!-- Content will be dynamically loaded here using AJAX -->
+          	  <div id="employees" class="tabcontent">
+		    <div class="header">
+			<h2>Employee Management</h2>
+			<button id="addEmployeeBtn" class="btn">Add Employee</button>
+		    </div>
+		    <div class="search-bar">
+			<input type="text" id="employeeSearchInput" placeholder="Search employees...">
+			<button id="searchEmployeeBtn" class="btn"><i class="fas fa-search"></i></button>
+		    </div>
+		    <div id="employeeList" class="employee-list">
+			<!-- Employee cards will be dynamically loaded here -->
+		    </div>
+		</div>
+
+        </div>
+    </div>
+
+<!-- Modal for adding/updating employee -->
+<div id="employeeModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle">Add Employee</h2>
+        <form id="employeeForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <!-- Additional fields such as phone number, department, etc. can be added -->
+            <button type="submit" id="submitEmployeeBtn" class="btn">Submit</button>
+        </form>
+    </div>
+</div>
+
+    <!-- Modal for adding employee -->
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Employee</h2>
+            <!-- Form for adding employee will be here -->
+        </div>
+    </div>
+
+    <!-- Modal for updating employee -->
+    <div id="updateEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Employee</h2>
+            <!-- Form for updating employee will be here -->
+        </div>
+    </div>
+
+    <!-- Modal for deleting employee -->
+    <div id="deleteEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Delete Employee</h2>
+            <!-- Form for deleting employee will be here -->
+        </div>
+    </div>
+
+    <!-- Modal for archiving employee -->
+    <div id="archiveEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Archive Employee</h2>
+            <!-- Form for archiving employee will be here -->
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
+

@@ -10,12 +10,13 @@
 {% endblock head %}
 {% block title %}Dashboard{% endblock title %}
 
-{% block signIn %}{% endblock signIn %}
+{% block signIn %}<a class="loginBtn btn logoutBtn" href="{% url 'logout' %}" >Logout</a>{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
 
 {% block content %}
 <div class="host-container">
     <div class="backdrop"></div>
+    
     {% comment %} Create Organization Form {% endcomment %}
     <form id="organization-form" method="post" class="container mt-5">
         <div class="close-btn">
@@ -26,11 +27,11 @@
         {% csrf_token %}
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="name">Name</label>
+                <label for="name">Name<span class="asteriskField">*</span></label>
                 <input type="text" id="name" name="name" class="form-control" required placeholder="Organization/Business name" title="">
             </div>
             <div class="form-group col-md-6">
-                <label for="industry">Industry</label>
+                <label for="industry">Industry<span class="asteriskField">*</span></label>
                 <select id="industry" name="industry" class="form-control" required>
                     <option value="">--Select--</option>
                     <option value="Technology">Technology</option>
@@ -47,11 +48,11 @@
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="sector">Sector</label>
+                <label for="sector">Sector<span class="asteriskField">*</span></label>
                 <input type="text" id="sector" name="sector" class="form-control" required placeholder="Enter Industry sector">
             </div>
             <div class="form-group col-md-6">
-                <label for="size">Size</label>
+                <label for="size">Size<span class="asteriskField">*</span></label>
                 <select id="size" name="size" class="form-control" required>
                     <option value="">--Select--</option>
                     <option value="1 - 20">1 - 20</option>
@@ -65,7 +66,7 @@
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="branches">Branches</label>
+                <label for="branches">Branches<span class="asteriskField">*</span></label>
                 <select id="branches" name="branches" class="form-control" required>
                     <option value="">--Select--</option>
                     <option value="1 - 10">1 - 10</option>
@@ -76,14 +77,14 @@
                 </select>
             </div>
             <div class="form-group col-md-6">
-                <label for="headquarter">Headquarter</label>
+                <label for="headquarter">Headquarter<span class="asteriskField">*</span></label>
                 <input type="text" id="headquarter" name="headquarter" class="form-control" required placeholder="Location of head office">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="website">Website</label>
+                <label for="website">Website<span class="asteriskField">*</span></label>
                 <input type="url" id="website" name="website" class="form-control" required placeholder="e.g https://example.org">
             </div>
             <div class="form-group col-md-6">
@@ -93,11 +94,11 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="contact_phone">Contact Phone</label>
+                <label for="contact_phone">Contact Phone<span class="asteriskField">*</span></label>
                 <input type="tel" id="contact_phone" name="contact_phone" class="form-control" required placeholder="Enter your business contact phone number">
             </div>
             <div class="form-group col-md-6">
-                <label for="contact_email">Contact Email</label>
+                <label for="contact_email">Contact Email<span class="asteriskField">*</span></label>
                 <input type="email" id="contact_email" name="contact_email" class="form-control" required placeholder="Enter your business contact email address">
             </div>
         </div>
@@ -107,37 +108,28 @@
                 <label for="mailing_address">Mailing Address</label>
                 <input type="text" id="mailing_address" name="mailing_address" class="form-control" placeholder="Optional, enter mailing address">
             </div>
-            <div class="form-group col-md-6">
-                <label for="revenue">Annual Revenue</label>
-                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Optional">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="profit">Annual Profit</label>
-                <input type="number" id="profit" name="profit" class="form-control" placeholder="Optional">
-            </div>
+
             <div class="form-group col-md-6">
                 <label for="employee_benefits">Employee Benefits</label>
-                <textarea id="employee_benefits" name="employee_benefits" class="form-control" placeholder="Enter Employee Benefits (Optional)"></textarea>
+                <textarea id="employee_benefits" name="employee_benefits" class="form-control" placeholder="Enter Employee Benefits"></textarea>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="facebook">Facebook</label>
-                <input type="url" id="facebook" name="facebook" class="form-control"  placeholder="Optional, enter Facebook Page">
+                <input type="url" id="facebook" name="facebook" class="form-control"  placeholder="Facebook Page">
             </div>
             <div class="form-group col-md-6">
                 <label for="twitter">Twitter</label>
-                <input type="url" id="twitter" name="twitter" class="form-control"  placeholder="Optional, enter X handle">
+                <input type="url" id="twitter" name="twitter" class="form-control"  placeholder="X (Twitter) handle">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="linkedin">Linkedin</label>
-                <input type="url" id="linkedin" name="linkedin" class="form-control"  placeholder="Optional, enter LinkedIn Page">
+                <input type="url" id="linkedin" name="linkedin" class="form-control"  placeholder="LinkedIn Page">
             </div>
             <div class="form-group col-md-6">
                 <label for="certifications">Certifications</label>
@@ -152,6 +144,7 @@
             </div>
         </div>
     </form>
+
     {% comment %} Create Branch Form {% endcomment %}
     <form id="branch-form" class="container mt-5" method="post" enctype="multipart/form-data">
         <div class="close-btn">
@@ -174,6 +167,7 @@
             <p >There was an issue processing your request. Please try again.</p>
         </div>
     </div>
+
     <!-- success modal -->
     <div id="SuccessModal" class="modal">
         <div class="modal-content">
@@ -184,22 +178,90 @@
     </div>
 
     <div class="create-org">
+
+        <!-- Right Pane -->
+        <div class="right-pane-org">
+            <!-- Create Organization Card -->
+
+            <div class="cardie">
+                {% if org %}
+                    <h3>Create Branch</h3>
+                    <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
+                    <button class="createBranchBtn">Create Branch</button>
+                    {% else %}
+                    <h3>Create Organization</h3>
+                    <p>Start managing your organization's workforce efficiently. Create an organization to consolidate and centralize your employee data across branches.</p>
+                    <button class="createOrgBtn">Create Organization</button>
+                {% endif %}
+            </div>
+            {% comment %} floating images {% endcomment %}
+            <div class="landing-left">
+                <h6 class="script">. . . your one-stop solution to employee management</h6>
+
+                <div class="image-slider">
+                    <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
+                    <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
+                    <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
+                    <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
+                    <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
+                    <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
+                    <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
+                    <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
+                    <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
+                    <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
+                    <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
+                    <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
+                </div>
+            </div>
+            <!-- About Card -->
+            <div class="cardie clearfix">
+                <h3>About WorkForceHub</h3>
+                <p>WorkForceHub provides a comprehensive solution for managing your organization's workforce. From payroll to leave management, WorkForceHub streamlines all your HR processes.</p>
+            </div>
+
+            <!-- How it Works Card -->
+            <div class="cardie">
+                <h3>How it Works</h3>
+                <p>After creating your organization, easily manage your employees across branches. Utilize features like payroll management, leave tracking, and inter-branch transfers.</p>
+            </div>
+
+            <!-- Get Started Card -->
+            <div class="cardie">
+                <h3>Get Started</h3>
+                <p>Follow these five simple steps to get started: 
+                    <ol>
+                        <li>Sign up for WorkForceHub</li>
+                        <li>Create your organization</li>
+                        <li>Add branches</li>
+                        <li>Invite team members</li>
+                        <li>Start managing your workforce seamlessly</li>
+                    </ol>
+                <button  class="createOrgBtn">Get started</button>
+            </div>
+
+            <!-- Why Choose WorkForceHub Card -->
+            <div class="cardie">
+                <h3>Why Choose WorkForceHub</h3>
+                <p>Join thousands of organizations that trust WorkForceHub for their HR needs. Experience efficient workforce management, robust security, and exceptional support.</p>
+            </div>
+        </div> 
         <!-- Left Pane -->
-            <div class="left-pane">
+            <div class="left-pane-org">
+                <div class="spaceUp"></div>
                     <div class="left-pane-content">
                         <div class="cardie">
                             <section class="user_details">
                                 {% if user.profile_picture and user.profile_picture.url %}
                                 <img class="tiny_images" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
                                 {% else %}
-                                <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="{{ user.username }}'s pic">
+                                <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="profile pics">
                                 {% endif %}
-                                <center><p>{{ user.username }}</p></center>
+                                <center><p class="user_name">{{ user.username }}</p></center>
                             </section>
                             {% if org %}
-                            <p> Welcome Back,  <span><b style="font-size: 1.23m; color: darkblue;">{{ org.name }}</b></span> </p>
+                            <p> Welcome Back,  <span><b class="org_name">{{ org.name }}</b></span> </p>
                             </div>
-                            <h4> Your Organization</h4>
+                            <h4 class="saira"> My Organization</h4>
                             <ul>
                                 <li><button class="createBranchBtn">Create Branch</button></li>
                         {% else %}
@@ -212,7 +274,7 @@
                                 {% if branches %}
                                 <ul>
                                     {% for branch in branches %}
-                                        <li class="list-group-item list-color"><a href="">{{ branch.name }}</a></li>
+                                        <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.id %}">{{ branch.name }}</a></li>
                                     {% endfor %}
                                 </ul>
                                 {%else%}
@@ -227,66 +289,7 @@
                     </div>
             </div>
 
-        <!-- Right Pane -->
-            <div class="right-pane">
-                <!-- Create Organization Card -->
-
-                <div class="cardie">
-                    {% if org %}
-                        <h3>Create Branch</h3>
-                        <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
-                        <button class="createBranchBtn">Create Branch</button>
-                        {% else %}
-                        <h3>Create Organization</h3>
-                        <p>Start managing your organization's workforce efficiently. Create an organization to consolidate and centralize your employee data across branches.</p>
-                        <button class="createOrgBtn">Create Organization</button>
-                    {% endif %}
-                </div>
-                {% comment %} floating images {% endcomment %}
-                <div class="landing-left">
-                    <h6 class="script">. . . your one-stop solution to employee management</h6>
-
-                    <div class="image-slider">
-                        <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
-                        <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
-                        <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
-                        <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
-                        <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
-                        <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
-                        <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
-                        <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
-                        <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
-                        <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
-                        <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
-                        <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
-                    </div>
-                </div>
-                <!-- About Card -->
-                <div class="cardie clearfix">
-                    <h3>About WorkForceHub</h3>
-                    <p>WorkForceHub provides a comprehensive solution for managing your organization's workforce. From payroll to leave management, WorkForceHub streamlines all your HR processes.</p>
-                </div>
-
-                <!-- How it Works Card -->
-                <div class="cardie">
-                    <h3>How it Works</h3>
-                    <p>After creating your organization, easily manage your employees across branches. Utilize features like payroll management, leave tracking, and inter-branch transfers.</p>
-                </div>
-
-                <!-- Get Started Card -->
-                <div class="cardie">
-                    <h3>Get Started</h3>
-                    <p>Follow these five simple steps to get started: Sign up for WorkForceHub, Create your organization, Add branches, Invite team members, Start managing your workforce seamlessly.</p>
-                    <button>Sign Up Now</button>
-                </div>
-
-                <!-- Why Choose WorkForceHub Card -->
-                <div class="cardie">
-                    <h3>Why Choose WorkForceHub</h3>
-                    <p>Join thousands of organizations that trust WorkForceHub for their HR needs. Experience efficient workforce management, robust security, and exceptional support.</p>
-                </div>
-            </div> 
-        </div>
+    </div>
 {% comment %} Create Organization Modal Form {% endcomment %}
 </div>
 {% endblock content %}

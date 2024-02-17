@@ -19,7 +19,13 @@ header {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
     max-height: 85px;
+    /* position: fixed; */
+    width: 100%;
+    z-index: 1000;
 }
+/* .header-wrapper {
+    padding-top: 85px;
+} */
 header h1 {
     margin: 0;
     font-size: 24px;
@@ -50,7 +56,7 @@ nav a:hover {
     border-radius: 5px;
     font-size: 16px;
     font-weight: bold;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     margin-left: 10px;
@@ -65,12 +71,19 @@ nav a:hover {
     color: white;
 }
 
+.logoutBtn {
+    background-color:transparent;
+    color: #d7733e;
+}
+
 .btn:hover {
     opacity: 0.8;
     color: #fff;
     text-decoration: none;
 }
-
+.logoutBtn:hover {
+    color: rgb(251, 133, 133);
+}
 
 #menu-toggle {
     display: none;
@@ -145,6 +158,9 @@ nav a:hover {
     color: red !important;
 }
 
+.saira {
+    font-family: 'Saira', sans-serif;
+}
 .list-group-item {
     padding: 0.25rem 1.5rem;
 }
@@ -156,6 +172,34 @@ nav a:hover {
     margin-top: 20px;
     border: 1px solid transparent;
     border-radius: 4px;
+}
+
+/* spinner */
+
+.spinner-container {
+    display: none;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: 64px;
+    height: 64px;
+    z-index: 10;
+}
+
+.spinner {
+    /* position: absolute; */
+    width: 64px;
+    height: 64px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #333; /* Change color as needed */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 

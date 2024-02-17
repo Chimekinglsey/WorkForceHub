@@ -1,0 +1,2 @@
+This is a compression and zcat test file
+i will compress this file using gzip or xz and try to read it using zcat and bzcat

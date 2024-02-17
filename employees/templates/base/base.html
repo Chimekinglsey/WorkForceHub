@@ -6,13 +6,15 @@
         <script src="{% static 'base/jQuery.js' %}"></script>
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
         <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'base/popper.min.js' %}"></script>
         <script src="{% static 'base/base.js' %}"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'base/base.css' %}">
         <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="{% static 'base/flash.css' %}">
+        <script src="{% static 'base/font-awesome.js'%}"></script>
+        <link rel="stylesheet" href="{% static 'base/base.css' %}">
         <script src="{% static 'base/flash.js'%}"></script>
         {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
         <title>{% block title %}Home WorkForceHub{% endblock title %}</title>
@@ -23,7 +25,7 @@
     <div class="wrapper-container">
     <header>
         {% block WorkForceHub %}<h1>WorkForceHub</h1>{% endblock WorkForceHub %}
-        {% block menu %}<button id="menu-toggle">Menu</button>{% endblock menu %}
+        {% block menu %} <button id="menu-toggle"> Menu <span class="fas fa-bars"></span> </button>{% endblock menu %}
 
         <nav class="header-nav">
             {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
@@ -34,6 +36,7 @@
             {% block signIn %}<a class="loginBtn btn" href="{% url 'login' %}" >Login</a>{% endblock signIn %}
         </nav>
     </header>
+    <div class="header-wrapper"></div>
     {% block flash %}
     <div class="flash-container">
         {% if messages %}

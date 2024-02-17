@@ -1,4 +1,3 @@
-from enum import unique
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +13,6 @@ GENDER_CHOICES = (
     ('--Select--', _('--Select--')),
     ('Male', _('Male')),
     ('Female', _('Female')),
-    ('Other', _('Other'))
 )
 
 MARITAL_STATUS_CHOICES = (
@@ -103,9 +101,23 @@ DESIGNATION_CHOICES = (
     ('Other', _('Other'))
 )
 
+NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
+    ('--Select--', _('--Select--')),
+    ('Spouse', _('Spouse')),
+    ('Child', _('Child')),
+    ('Parent', _('Parent')),
+    ('Sibling', _('Sibling')),
+    ('Relative', _('Relative')),
+    ('Friend', _('Friend')),
+    ('Other', _('Other'))
+)
+
 def resize_image(image_path):
     """Resize the image located at image_path"""
-    img = Image.open(image_path)
+    try:
+        img = Image.open(image_path)
+    except FileNotFoundError:
+        return
     if img.height > 300 or img.width > 300:
         output_size = (300, 300)
         img.thumbnail(output_size)
@@ -126,29 +138,33 @@ class BaseUser(models.Model):
     phone_number = models.CharField(_('Phone number'), max_length=15, null=True, blank=True)
     
     # Employment Information
-    employee_id = models.CharField(_('Employee ID'), max_length=100, unique=True, null=True, blank=True)
-    department = models.CharField(_('Department/division'), max_length=100, null=True, blank=True)
+    employee_id = models.CharField(_('Employee ID'), max_length=100, null=True, blank=True) # removed uniqe contraint to allow for multiple employees with same employee_id
+    department = models.CharField(_('Department/division'), max_length=100)
     job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
-    joining_date = models.DateField(_('Joining date'), default=datetime.today, null=True, blank=True)
-    employment_type = models.CharField(_('Employment type'), choices=EMPLOYMENT_TYPE_CHOICES, max_length=100, null=True, blank=True)
-    employment_status = models.CharField(_('Employment status'), choices=EMPLOYEE_STATUS_CHOICES, max_length=20, null=True, blank=True)
-    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=30, null=True, blank=True)
+    joining_date = models.DateField(_('Joining date'), default='2000-01-01', null=True, blank=True)
+    employment_type = models.CharField(_('Employment type'), choices=EMPLOYEE_STATUS_CHOICES, max_length=100)
+    employment_status = models.CharField(_('Employment status'), choices=EMPLOYMENT_STATUS_CHOICES, max_length=20)
+    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=30)
     level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=30, null=True, blank=True)
     last_promotion_date = models.DateField(_('Last promotion date'), null=True, blank=True)
     next_promotion_date = models.DateField(_('Next promotion date'), null=True, blank=True)
     salary = models.IntegerField(_('Salary'), null=True, blank=True)
     
     # Other Information
-    emergency_contacts = models.TextField(_('Emergency contacts'), null=True, blank=True)
+    emergency_contacts = models.TextField(_('Emergency contacts'), null=True)
     termination_resignation_date = models.DateField(_('Date of termination/resignation'), null=True, blank=True)
     highest_qualification = models.CharField(_('Highest qualification'), max_length=100, null=True, blank=True)
     highest_certificate = models.FileField(_('Highest certificate'), upload_to='employees/highest_certificates/', null=True, blank=True)
     employment_letter = models.FileField(_('Employment letter'), upload_to='employees/employment_letters/', null=True, blank=True)
     skills_qualifications = models.TextField(_('Skills/qualifications'), null=True, blank=True)
+    is_archived = models.BooleanField(_('Archived status'), default=False)
+    archived_at = models.DateTimeField(_('Archived at'), null=True, blank=True)
+    archived_by = models.CharField(_('Archived by'), max_length=100, null=True, blank=True)
+    archived_reason = models.TextField(_('Archived reason'), null=True, blank=True)
 
     # Next of kin
     next_of_kin_name = models.CharField(_('Next of kin name'), max_length=100, null=True, blank=True)
-    next_of_kin_relationship = models.CharField(_('Next of kin relationship'), max_length=100, null=True, blank=True)
+    next_of_kin_relationship = models.CharField(_('Next of kin relationship'), max_length=100, choices=NEXT_OF_KIN_RELATIONSHIP_CHOICES, null=True, blank=True)
     next_of_kin_phone_number = models.CharField(_('Next of kin phone number'), max_length=15, null=True, blank=True)
     next_of_kin_address = models.CharField(_('Next of kin address'), max_length=100, null=True, blank=True)
 
@@ -165,8 +181,8 @@ class BaseUser(models.Model):
 
 class AdminUser(BaseUser, AbstractUser):
     """Custom User model for administrators"""
-    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='admin_user')
-    profile_picture = models.ImageField(_('Profile picture'), upload_to='adminuser/', default='default_picture.png', null=True, blank=True)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True, related_name='admin_user')
+    profile_picture = models.ImageField(_('Profile picture'), upload_to='adminuser/profile_pictures', default='default_picture.png', null=True, blank=True)
     adminuser = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='administrator')
     is_admin = models.BooleanField(_('Admin status'), default=True, help_text=_('Designates whether the user can log into this admin site.'))
     is_superuser = models.BooleanField(_('superuser status'), default=True, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
@@ -185,15 +201,14 @@ class AdminUser(BaseUser, AbstractUser):
 
     def __str__(self):
         return self.username
-    
 
 class Employee(BaseUser):
     """Model for employees managed by users"""
     adminuser = models.ForeignKey(AdminUser, on_delete=models.CASCADE, related_name='managed_employees')
-    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='employee')
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='employee')
     first_name = models.CharField(_('First name'), max_length=30)
     last_name = models.CharField(_('Last name'), max_length=30)
-    profile_picture = models.ImageField(_('Profile picture'), upload_to='employees/', default='default_picture.png', null=True, blank=True)
+    profile_picture = models.ImageField(_('Profile picture'), upload_to='employees/profile_pictures', default='default_picture.png', null=True, blank=True)
     
     class Meta:
         verbose_name = _('Employee')

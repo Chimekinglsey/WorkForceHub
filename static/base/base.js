@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('#menu-toggle').click(function() {
-        $('nav').toggleClass('show');
+        $('.header-nav').toggleClass('show');
     });
 
     // Close the menu when clicking outside of it

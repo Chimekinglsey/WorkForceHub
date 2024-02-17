@@ -4,9 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from employees.models import AdminUser
 from organizations.models import Branch, Organization
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit
+from crispy_forms.layout import Layout, Row, Column, Submit, Div
 from crispy_forms.bootstrap import TabHolder, Tab
-
+from .models import Employee, Branch, GENDER_CHOICES, EMPLOYMENT_STATUS_CHOICES, DESIGNATION_CHOICES, NEXT_OF_KIN_RELATIONSHIP_CHOICES, EMPLOYEE_STATUS_CHOICES
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
@@ -14,8 +14,15 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['employee_id', 'department', 'dob', 'phone_number', 'profile_picture', 
                   'job_role', 'joining_date', 'first_name', 'last_name', 'middle_name']
         widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date'}),
-            'joining_date': forms.DateInput(attrs={'type': 'date'}),
+            'dob': forms.DateInput(attrs={'type': 'date', 'required': 'true'}),
+            'joining_date': forms.DateInput(attrs={'type': 'date', 'required': 'true'}),
+            'employee_id': forms.TextInput(attrs={'placeholder': 'Employee ID', 'required': 'true'}),
+            'department': forms.TextInput(attrs={'required': 'true'}),
+            'job_role': forms.TextInput(attrs={'required': 'true'}),
+            'first_name': forms.TextInput(attrs={'required': 'true'}),
+            'last_name': forms.TextInput(attrs={'required': 'true'}),
+            'phone_number': forms.TextInput(attrs={'required': 'true'}),
+            'profile_picture': forms.FileInput(attrs={'required': 'true'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +45,7 @@ class ProfileUpdateForm(forms.ModelForm):
                     ),
                     
                     Row(
-                        Column('dob', css_class='form-group col-md-6 mb-0'),
+                        Column('dob', css_class='form-group col-md-6 mb-0', type='date', placeholder='Date of Birth'),
                         Column('profile_picture', css_class='form-group col-md-6 mb-0'),
                         css_class='form-row'
                     ),
@@ -129,3 +136,122 @@ class BranchForm(forms.ModelForm):
             ),
             Submit('submit', 'Submit', css_class='btn btn-primary mr-5') 
         )
+
+
+# Employee Detail Form
+class EmployeeForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ["first_name", 'middle_name', 'last_name', 'phone_number', 'dob', 'gender', 'email', 'profile_picture',
+                  'employee_id', 'branch', 'department', 'job_role', 'joining_date', 'next_of_kin_name', 'next_of_kin_relationship',
+                  'next_of_kin_phone_number', 'next_of_kin_address', 'emergency_contacts',
+                  'highest_qualification', 'highest_certificate', 'employment_letter', 'skills_qualifications',
+                  'employment_status', 'employment_type', 'designation', 'adminuser']
+        widgets = {
+            'dob': forms.DateInput(attrs={'type': 'date'}),
+            'joining_date': forms.DateInput(attrs={'type': 'date'}),
+            'emergency_contacts': forms.Textarea(attrs={'rows': 2}),
+            'skills_qualifications': forms.Textarea(attrs={'rows': 2}),
+        }
+        
+
+    def __init__(self, organization, adminuser, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            TabHolder(
+                Tab(
+                    'Personal Information',
+                    Row(
+                        Column('first_name', css_class='form-group col-md-6 mb-0'),
+                        Column('middle_name', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+
+                    Row(
+                        Column('last_name', css_class='form-group col-md-6 mb-0'),
+                        Column('phone_number', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('dob', css_class='form-group col-md-6 mb-0', placeholder='Date of Birth'),
+                        Column('gender', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('email', css_class='form-group col-md-6 mb-0', placeholder='Email Address'),
+                        Column('profile_picture', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                        ),
+                ),
+                Tab(
+                    'Employment Details',
+                    Row(
+                        Column('employee_id', css_class='form-group col-md-6 mb-0'),
+                        Column('branch', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('department', css_class='form-group col-md-6 mb-0'),
+                        Column('job_role', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('employment_type', css_class='form-group col-md-6 mb-0'),
+                        Column('employment_status', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('designation', css_class='form-group col-md-6 mb-0'),
+                        Column('joining_date', css_class='form-group col-md-6 mb-0', placeholder='Date Employed'),
+                        css_class='form-row'
+                    ),
+                ),
+                Tab(
+                    'Next of Kin',
+                    Row(
+                        Column('next_of_kin_name', css_class='form-group col-md-6 mb-0'),
+                        Column('next_of_kin_relationship', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('next_of_kin_phone_number', css_class='form-group col-md-6 mb-0'),
+                        Column('next_of_kin_address', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                ),
+                Tab(
+                    'Other Information',
+                    Row(
+                        Column('emergency_contacts', css_class='form-group col-md-6 mb-0'),
+                        Column('adminuser', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('highest_qualification', css_class='form-group col-md-6 mb-0'),
+                        Column('highest_certificate', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('employment_letter', css_class='form-group col-md-6 mb-0'),
+                        Column('skills_qualifications', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                Div(
+                    Submit('submit', 'Submit', css_class='btn btn-primary mr-5'),
+                    css_class='text-right, btnHandle'
+                )
+                ),
+            )
+        )
+        # Filter branches based on organization
+        self.fields['branch'].queryset = Branch.objects.filter(organization=organization)
+        self.fields['branch'].empty_label = 'Select Branch'
+        self.fields['adminuser'].queryset = AdminUser.objects.filter(pk=organization.admin_user.id)       
+        self.fields['gender'].choices = GENDER_CHOICES
+        self.fields['employment_status'].choices = EMPLOYMENT_STATUS_CHOICES
+        self.fields['employment_type'].choices = EMPLOYEE_STATUS_CHOICES
+        self.fields['designation'].choices = DESIGNATION_CHOICES
+        self.fields['next_of_kin_relationship'].choices = NEXT_OF_KIN_RELATIONSHIP_CHOICES
+        self.fields['joining_date'].label = 'Date Employed'
