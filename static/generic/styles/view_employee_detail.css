@@ -49,6 +49,19 @@
     border-radius: 5px;
     font-family: 'saira';
 }
+#updateEmployeeForm fieldset {
+    border: 1px solid#6382f25e;
+    border-radius: 5px;
+    font-family: 'el messiri';
+}
+#updateEmployeeForm fieldset legend {
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+}
 .detail-section {
     display: flex;
     flex-wrap: wrap;
@@ -69,9 +82,21 @@
 }
 .detail-value {
     font-weight: normal;
-    margin-left: 5px;
 }
 
+.edit-bank {
+    font-size: 14px;
+    margin-left: 0;
+    color: #0056b3;
+    line-height: normal;
+    padding: 5px;
+    opacity: 0.6;
+}
+.edit-bank:hover {
+    opacity: 0.9;
+    color: #0056b3;
+    cursor: pointer;
+}
 
 
 /* view docs button */
@@ -165,7 +190,68 @@
     width: 80%;
   }
 
+  .flex-buttton {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
 
+.moreEmpDetail {
+    cursor: pointer;
+    color: #062c54;
+}
+
+/* Create Payroll */
+/* CSS */
+.add-payroll-icon {
+    display: inline-block;
+    position: relative;
+    background-color: #007bff; /* Primary color */
+    color: #fff; /* Text color */
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    border-radius: 50%; /* Make it circular */
+    text-align: center;
+    line-height: 50px; /* Vertical centering */
+    font-size: 24px; /* Adjust size as needed */
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-payroll-icon:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  .tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; 
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .add-payroll-icon:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  /* Add animation */
+  .add-payroll-icon i {
+    transition: transform 0.3s;
+  }
+  
+  .add-payroll-icon:hover i {
+    transform: rotate(45deg); 
+  }
+  
 
 
 

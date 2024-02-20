@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load filters %}
+{% load humanize %}
+
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+{% block title %}Payroll - {{ employee.first_name }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'emps/styles/payroll_history.css'%}">
+{% endblock head %}
+
+
+{% block content %}
+<div class="containerBox">
+    <center>
+        <h3>Payment History - {{employee.first_name}} [{{ employee.employee_id }}]</h3>
+    </center>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Month</th>
+                    <th>Year</th>
+                    <th>Basic Salary</th>
+                    <th>House Allw.</th>
+                    <th>Transp. Allw.</th>
+                    <th>Feeding Allw.</th>
+                    <th>Util Allw.</th>
+                    <th>Other Allw.</th>
+                    <th>Total Allw.</th>
+                    <th>Tax</th>
+                    <th>Pension</th>
+                    <th>Loan</th>
+                    <th>Other Deducts</th>
+                    <th>Total Deducts</th>
+                    <th>Net Pay</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payroll in payroll_history %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ payroll.month|month_name }}</td>
+                    <td>{{ payroll.year }}</td>
+                    <td>{{ payroll.basic_salary|intcomma }}</td>
+                    <td>{{ payroll.housing_allowance|intcomma }}</td>
+                    <td>{{ payroll.transport_allowance|intcomma }}</td>
+                    <td>{{ payroll.feeding_allowance|intcomma }}</td>
+                    <td>{{ payroll.utility_allowance|intcomma }}</td>
+                    <td>{{ payroll.other_allowance|intcomma }}</td>
+                    <td>{{ payroll.total_allowance|intcomma }}</td>
+                    <td>{{ payroll.tax|intcomma }}</td>
+                    <td>{{ payroll.pension|intcomma }}</td>
+                    <td>{{ payroll.loan|intcomma }}</td>
+                    <td>{{ payroll.other_deductions|intcomma }}</td>
+                    <td>{{ payroll.total_deductions|intcomma }}</td>
+                    <td>{{ payroll.net_pay|intcomma }}</td>
+                    <td>{{ payroll.payment_status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+{% endblock %}

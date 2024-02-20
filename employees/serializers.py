@@ -10,10 +10,11 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'url', 'branch', 'employee_id', 'email', 'first_name', 'middle_name',
                    'last_name', 'phone_number', 'dob', 'gender', 'marital_status', 'address', 'nationality',
                    'state_of_origin', 'department', 'job_role', 'joining_date', 'employment_type', 'employment_status',
-                   'designation', 'level', 'last_promotion_date', 'next_promotion_date', 'salary', 'emergency_contacts',
+                   'designation', 'level', 'last_promotion_date', 'next_promotion_date', 'basic_salary', 'emergency_contacts',
                    'termination_resignation_date', 'highest_qualification','profile_picture', 'highest_certificate', 'employment_letter',
                    'skills_qualifications', 'next_of_kin_name', 'next_of_kin_relationship', 'next_of_kin_phone_number',
-                   'next_of_kin_address', 'supervised_employees', 'created_at', 'updated_at', 'adminuser'
+                    'supervised_employees', 'created_at', 'updated_at', 'adminuser', 'bank_name', 'account_number',
+                   'account_name', 'pension_id', 'tax_id',
                    )
                   
 

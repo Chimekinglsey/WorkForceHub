@@ -1,0 +1,35 @@
+<div class="container">
+    <h2>Payroll List</h2>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Employee</th>
+            <th>Month</th>
+            <th>Total Payment</th>
+            <th>Total Deduction</th>
+            <th>Total Bonus</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for payroll in payrolls %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ payroll.employee }}</td>
+            <td>{{ payroll.month }}</td>
+            <td>{{ payroll.net_pay }}</td>
+            <td>{{ payroll.total_deductions }}</td>
+            <td>{{ payroll.total_bonus }}</td>
+            <td>
+              <a href="{% url 'payroll_detail' payroll.id %}" class="btn btn-primary btn-sm">View</a>
+              <!-- Add buttons for other actions like edit or delete -->
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

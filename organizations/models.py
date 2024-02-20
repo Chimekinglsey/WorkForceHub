@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 
 class Organization(models.Model):
@@ -51,6 +54,7 @@ class Organization(models.Model):
     facebook = models.URLField(_('facebook'), max_length=250, null=True, blank=True)
     twitter = models.URLField(_('twitter'), max_length=250, null=True, blank=True)
     linkedin = models.URLField(_('linkedin'), max_length=250, null=True, blank=True)
+    monthly_created_employees = models.PositiveIntegerField(_('monthly employees added'), default=0)
     certifications = models.TextField(_('certifications'), null=True, blank=True)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
@@ -59,6 +63,13 @@ class Organization(models.Model):
         verbose_name = _('organization')
         verbose_name_plural = _('organizations')
         ordering = ['name']
+
+    @receiver(post_save, sender='employees.Employee')
+    def increment_monthly_created_employees(sender, instance, created, **kwargs):
+        if created:
+            instance.branch.organization.monthly_created_employees += 1
+            instance.branch.save()            
+
 
     def __str__(self):
         return self.name
@@ -76,6 +87,7 @@ class Branch(models.Model):
     twitter = models.URLField(_('twitter'), max_length=250, null=True, blank=True)
     linkedin = models.URLField(_('linkedin'), max_length=250, null=True, blank=True)
     description = models.TextField(_('description'), blank=True)
+    monthly_created_employees = models.PositiveIntegerField(_('monthly employees added'), default=0)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
 
@@ -84,9 +96,16 @@ class Branch(models.Model):
         verbose_name_plural = _('branches')
         ordering = ['name']
 
+
+    # a function that increments the monthly_employee_added field by 1, saves the instance and resets to 0 at the end of the month
+    @receiver(post_save, sender='employees.Employee')
+    def increment_monthly_created_employees(sender, instance, created, **kwargs):
+        if created:
+            instance.branch.monthly_created_employees += 1
+            instance.branch.save()            
+
     def __str__(self):
         return self.name
-
 
 class OrgDocuments(models.Model):
     """Model for organization documents"""

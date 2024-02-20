@@ -1,0 +1,250 @@
+              
+<div class="container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="personal-info-tab" data-toggle="tab" href="#personal-info" role="tab" aria-controls="personal-info" aria-selected="true">Personal Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="employment-details-tab" data-toggle="tab" href="#employment-details" role="tab" aria-controls="employment-details" aria-selected="false">Employment Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="next-of-kin-tab" data-toggle="tab" href="#next-of-kin" role="tab" aria-controls="next-of-kin" aria-selected="false">Next of Kin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="other-info-tab" data-toggle="tab" href="#other-info" role="tab" aria-controls="other-info" aria-selected="false">Other Information</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="personal-info" role="tabpanel" aria-labelledby="personal-info-tab">
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="first_name">First Name<span class="asteriskField">*</span></label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="middle_name">Middle Name</label>
+                                <input type="text" class="form-control" id="middle_name" name="middle_name">
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="last_name">Last Name<span class="asteriskField">*</span></label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="phone_number">Phone Number<span class="asteriskField">*</span></label>
+                                <input type="tel" class="form-control" id="phone_number" name="phone_number" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" class="form-control" id="dob" name="dob">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="gender">Gender<span class="asteriskField">*</span></label>
+                                <select class="form-control" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="email">Email Address<span class="asteriskField">*</span></label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="profile_picture">Profile Picture<span class="asteriskField">*</span></label>
+                                <input type="file" class="form-control-file form-control" id="profile_picture" name="profile_picture" required>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} employment details tab {% endcomment %}
+                    <div class="tab-pane fade" id="employment-details" role="tabpanel" aria-labelledby="employment-details-tab">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="employee_id">Employee ID<span class="asteriskField">*</span></label>
+                                <input type="text" class="form-control" id="employee_id" name="employee_id" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="branch">Branch<span class="asteriskField">*</span></label>
+                                <select class="form-control" id="branch" name="branch" required>
+                                    <option value="">Select Branch</option>
+                                    {% for branch in branches %}
+                                        <option value="{{ branch.id }}">{{ branch.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="department">Department<span class="asteriskField">*</span></label>
+                                <input type="text" class="form-control" id="department" name="department" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="job_role">Job Role</label>
+                                <input type="text" class="form-control" id="job_role" name="job_role">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="employment_type">Employment Type<span class="asteriskField">*</span></label>
+                                <select class="form-control" id="employment_type" name="employment_type" required>
+                                    <option value="">--Select--</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Intern">Intern</option>
+                                    <option value="Volunteer">Volunteer</option>
+                                    <option value="Temporary">Temporary</option>
+                                    <option value="Seasonal">Seasonal</option>
+                                    <option value="Freelance">Freelance</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Disabled">Disabled</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <label for="employment_status">Employment Status<span class="asteriskField">*</span></label>
+                                <select class="form-control" id="employment_status" name="employment_status" required>
+                                    <option value="">Select Employment Status</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Suspended">Suspended</option>
+                                    <option value="Terminated">Terminated</option>
+                                    <option value="Resigned">Resigned</option>
+                                    <option value="Retired">Retired</option>
+                                    <option value="Deceased">Deceased</option>
+                                    <option value="On Leave">On Leave</option>
+                                    <option value="On Training">On Training</option>
+                                    <option value="On Probation">On Probation</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="designation">Designation<span class="asteriskField">*</span></label>
+                                <select class="form-control" id="designation" name="designation" required>
+                                    <option value="">Select Designation</option>
+                                    <option value="Employee">Employee</option>
+                                    <option value="Intern">Intern</option>
+                                    <option value="Trainee">Trainee</option>
+                                    <option value="Associate">Associate</option>
+                                    <option value="Assistant">Assistant</option>
+                                    <option value="Officer">Officer</option>
+                                    <option value="Analyst">Analyst</option>
+                                    <option value="Coordinator">Coordinator</option>
+                                    <option value="Specialist">Specialist</option>
+                                    <option value="Consultant">Consultant</option>
+                                    <option value="Advisor">Advisor</option>
+                                    <option value="Supervisor">Supervisor</option>
+                                    <option value="Manager">Manager</option>
+                                    <option value="Director">Director</option>
+                                    <option value="Executive">Executive</option>
+                                    <option value="President">President</option>
+                                    <option value="CEO">CEO</option>
+                                    <option value="CFO">CFO</option>
+                                    <option value="CTO">CTO</option>
+                                    <option value="CIO">CIO</option>
+                                    <option value="COO">COO</option>
+                                    <option value="Chairman">Chairman</option>
+                                    <option value="Board Member">Board Member</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="joining_date">Date Employed</label>
+                                <input type="date" class="form-control" id="joining_date" name="joining_date">
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} Next of kin {% endcomment %}
+                    <div class="tab-pane fade" id="next-of-kin" role="tabpanel" aria-labelledby="next-of-kin-tab">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="next_of_kin_name">Next of Kin Name</label>
+                                <input type="text" class="form-control" id="next_of_kin_name" name="next_of_kin_name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="next_of_kin_relationship">Relationship with Next of Kin</label>
+                                <select class="form-control" id="next_of_kin_relationship" name="next_of_kin_relationship">
+                                    <option value="">Select Relationship</option>
+                                    <option value="Spouse">Spouse</option>
+                                    <option value="Child">Child</option>
+                                    <option value="Parent">Parent</option>
+                                    <option value="Sibling">Sibling</option>
+                                    <option value="Relative">Relative</option>
+                                    <option value="Friend">Friend</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="next_of_kin_phone_number">Next of Kin Phone Number</label>
+                                <input type="tel" class="form-control" id="next_of_kin_phone_number" name="next_of_kin_phone_number">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="next_of_kin_address">Next of Kin Address</label>
+                                <textarea cols="30" rows="5" class="form-control" id="next_of_kin_address" name="next_of_kin_address"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} Other information {% endcomment %}
+                    <div class="tab-pane fade" id="other-info" role="tabpanel" aria-labelledby="other-info-tab">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="emergency_contacts">Emergency Contacts</label>
+                                <textarea name="emergency_contacts" id="emergency_contacts" cols="30" rows="5" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="termination_resignation_date">Termination/Resignation Date</label>
+                                <input type="date" class="form-control" id="termination_resignation_date" name="termination_resignation_date">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="highest_qualification">Highest Qualification</label>
+                                <input type="text" class="form-control" id="highest_qualification" name="highest_qualification">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="highest_certificate">Highest Certificate</label>
+                                <input type="file" class="form-control-file form-control" id="highest_certificate" name="highest_certificate">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="employment_letter">Employment Letter</label>
+                                <input type="file" class="form-control-file form-control" id="employment_letter" name="employment_letter">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="skills_qualifications">Skills/Qualifications</label>
+                                <textarea name="skills_qualifications" id="skills_qualifications" cols="30" rows="5" class="form-control" ></textarea>
+                            </div>
+                        </div>
+                        <div class="btnHandle">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

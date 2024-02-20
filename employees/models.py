@@ -1,3 +1,5 @@
+from email.policy import default
+from random import choices
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -6,6 +8,7 @@ from datetime import datetime
 from django.utils import timezone
 from organizations.models import Branch
 from PIL import Image
+from statistics import mean
 
 
 # choices
@@ -148,8 +151,15 @@ class BaseUser(models.Model):
     level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=30, null=True, blank=True)
     last_promotion_date = models.DateField(_('Last promotion date'), null=True, blank=True)
     next_promotion_date = models.DateField(_('Next promotion date'), null=True, blank=True)
-    salary = models.IntegerField(_('Salary'), null=True, blank=True)
+    basic_salary = models.PositiveIntegerField(_('Salary'), default=0, blank=True)
     
+    # Bank Information
+    bank_name = models.CharField(_('bank name'), max_length=30, null=True, blank=True)
+    account_number = models.CharField(_('account number'), max_length=30, null=True, blank=True)
+    account_name = models.CharField(_('account name'), max_length=100, null=True, blank=True)
+    pension_id = models.CharField(_('pension ID'), max_length=30, null=True, blank=True)
+    tax_id = models.CharField(_('tax ID'), max_length=30, null=True, blank=True)
+
     # Other Information
     emergency_contacts = models.TextField(_('Emergency contacts'), null=True)
     termination_resignation_date = models.DateField(_('Date of termination/resignation'), null=True, blank=True)
@@ -166,7 +176,7 @@ class BaseUser(models.Model):
     next_of_kin_name = models.CharField(_('Next of kin name'), max_length=100, null=True, blank=True)
     next_of_kin_relationship = models.CharField(_('Next of kin relationship'), max_length=100, choices=NEXT_OF_KIN_RELATIONSHIP_CHOICES, null=True, blank=True)
     next_of_kin_phone_number = models.CharField(_('Next of kin phone number'), max_length=15, null=True, blank=True)
-    next_of_kin_address = models.CharField(_('Next of kin address'), max_length=100, null=True, blank=True)
+    # next_of_kin_address = models.CharField(_('Next of kin address'), max_length=100, null=True, blank=True)
 
     
     # Relationships
@@ -258,6 +268,7 @@ class Leave(models.Model):
     LEAVE_TYPE_CHOICES = (
         ('--Select--', _('--Select--')),
         ('Annual', _('Annual')),
+        ('Vacation', _('Vacation')),
         ('Sick', _('Sick')),
         ('Maternity', _('Maternity')),
         ('Paternity', _('Paternity')),
@@ -278,12 +289,12 @@ class Leave(models.Model):
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='leaves')
     leave_type = models.CharField(_('leave type'), choices=LEAVE_TYPE_CHOICES, max_length=30, null=True, blank=True)
-    leave_start_date = models.DateField(_('leave start date'), default=datetime.now)
-    leave_end_date = models.DateField(_('leave end date'), default=datetime.now)
+    leave_start_date = models.DateField(_('leave start date'), null=True)
+    leave_end_date = models.DateField(_('leave end date'), null=True)
     leave_duration = models.IntegerField(_('leave duration'), default=0)
     days_left = models.IntegerField(_('remaining leave days'), default=0)
     is_leave_active = models.BooleanField(default=False)
-    leave_reason = models.TextField(_('leave reason'))
+    leave_reason = models.TextField(_('leave reason'), null=True)
     leave_status = models.CharField(_('leave status'), choices=LEAVE_STATUS_CHOICES, max_length=30, default='Pending')
     leave_approval = models.ForeignKey(AdminUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_leaves')
     leave_rejection = models.ForeignKey(AdminUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_leaves')
@@ -328,6 +339,14 @@ class Attendance(models.Model):
 
 class Payroll(models.Model):
     """Model for employee payroll"""
+    PAYMENT_STATUS_CHOICES = [
+    ('Pending', 'Pending'),
+    ('Paid', 'Paid'),
+    ('Delayed', 'Delayed'),
+    ('Cancelled', 'Cancelled'),
+    ]
+
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='payrolls')
     month = models.CharField(_('month'), max_length=20, default=datetime.now().strftime('%B'))
     year = models.IntegerField(_('year'), default=datetime.now().year)
@@ -336,7 +355,7 @@ class Payroll(models.Model):
     transport_allowance = models.IntegerField(_('transport allowance'), default=0)
     feeding_allowance = models.IntegerField(_('feeding allowance'), default=0)
     utility_allowance = models.IntegerField(_('utility allowance'), default=0)
-    other_allowance = models.IntegerField(_('other allowance'), default=0)
+    other_allowance = models.IntegerField(_('other allowances'), default=0)
     total_allowance = models.IntegerField(_('total allowance'), default=0)
     tax = models.IntegerField(_('tax'), default=0)
     pension = models.IntegerField(_('pension'), default=0)
@@ -344,6 +363,17 @@ class Payroll(models.Model):
     other_deductions = models.IntegerField(_('other deductions'), default=0)
     total_deductions = models.IntegerField(_('total deductions'), default=0)
     net_pay = models.IntegerField(_('net pay'), default=0)
+    payment_status = models.CharField(_('payment status'), max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    
+    # Attendance-related fields
+    late_penalty = models.IntegerField(_('lateness penalty'), default=0)
+    absent_penalty = models.IntegerField(_('absence penalty'), default=0)
+    overtime_bonus = models.IntegerField(_('overtime bonus'), default=0)
+    
+    # Performance-related fields
+    performance_bonus = models.IntegerField(_('performance bonus'), default=0)
+    performance_penalty = models.IntegerField(_('performance penalty'), default=0)
+    
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
 
@@ -355,23 +385,56 @@ class Payroll(models.Model):
     def __str__(self):
         return f'{self.employee} - {self.month} {self.year}'
 
-class BankDetails(models.Model):
-    """Model for employee bank details"""
-    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, related_name='bank_details')
-    bank_name = models.CharField(_('bank name'), max_length=30, null=True, blank=True)
-    account_number = models.CharField(_('account number'), max_length=30, null=True, blank=True)
-    pension_id = models.CharField(_('pension ID'), max_length=30, null=True, blank=True)
-    tax_id = models.CharField(_('tax ID'), max_length=30, null=True, blank=True)
-    branch = models.CharField(_('branch'), max_length=30, null=True, blank=True)
-    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
-    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
 
-    class Meta:
-        verbose_name = _('bank Detail')
-        verbose_name_plural = _('bank Details')
+    def calculate_attendance_bonus(self):
+        """ Logic to calculate attendance bonus based on attendance data"""
+        # For example, calculate based on number of days present
+        attendance_records = self.employee.attendances.filter(date__month=self.month, date__year=self.year)
+        total_days = attendance_records.count()
+        days_present = attendance_records.filter(time_out__isnull=False).count()
+        attendance_percentage = days_present / total_days if total_days and total_days > 0 else 0
+        attendance_bonus = self.employee.basic_salary * attendance_percentage * 0.05  # Assuming 5% bonus per attended day
+        print(attendance_bonus)
+        return attendance_bonus
 
-    def __str__(self):
-        return f'{self.employee} - {self.bank_name}'
+    def calculate_performance_bonus(self):
+        """Logic to calculate performance bonus based on performance data"""
+        # For example, calculate based on average performance rating
+        performance_records = self.employee.performances.filter(created_at__month=self.month, created_at__year=self.year)
+        performance_ratings = [performance.performance_rating for performance in performance_records]
+        average_performance_rating = mean(performance_ratings) if performance_ratings else 0
+        performance_bonus = self.employee.basic_salary * (average_performance_rating / 100) * 0.1  # Assuming 10% bonus per performance rating point
+        print(performance_bonus)
+        return performance_bonus
+    
+    def calculate_other_allowances(self):
+        other_allowances = self.feeding_allowance + self.transport_allowance + self.housing_allowance + self.utility_allowance + self.other_allowance
+        return other_allowances
+
+    def calculate_total_deductions(self):
+        """ Logic to calculate total deductions (tax, pension, loan, etc.)"""
+        total_deductions = self.tax + self.pension + self.loan + self.other_deductions
+        return total_deductions
+
+    def save(self, *args, **kwargs):
+        # Calculate basic salary
+        basic_salary = self.employee.basic_salary
+
+        # Calculate allowances based on attendance and performance
+        attendance_bonus = self.calculate_attendance_bonus()
+        performance_bonus = self.calculate_performance_bonus()
+        other_allowance = self.calculate_other_allowances()
+        total_deductions = self.calculate_total_deductions()
+
+        net_pay = basic_salary + attendance_bonus + performance_bonus + other_allowance - total_deductions
+
+        self.basic_salary = basic_salary
+        self.total_allowance = attendance_bonus + performance_bonus + other_allowance
+        self.total_deductions = total_deductions
+        self.net_pay = net_pay
+
+        super().save(*args, **kwargs)
+
 
 class Education(models.Model):
     """Model for employee education"""

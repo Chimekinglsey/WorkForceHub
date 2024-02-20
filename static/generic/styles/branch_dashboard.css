@@ -51,9 +51,32 @@ body {
     background-color: #0056b3;
 }
 
+.featuresToggleContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.featuresToggleContainer:hover {
+    cursor: pointer;
+    background-color: #0056b3;
+}
+
+.featuresToggleContainer:hover .fa-angle-down {
+    transform: rotate(180deg);
+}
+/* 
+.featuresToggleContainer:active .fa-angle-down {
+    transform: rotate(180deg);
+} */
+.rotate180 {
+    display: none;
+    margin: 10px;
+}
+
 .right-pane {
     flex: 3;
     padding: 20px;
+    padding-top: 5px;
     overflow: hidden;
 }
 
@@ -66,16 +89,13 @@ body {
     margin-bottom: 20px;
 }
 
-.mgt {
-    display: none;
-}
 .employee-management {
     display: block;
 }
+/* Adjust tab width */
 
-.tab-contents {
+.tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5 {
     display: none;
-    margin-top: 20px;
     margin-top: 20px;
 }
 
@@ -84,6 +104,9 @@ body {
 }
 #add-employee {
     display: block;
+}
+.leave-navigation .tab2 {
+    width: 19%;
 }
 
 .nav-tab, .actions .nav-tab {
@@ -96,21 +119,26 @@ body {
     transition: background-color 0.3s ease;
 }
 
-
-.nav-tab, .actions .tab.active{
+/* Adjust tab width for mgt sections */
+.nav-tab, .actions .tab.active, .actions .tab2.active, .actions .tab3.active {
     background-color: #0056b3;
 }
 
 
 
 .mgt {
-    padding: 20px;
+    display: none;
+    padding: 0 20px;
 }
 
 .mgt h2 {
     color: #333;
     text-align: center;
     margin-top: 0;
+}
+/* default tab to display */
+.employee-management {
+    display: block;
 }
 
 .leave-requests, .apply-leave {
@@ -123,7 +151,7 @@ table {
 }
 
 th, td {
-    padding: 10px;
+    padding: 5px;
     border: 1px solid #ddd;
     text-align: left;
     vertical-align: baseline;
@@ -139,8 +167,8 @@ tbody tr:nth-child(even) {
 }
 
 .approve, .reject {
-    background-color: #28a745;
     color: #fff;
+    background-color: #28a745;
     border: none;
     padding: 5px 7px;
     border-radius: 4px;
@@ -168,16 +196,16 @@ tbody tr:nth-child(even) {
 
 .apply-leave input, .apply-leave select, .apply-leave textarea{
     width: calc(100% - 20px);
-    padding: 10px;
+    padding: 5px;
     margin: auto;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 5px;
 }
 
-.apply-leave select {
+/* .apply-leave select {
     width: 100%;
-}
+} */
 .apply-leave input:active, .apply-leave input:focus, .apply-leave select:active, .apply-leave select:focus, .apply-leave textarea:active, .apply-leave textarea:focus{
     outline-color: #007bff86 ;
     outline-offset: 2px;
@@ -199,7 +227,10 @@ tbody tr:nth-child(even) {
 }
 
 .view-leave-list, .leave-history {
-    margin-top: 30px;
+    margin-top: 20px;
+}
+.tab-contents th, .apply-leave th, .tab-contents2 th, .tab-contents3 th, .tab-contents4 th, .tab-contents5 th {
+    border: 1px solid rgba(196, 192, 192, 0.401);
 }
 
 .leave-list table {
@@ -364,7 +395,7 @@ tbody tr:nth-child(even) {
 
 /* Employee Management.html */
 .employee-nav .tab {
-    width: 19%;
+    width: 24%;
 }
 #myTab {
     margin-bottom: 2.5%;
@@ -521,12 +552,35 @@ tr:hover {
    background-color: red;
 }
 
+#create-payroll {
+    display: block;
+}
+
+.payroll-navigation .tab3 {
+    width: 24%;
+}
+
+.view-bank-info {
+    margin: 20px;
+}
+
+/* Effects for fieldsets */
+.employee_view_form fieldset:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fefff9;
+}
 
 
   /* Optional: Make modal smaller on smaller screens */
   @media (max-width: 768px) {
     .modal-lg {
       max-width: 80%;
+    }
+    .rotate180 {
+        display: block;
+    }
+    .featuresList {
+        cursor: pointer;
     }
   }
   
@@ -541,17 +595,19 @@ tr:hover {
     .approve, .reject {
         width: 90%;
     }
-.tab-contents{
+.tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5 {
     overflow: auto;
     }
 }
    @media screen and (max-width: 1000px){
-    .actions .tab {
+    /* Adjust tab width for mgt sections */
+    .actions .tab, .actions .tab2, .actions .tab3 {
         padding: 10px;
     }
    }
 @media screen and (max-width: 900px) {
-    .employee-nav .tab {
+    /* Adjust tab width for mgt sections */
+    .employee-nav .tab, .leave-navigation .tab2, .payroll-navigation .tab3 {
         width: 100%;
     }
     h2 {
@@ -575,14 +631,19 @@ tr:hover {
         font-size: 1.3rem;
     }
 
-    .tab {
+    /* Adjust tab width for mgt sections */
+    .tab, .tab2, .tab3 {
         display: block;
         width: 100%;
         margin-bottom: 10px;
     }
 
-    .tab-contents {
+    .tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5{
         display: none;
+    }
+    .dropdown-menu {
+        transform: translateX(0%);
+        font-size: 0.85rem;
     }
 }
 @media screen and (max-width: 768px) {
@@ -597,7 +658,9 @@ tr:hover {
 .right-pane {
     overflow-x: auto;
 }
-.employee-nav .tab {
+
+/* Adjust tab width for mgt sections */
+.employee-nav .tab, .leave-navigation .tab2, .payroll-navigation .tab3 {
     width: 100%;
     margin-bottom: 10px;
 }
@@ -610,13 +673,14 @@ tr:hover {
     display: block;
 }
 
-.tab {
+/* Adjust tab width for mgt sections */
+.tab, .tab2, .tab3{
     display: block;
     width: 100%;
     margin-bottom: 10px;
 }
 
-.tab-contents {
+.tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5 {
     display: none;
 }
 }

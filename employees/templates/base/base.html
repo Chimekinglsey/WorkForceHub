@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         {% load static %}
+        {% load humanize %}
         <meta charset="UTF-8">
         <script src="{% static 'base/jQuery.js' %}"></script>
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
@@ -32,8 +33,12 @@
             {% block FunTest %}<a href="#">Fun</a>{% endblock FunTest %}
             {% block about %}<a href="#">About</a>{% endblock about %}
             {% block contact %}<a href="#">Contact Us</a>{% endblock contact %}
+        {% if user.is_authenticated %}
+            {% block logout %}<a class="logoutBtn btn" href="{% url 'logout' %}">Logout</a>{% endblock logout %}
+        {% else %}
             {% block signUp %}<a class="registerBtn btn" href="{% url 'signUp' %}">Sign Up</a>{% endblock signUp %}
             {% block signIn %}<a class="loginBtn btn" href="{% url 'login' %}" >Login</a>{% endblock signIn %}
+        {% endif %}
         </nav>
     </header>
     <div class="header-wrapper"></div>

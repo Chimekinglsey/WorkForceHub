@@ -1,0 +1,69 @@
+{% extends 'base/base.html' %}
+{% load filters %}
+{% load humanize %}
+
+{% block head %}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .container {
+            font-family: 'Montserrat', sans-serif;
+        }
+        strong {
+          font-size: 0.9rem;
+        }
+        h4 {
+          color: #009dff;
+        }
+    </style>
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Payroll Detail</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Employee Information</h4>
+                            <p><strong>Employee:</strong> {{ payroll.employee }}</p>
+                            <p><strong>Month:</strong> {{ payroll.month|month_name }}</p>
+                            <p><strong>Year:</strong> {{ payroll.year }}</p>
+                            <p><strong>Bank:</strong> {{ payroll.bank_name }}</p>
+                            <p><strong>Account:</strong> {{ payroll.account_number }}</p>
+                            <p><strong>Status:</strong> {{ payroll.payment_status }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Salary Details</h4>
+                            <p><strong>Basic Salary:</strong> {{ payroll.basic_salary|intcomma }}</p>
+                            <p><strong>Housing Allowance:</strong> {{ payroll.housing_allowance|intcomma }}</p>
+                            <p><strong>Transport Allowance:</strong> {{ payroll.transport_allowance|intcomma }}</p>
+                            <p><strong>Feeding Allowance:</strong> {{ payroll.feeding_allowance|intcomma }}</p>
+                            <p><strong>Utility Allowance:</strong> {{ payroll.utility_allowance|intcomma }}</p>
+                            <p><strong>Other Allowance:</strong> {{ payroll.other_allowance|intcomma }}</p>
+                            <p><strong>Total Allowance:</strong> {{ payroll.total_allowance|intcomma }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Deductions</h4>
+                            <p><strong>Tax:</strong> {{ payroll.tax|intcomma }}</p>
+                            <p><strong>Pension:</strong> {{ payroll.pension|intcomma }}</p>
+                            <p><strong>Loan:</strong> {{ payroll.loan|intcomma }}</p>
+                            <p><strong>Other Deductions:</strong> {{ payroll.other_deductions|intcomma }}</p>
+                            <p><strong>Total Deductions:</strong> {{ payroll.total_deductions|intcomma }}</p>
+                            <p><strong>Net Pay:</strong> {{ payroll.net_pay|intcomma }}</p>
+                        </div>
+                        <!-- Add other sections as needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

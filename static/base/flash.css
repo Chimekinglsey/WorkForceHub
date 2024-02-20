@@ -2,8 +2,8 @@
 .flash-container {
     position: fixed;
     top: 80px;
-    left:30%;
-    right: 30%;
+    left:20%;
+    right: 20%;
     max-width: 600px;
     z-index: 9999;
 }
@@ -18,7 +18,7 @@
     background-color: #fff;
     color: #333;
     animation: fadeInOut 0.5s ease-in-out;
-    padding-right: 5px;
+    padding: 5px;
     z-index: 99999;
 }
 

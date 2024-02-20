@@ -1,13 +1,16 @@
 # UserCreation and ProfileUpdate forms for the AdminUser model
+from calendar import c
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from employees.models import AdminUser
+from employees.models import AdminUser, Payroll
 from organizations.models import Branch, Organization
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit, Div
+from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, ButtonHolder
 from crispy_forms.bootstrap import TabHolder, Tab
 from .models import Employee, Branch, GENDER_CHOICES, EMPLOYMENT_STATUS_CHOICES, DESIGNATION_CHOICES, NEXT_OF_KIN_RELATIONSHIP_CHOICES, EMPLOYEE_STATUS_CHOICES
 
+
+# ProfileUpdate form for the AdminUser model
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = AdminUser
@@ -67,6 +70,7 @@ class ProfileUpdateForm(forms.ModelForm):
             )
         )
 
+# UserCreation form for the AdminUser model
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=100, help_text='Required. Enter a valid email address.',
                              widget=forms.TextInput(attrs={'placeholder': 'Enter your email', 'autofocus': 'true'}))
@@ -98,6 +102,7 @@ class SignUpForm(UserCreationForm):
             user.save()
         return user
 
+# Organizations branch form
 class BranchForm(forms.ModelForm):
     class Meta:
         model = Branch
@@ -137,16 +142,17 @@ class BranchForm(forms.ModelForm):
             Submit('submit', 'Submit', css_class='btn btn-primary mr-5') 
         )
 
-
 # Employee Detail Form
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = ["first_name", 'middle_name', 'last_name', 'phone_number', 'dob', 'gender', 'email', 'profile_picture',
                   'employee_id', 'branch', 'department', 'job_role', 'joining_date', 'next_of_kin_name', 'next_of_kin_relationship',
-                  'next_of_kin_phone_number', 'next_of_kin_address', 'emergency_contacts',
+                  'next_of_kin_phone_number', 'emergency_contacts',
                   'highest_qualification', 'highest_certificate', 'employment_letter', 'skills_qualifications',
-                  'employment_status', 'employment_type', 'designation', 'adminuser']
+                  'employment_status', 'employment_type', 'designation', 'adminuser', 'bank_name', 'account_number', 'account_name',
+                  'pension_id', 'tax_id'
+                  ]
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
             'joining_date': forms.DateInput(attrs={'type': 'date'}),
@@ -209,15 +215,25 @@ class EmployeeForm(forms.ModelForm):
                     ),
                 ),
                 Tab(
-                    'Next of Kin',
+                    'Bank Details and Next of Kin',
                     Row(
-                        Column('next_of_kin_name', css_class='form-group col-md-6 mb-0'),
-                        Column('next_of_kin_relationship', css_class='form-group col-md-6 mb-0'),
+                        Column('bank_name', css_class='form-group col-md-6 mb-0'),
+                        Column('account_number', css_class='form-group col-md-6 mb-0'),
                         css_class='form-row'
                     ),
                     Row(
+                        Column('account_name', css_class='form-group col-md-6 mb-0'),
+                        Column('pension_id', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('tax_id', css_class='form-group col-md-6 mb-0'),
+                        Column('next_of_kin_name', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('next_of_kin_relationship', css_class='form-group col-md-6 mb-0'),
                         Column('next_of_kin_phone_number', css_class='form-group col-md-6 mb-0'),
-                        Column('next_of_kin_address', css_class='form-group col-md-6 mb-0'),
                         css_class='form-row'
                     ),
                 ),
@@ -255,3 +271,79 @@ class EmployeeForm(forms.ModelForm):
         self.fields['designation'].choices = DESIGNATION_CHOICES
         self.fields['next_of_kin_relationship'].choices = NEXT_OF_KIN_RELATIONSHIP_CHOICES
         self.fields['joining_date'].label = 'Date Employed'
+
+
+# Payroll form
+class PayrollForm(forms.ModelForm):
+    class Meta:
+        model = Payroll
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Payroll Information',
+                Row(
+                    Column('employee', css_class='form-group col-md-6 mb-0'),
+                    Column('month', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('year', css_class='form-group col-md-6 mb-0'),
+                    Column('basic_salary', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('housing_allowance', css_class='form-group col-md-6 mb-0'),
+                    Column('transport_allowance', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('feeding_allowance', css_class='form-group col-md-6 mb-0'),
+                    Column('utility_allowance', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('other_allowance', css_class='form-group col-md-6 mb-0'),
+                    Column('total_allowance', css_class='form-group col-md-6 mb-0', title='Calculated automatically'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('tax', css_class='form-group col-md-6 mb-0'),
+                    Column('pension', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('loan', css_class='form-group col-md-6 mb-0'),
+                    Column('other_deductions', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('total_deductions', css_class='form-group col-md-6 mb-0', title='Calculated automatically'),
+                    Column('performance_penalty', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('late_penalty', css_class='form-group col-md-6 mb-0'),
+                    Column('absent_penalty', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('overtime_bonus', css_class='form-group col-md-6 mb-0'),
+                    Column('performance_bonus', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('net_pay', css_class='form-group col-md-6 mb-0', title='Calculated automatically'),
+                    Column('payment_status',  css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Submit('submit', 'Update', css_class='btn btn-primary mr-2'), 
+                    css_class='btnHandle'
+                ),
+            ),
+        )        
+

@@ -1,0 +1,14 @@
+<!-- add_payroll.html -->
+
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+  <h2>Add Payroll</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% crispy form %}
+  </form>
+</div>
+{% endblock %}

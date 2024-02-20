@@ -41,40 +41,70 @@ function flashMessage(response) {
         $('.mgt').hide();
         $(`.${content}`).show();
     });
-
-        // Function to toggle Feature list on heading click for screens less than 900px
-        $('.featuresToggle').click(function () {
-            if ($(window).width() <= 768) {
-                $('.featuresList').slideToggle();
-            }
-        });
-
-        $('.featuresItem').click(function () {
-            if ($(window).width() <= 768) {
+    // Function to toggle Feature list on heading click for screens less than 900px
+    $('.featuresToggleContainer').click(function () {
+        if ($(window).width() <= 754) {
+            $('.featuresList').slideToggle();
+        }
+    });
+    
+    $('.featuresItem').click(function () {
+            if ($(window).width() <= 754) {
                 $('.featuresList').slideToggle();
             }
         });
 
         // Function to close Feature list when window is resized to larger than 900px
         $(window).resize(function () {
-            if ($(window).width() > 768) {
+            if ($(window).width() > 754) {
                 $('.featuresList').slideDown();
+                $('.actions').slideDown();
+                $('.featuresToggle').removeClass('shake');
+                $('.left-pane').removeClass('shake-parent')
+                $('.left-pane').on('mouseleave', function() {
+                    $('.featuresList').slideDown();
+                });
+    
+            }
+            else {
+                $('.featuresList').slideUp();
+                $('.actions').slideUp();
+                $('.featuresToggle').addClass('shake');
+                $('.left-pane').addClass('shake-parent')
+    
+                $('.featuresToggleContainer').on('mouseenter click', function() {
+                    $('.featuresList').slideDown();
+                });
+                $('.left-pane').on('mouseleave', function() {
+                    $('.featuresList').slideUp();
+                });
             }
         });
+        
+
 
         // display leave requests when #payrollManagement is clicked
 
         // leave and employee management
-        if ($(window).width() < 800) {
+        if ($(window).width() <= 754) {
             $(".actions").slideToggle();
-            $(".featuresList").slideToggle();
+            $(".featuresList").slideToggle(
+            );
             $('.featuresToggle').addClass('shake');
             $('.left-pane').addClass('shake-parent')
+
+            $('.featuresToggleContainer').on('mouseenter click', function() {
+                $('.featuresList').slideDown();
+            });
+            $('.left-pane').on('mouseleave', function() {
+                $('.featuresList').slideUp();
+            });
         }
         else {
             $('.featuresToggle').removeClass('shake');
             $('.left-pane').removeClass('shake-parent')
         }
+        // employee management tab
         $(".tab").on("click", function() {
             $(".tab").removeClass("active");
             $(this).addClass("active");
@@ -82,6 +112,36 @@ function flashMessage(response) {
             $(".tab-contents").hide();
             $(`#${tab}`).show();
         });
+
+        // leave management tab
+        $(".tab2").on("click", function() {
+            $(".tab2").removeClass("active");
+            $(this).addClass("active");
+            let tab = $(this).data("tab2");
+            $(".tab-contents2").hide();
+            $(`#${tab}`).show();
+        });
+
+        // Payroll Management tab
+        $(".tab3").on("click", function() {
+            $(".tab3").removeClass("active");
+            $(this).addClass("active");
+            let tab = $(this).data("tab3");
+            $(".tab-contents3").hide();
+            $(`#${tab}`).show();
+        });
+
+        // Performance Management tab
+        $(".tab4").on("click", function() {
+            $(".tab4").removeClass("active");
+            $(this).addClass("active");
+            let tab = $(this).data("tab4");
+            $(".tab-contents4").hide();
+            $(`#${tab}`).show();
+        });
+
+        
+
         
     // Menu Toggle
         $(".menuToggle").on("click", function() {
@@ -91,13 +151,6 @@ function flashMessage(response) {
         });
 
     // Leave Requests
-        $(".approve").on("click", function() {
-            alert("Leave request approved!");
-        });
-        $(".reject").on("click", function() {
-            alert("Leave request rejected!");
-        });
-
         $("#searchLeaveHistory").on("keyup", function() {
             let value = $(this).val().toLowerCase();
             $(".leave-list tbody tr").filter(function() {
@@ -169,6 +222,13 @@ function flashMessage(response) {
         $('#nationalityView').text(employeeData.nationality);
         $('#state_of_originView').text(employeeData.state_of_origin);
 
+        // Populate bank details
+        $('#bankNameView').text(employeeData.bank_name);
+        $('#accountNumberView').text(employeeData.account_number);
+        $('#accountNameView').text(employeeData.account_name);
+        $('#pensionIdView').text(employeeData.pension_id);
+        $('#taxIdView').text(employeeData.tax_id);
+
         // Populate job details
         $('#employee_idView').text(employeeData.employee_id);
         $('#departmentView').text(employeeData.department);
@@ -180,7 +240,7 @@ function flashMessage(response) {
         $('#levelView').text(employeeData.level);
         $('#last_promotion_dateView').text(employeeData.last_promotion_date);
         $('#next_promotion_dateView').text(employeeData.next_promotion_date);
-        $('#salaryView').text(employeeData.salary);
+        $('#salaryView').text(employeeData.basic_salary);
 
         // Populate other information
         $('#emergency_contactsView').text(employeeData.emergency_contacts);
@@ -192,7 +252,6 @@ function flashMessage(response) {
         $('#next_of_kin_nameView').text(employeeData.next_of_kin_name);
         $('#next_of_kin_relationshipView').text(employeeData.next_of_kin_relationship);
         $('#next_of_kin_phone_numberView').text(employeeData.next_of_kin_phone_number);
-        $('#next_of_kin_addressView').text(employeeData.next_of_kin_address);
 
         // Populate supervised employees
         let supervisedEmployees = employeeData.supervised_employees;
@@ -214,17 +273,17 @@ function flashMessage(response) {
         $('.spinner-container').hide();
             $('#viewEmpDetailContainer').slideToggle()
             flashMessage(employeeData);
-            // $('.flash-ajax-message').slideToggle(
-            //     timeoutFlashMessage()
-            // );
     }
 
     // Close modal and backdrop
     $('.close').click(function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
-        $('.flash-ajax-message').slideToggle();
+        if ($('.flash-ajax-message').hasClass('error-message') || $('.flash-ajax-message').hasClass('success-message')) {
+            $('.flash-ajax-message').slideToggle();
+        }
     });
+
 
     // Update employee data
 
@@ -262,6 +321,14 @@ function flashMessage(response) {
         $('#stateOfOriginEdit').val(employeeData.state_of_origin);
         $('#addressEdit').val(employeeData.address);
         $('#profilePictureEditView').attr('src', employeeData.profile_picture);
+
+        // Bank Information
+        $('#bankNameEdit').val(employeeData.bank_name);
+        $('#accountNumberEdit').val(employeeData.account_number);
+        $('#accountNameEdit').val(employeeData.account_name);
+        $('#pensionIdEdit').val(employeeData.pension_id);
+        $('#taxIdEdit').val(employeeData.tax_id);
+
         // Employment Information
         $('#employeeIdEdit').val(employeeData.employee_id);
         $('#departmentEdit').val(employeeData.department);
@@ -274,7 +341,7 @@ function flashMessage(response) {
         $('#lastPromotionDateEdit').val(employeeData.last_promotion_date);
         $('#nextPromotionDateEdit').val(employeeData.next_promotion_date);
         $('#highestQualificationEdit').val(employeeData.highest_qualification);
-        $('#salaryEdit').val(employeeData.salary);
+        $('#salaryEdit').val(employeeData.basic_salary);
         $('#terminationResignationDateEdit').val(employeeData.termination_resignation_date);
         $('#emergencyContactsEdit').val(employeeData.emergency_contacts);
         
@@ -297,15 +364,10 @@ function flashMessage(response) {
         $('#nextOfKinNameEdit').val(employeeData.next_of_kin_name);
         $('#nextOfKinRelationshipEdit').val(employeeData.next_of_kin_relationship);
         $('#nextOfKinPhoneNumberEdit').val(employeeData.next_of_kin_phone_number);
-        $('#nextOfKinAddressEdit').val(employeeData.next_of_kin_address);
         
         // Show the modal
         $('.spinner-container').hide();
         $('#updateEmpDetailContainer').slideToggle();
-        // flashMessage(employeeData);
-        // $('.flash-ajax-message').slideToggle(
-        //     timeoutFlashMessage()
-        // );
     }
 
     // update employee data with ajax and csfr token
@@ -360,6 +422,7 @@ function flashMessage(response) {
     $('.cancelBtn').click(function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
+        $('#updateBankContainer').hide();
     });
 
     // Archive employee
@@ -367,7 +430,7 @@ function flashMessage(response) {
         e.preventDefault();
         $('.spinner-container').show();
         let employeeId = $(this).data('employeeid');
-        let rowToRemove = $(this).closest('tr'); // Get the row to remove
+        // let rowToRemove = $(this).closest('tr'); // Get the row to remove
 
         $('#archive-modal').slideToggle(function(){
             $('.spinner-container').hide();
@@ -408,4 +471,192 @@ function flashMessage(response) {
             });
         });
     });
+
+    // unarchive employee
+    $('.EmpArchiveBtn').click(function(e) {
+        e.preventDefault();
+        $('.spinner-container').show();
+        let employeeId = $(this).data('employeeid');
+        $('#unarchive-modal').slideToggle(function(){
+            $('.spinner-container').hide();
+        });
+        $('#submitRestoreBtn').click(function(e) {
+            e.preventDefault();
+            $('.spinner-container').show();
+            $.ajax({
+                url: `/restoreArchive/${employeeId}/`,
+                method: 'GET',
+                processData: false,
+                contentType: false,
+                success: function() {
+                    $('.spinner-container').hide();
+                    window.location.reload()
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error restoring employee:', error);
+                    flashMessage(error);
+                }
+            });
+        });
+    });
+
+    // delete employee
+    $('.moreEmpDetail.DelArchiveBtn, .moreEmpDetail#deleteEmpDetailBtn').click(function(e) {
+        e.preventDefault();
+        // $('.spinner-container').show();
+        let employeeId = $(this).data('employeeid');
+        $('#delete-modal').slideToggle();
+        $('#submitDeleteBtn').off().click(function(e) {
+            e.preventDefault();
+            $('.spinner-container').show();
+            $.ajax({
+                url: `/deleteEmployee/${employeeId}/`,
+                method: 'GET',
+                processData: false,
+                contentType: false,
+                success: function() {
+                    $('.spinner-container').hide();
+                    window.location.reload()
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting employee:', error);
+                    flashMessage(error);
+                }
+            });
+        });
+        $('.archive-submit-btn').off().click(function(e) {
+            e.preventDefault();
+            $('#delete-modal').slideUp();
+            $('#archive-modal2').slideDown();
+        });
+        $('#submitArchiveBtn2').off().click(function(e) {
+            e.preventDefault();
+            // Ajax call to archive employee
+            form = $('#archiveEmployeeForm2');
+            let formData = new FormData($('#archiveEmployeeForm2')[0]);
+            // Get the CSRF token from hidden input field
+            let csrfToken = $('#archiveEmployeeForm2 input[name=csrfmiddlewaretoken]').val();
+            $.ajax({
+                url: `/archiveEmployee/${employeeId}/`,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                // Include CSRF token in the headers
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                success: function(response) {
+                    $('.spinner-container').hide();
+                    window.location.reload()
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error archiving employee:', error);
+                    flashMessage(error);
+                }
+            });
+        });
+
+        });
+    
+    // accept and decline leave
+    $('.approve-btn').click(function() {
+        let leaveId = $(this).data('leaveid');
+        $.post(`/manageLeaveRequest/${leaveId}/`, { action: 'accept' }, function(data) {
+            if (data.error) {
+                flashMessage(data.error);
+            }
+            window.location.reload()
+        });
+    });
+
+    $('.decline-btn').click(function() {
+        let leaveId = $(this).data('leaveid');
+        $.post(`/manageLeaveRequest/${leaveId}/`, { action: 'decline' }, function(data) {
+            // Handle success or error response from the server
+            if (data.error) {
+                flashMessage(data.error);
+            }
+            window.location.reload()
+            message = "Success"
+            flashMessage(message);
+
+         });
+    });
+
+
+    // update bank 
+
+    // open updateBankContainer modal when edit-bank is clicked
+    $('.edit-bank').click(function(e) {
+        e.preventDefault();
+        $('.spinner-container').show();
+        let employeeId = $(this).data('employeeid');
+        $.ajax({
+            url: `/api/employees/${employeeId}/`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // populate bank details
+                $('#empId').val(response.id)
+                $('#bankNameBank').val(response.bank_name);
+                $('#accountNumberBank').val(response.account_number);
+                $('#accountNameBank').val(response.account_name);
+                $('#pensionIdBank').val(response.pension_id);
+                $('#taxIdBank').val(response.tax_id);
+                
+                $('.spinner-container').hide();
+                $('#updateBankContainer').slideToggle();
+            },
+            error: function(xhr, status, error) {
+                flashMessage(error);
+                $('.flash-ajax-message').slideToggle(
+                    timeoutFlashMessage()
+                );
+                console.error('Error fetching employee data:', error);
+            }
+        });
+    });
+
+    $('#updateEmployeeBankBtn').on('click', function(event) {
+        event.preventDefault();
+        let employeeId = $('#empId').val();
+        if (!employeeId || isNaN(employeeId)) {
+            alert('Employee ID not found');
+            return;
+        }
+        form = $('#updateBankForm');
+        let formData = new FormData($('#updateBankForm')[0]);
+    
+        // Get the CSRF token from hidden input field
+        let csrfToken = $('#updateBankForm input[name=csrfmiddlewaretoken]').val();
+    
+        $.ajax({
+            url: `/updateEmployee/${employeeId}/`,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+    
+            // Include CSRF token in the headers
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+    
+            success: function(response) {
+                form.trigger('reset');
+                window.location.reload()
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating employee data:', error);
+                flashMessage(error);
+                // $('.flash-ajax-message').slideToggle(
+                //     timeoutFlashMessage()
+                // );
+            }
+        });
+
+    });
+
+
 });

@@ -1,0 +1,18 @@
+<!-- update_payroll.html -->
+
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update Payroll{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<div class="container mb-5">
+  <center><h3>Update Payroll</h3></center>
+  <form method="post">
+    {% csrf_token %}
+    {% crispy form %}
+  </form>
+</div>
+{% endblock %}

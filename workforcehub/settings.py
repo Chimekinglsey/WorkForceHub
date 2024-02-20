@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'crispy_forms',
    'fontawesomefree',
     "crispy_bootstrap4",
+    'django_cron',
+    'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -68,7 +70,7 @@ ROOT_URLCONF = 'workforcehub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +84,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'workforcehub.wsgi.application'
-
+USE_L10N = True
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
