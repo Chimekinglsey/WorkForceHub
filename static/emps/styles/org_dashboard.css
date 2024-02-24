@@ -1,16 +1,7 @@
-/* header {
-    position: fixed;
+* {
+    list-style: none;
+    text-decoration: none;
 }
-
-.header-wrapper {
-    padding-top: 85px;
-} */
-
-/* create organization home*/
-/* .create-org {
-    display: flex;
-} */
-
 /* Styles for left pane */
 .left-pane-org {
     position: fixed; 
@@ -20,10 +11,10 @@
     padding: 3%;
     padding-top: 1.5%;
     background-color: #f0f0f0;
-    overflow: hidden; 
+    overflow: hidden;
+    max-height: calc(100vh - 92px); 
     bottom: 0; 
 }
-
 .left-pane-org:hover {
     background-color: #e6e6e6;
 }
@@ -37,6 +28,7 @@
 }
 
 .left-pane-org li {
+    text-align: left;
     margin-bottom: 10px;
 }
 
@@ -52,12 +44,56 @@
 .left-pane-org button:hover {
     background-color: #0056b3;
 }
+
+.left-pane-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.left-pane-content .fas {
+    margin-right: 10px;
+    /* color: rgb(238, 22, 25); */
+    color: #222;;
+}
+
+.logout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+.logout * {
+    color: rgb(211, 9, 9);
+    font-weight: bold;
+}
+.logout a:hover {
+    text-decoration: none;
+    color: red;
+    padding-left: 5px;
+    transition: .3s ease-in-out;
+}
+.left-down-content {
+    max-height: 300px;
+    overflow: auto;
+}
+/* .action-links {
+    overflow: auto;
+} */
+
 /* Styles for right pane */
 .right-pane-org {
-    margin-left: 25%; /* Adjust based on left pane width */
+    margin-left: 25%; 
     padding: 5%;
     padding-top: 2.5%;
-    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-y: auto; 
 }
 
 .cardie {
@@ -129,7 +165,7 @@
 
 
 /* Styles for modal */
-#organization-form, #branch-form {
+#organization-form, #branch-form, #delegate-admin-form {
     display: none;
     width: 80%;
     z-index: 9;
@@ -143,20 +179,23 @@
     overflow: auto;
 }
 
-.showBranches{
+.showBranches, .showDelegates{
     display: none;
 }
-.showBranches .list-group-item {
+.showBranches .list-group-item, .showDelegates .list-group-item {
     margin-bottom: 2px;
 }
-.showBranches .list-color a {
+.showBranches .list-color a, .showDelegates .list-color a {
     color: #551A8B;
 }
 
 
-ul li a:hover {
+ul li a:hover{
     text-decoration: none;
-    font-weight: bold;
+    transition: 0.5s ease-in-out;
+    padding-left: 5px;
+    cursor: pointer;
+    color: #222;
 }
 /* image slider fix */
 
@@ -194,10 +233,25 @@ ul li a:hover {
     /* font-size: medium; */
 } 
 
+.createDelegateBtn {
+    /* color: tomato; */
+    color: #007bff;
+    font-size: 0.9rem;
+    font-size: bold;
+    cursor: pointer;
+}
 
-
-
-
+.createDelegateBtn:hover {
+    transition: 0.3s ease-in-out;
+    /* color: red; */
+    font-weight: bolder;
+}
+center h3 {
+    color: #0056b3;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
 
 
 
@@ -230,6 +284,13 @@ ul li a:hover {
     }
 }
 @media screen and (max-width: 900px) {
+    .left-pane-org {
+        overflow-y: auto;
+    }
+    .left-down-content {
+        overflow: hidden;
+        max-height: none;
+    }
     .clearfix {
         margin-top: 260px;
     }
@@ -243,7 +304,7 @@ ul li a:hover {
         font-size: 1.3rem;
     }
     .left-pane-org button {
-        padding: 3px;
+        padding: 3px 5px;
     }
     .right-pane-org {
         margin-left: 27%;
@@ -282,7 +343,7 @@ ul li a:hover {
         width: 35%;
     }
     .left-pane-org button {
-        padding: 2px;
+        padding: 3px 5px;
     }
 
 }

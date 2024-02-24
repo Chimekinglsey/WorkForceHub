@@ -194,10 +194,15 @@ class AdminUser(BaseUser, AbstractUser):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True, related_name='admin_user')
     profile_picture = models.ImageField(_('Profile picture'), upload_to='adminuser/profile_pictures', default='default_picture.png', null=True, blank=True)
     adminuser = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='administrator')
+    is_delegate = models.BooleanField(_('Delegate status'), default=False, help_text=_('Designates whether the user can act as a delegate for the organization.'))
     is_admin = models.BooleanField(_('Admin status'), default=True, help_text=_('Designates whether the user can log into this admin site.'))
     is_superuser = models.BooleanField(_('superuser status'), default=True, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
+    can_change_password = models.BooleanField(_('Change password status'), default=True, help_text=_('Designates whether the user can change their password.'))
+    delegated_branches = models.ManyToManyField(Branch, related_name='authorized_delegates')
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='admin_user_permissions')
     groups = models.ManyToManyField(Group, blank=True, related_name='admin_user_groups')
+    # TODO: Allow delegate admins to manage multiple branches
+    
 
     
     class Meta:
@@ -501,6 +506,19 @@ class Performance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='performances')
     performance_rating = models.IntegerField(_('performance rating'), default=0)
     performance_review = models.TextField(_('performance review'))
+    
+    # Fields for enhanced performance tracking
+    kpis = models.TextField(_('key performance indicators'), blank=True)
+    self_assessment = models.TextField(_('self-assessment'), blank=True)
+    manager_assessment = models.TextField(_('manager assessment'), blank=True)
+    peer_feedback = models.TextField(_('peer feedback'), blank=True)
+    project_performance = models.TextField(_('project performance'), blank=True)
+    professional_development = models.TextField(_('professional development'), blank=True)
+    improvement_plan = models.TextField(_('performance improvement plan'), blank=True)
+    recognition_rewards = models.TextField(_('recognition and rewards'), blank=True)
+    attendance_punctuality = models.TextField(_('attendance and punctuality'), blank=True)
+    customer_feedback = models.TextField(_('customer feedback'), blank=True)
+    
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
 
@@ -510,8 +528,8 @@ class Performance(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'{self.employee} - {self.performance_rating}'
-    
+        return f'{self.employee} - {self.performance_rating}%'
+
     def rank(self):
         if self.performance_rating >= 90:
             return 'Excellent'
@@ -522,8 +540,7 @@ class Performance(models.Model):
         elif self.performance_rating >= 60:
             return 'Fair'
         else:
-            return 'Poor'
-        
+            return 'Poor' 
 class WorkHistory(models.Model):
     """Model for employee work history"""
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='work_history')

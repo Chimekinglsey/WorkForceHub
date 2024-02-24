@@ -1,0 +1,141 @@
+.performance-dashboard {
+    text-align: center;
+    padding: 20px;
+    overflow: auto;
+    margin: 10px;
+  }
+  .archive-modal {
+    color: #e0e0e0;
+  }
+  
+  .employee-profile {
+    margin-bottom: 20px;
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  }
+  
+  .employee-info h2 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .employee-info p {
+    margin: 5px 0;
+  }
+  
+  .performance-actions {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .action-button {
+    padding: 1% 2%;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .action-button:hover {
+    background-color: #024084;
+  }
+  /* Modal styles */
+
+  .archive-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 100; 
+    overflow-y: auto;
+  }
+
+  .col-md {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  form {
+    margin-top: 50px;
+  }  
+
+  .close {
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    padding: 5px;
+    opacity: 0.85;
+  }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border: 1px solid #dddddda8;
+}
+
+th, td {
+  border-bottom: 1px solid #dddddda8;
+}
+  label, legend {
+    color: #ddd;
+  }
+
+  form textarea {
+    background: #f2f2f2 !important;
+    color: black !important;
+  }
+  
+/* Profile picture styling */
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid#1a295e5e
+}
+
+.profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+tr {
+  background-color: #f0f0f0;
+}
+tr:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+tr:hover {
+  background-color: #e0e0e0;
+}
+
+#performanceHistory-modal {
+  padding-top: 50px;
+  overflow: auto;
+}
+
+.history-container {
+  overflow: auto;
+}
+.history-container h4  {
+  color: #f2f3f3;
+}
+
+@media screen and (max-width: 768px) {
+  .action-button {
+    padding: 0.5% 1.5%;
+  }
+}

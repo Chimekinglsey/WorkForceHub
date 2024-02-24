@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -36,6 +37,7 @@ class Organization(models.Model):
 
     admin_user = models.ForeignKey('employees.AdminUser', on_delete=models.CASCADE, related_name='organizations')
     name = models.CharField(_('name'), max_length=250)
+    org_id = models.CharField(_('organization id'), max_length=12, unique=True)
     industry = models.CharField(_('industry'), choices=INDUSTRY_CHOICES, max_length=100, blank=True)
     sector = models.CharField(_('sector'), max_length=200, blank=True)
     size = models.CharField(_('size'), choices=EMPLOYEES_CHOICES, default='1 - 20', max_length=100, blank=True)
@@ -79,6 +81,7 @@ class Branch(models.Model):
     """Model for branch"""
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='organization_branches')
     name = models.CharField(_('name'), max_length=100)
+    branch_id = models.CharField(_('branch id'), max_length=5, unique=True)
     location = models.CharField(_('location'), max_length=250)
     email = models.EmailField(_('email'), max_length=250, null=True, blank=True)
     contact_phone = models.CharField(_('contact phone'), max_length=20, null=True, blank=True)
@@ -106,7 +109,6 @@ class Branch(models.Model):
 
     def __str__(self):
         return self.name
-
 class OrgDocuments(models.Model):
     """Model for organization documents"""
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='documents')
@@ -121,3 +123,24 @@ class OrgDocuments(models.Model):
         ordering = ['document_name', '-created_at']
 
 
+class Transfer(models.Model):
+    STATUS_CHOICES = (
+        ('pending', _('Pending')),
+        ('approved', _('Approved')),
+        ('declined', _('Declined')),
+    )
+    
+
+    employee = models.ForeignKey('employees.Employee', on_delete=models.CASCADE, related_name='transfers')
+    source_branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='outgoing_transfers')
+    destination_branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='incoming_transfers')
+    reason = models.TextField(_('Reason for Transfer'))
+    status = models.CharField(_('Status'), max_length=20, choices=STATUS_CHOICES, default='Pending')
+    requested_by = models.ForeignKey('employees.AdminUser', on_delete=models.SET_NULL, null=True, blank=True, related_name='requested_transfers')
+    approved_by = models.ForeignKey('employees.AdminUser', on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_transfers')
+    created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
+
+    class Meta:
+        verbose_name = _('Transfer')
+        verbose_name_plural = _('Transfers')

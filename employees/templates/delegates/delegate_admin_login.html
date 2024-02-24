@@ -1,0 +1,14 @@
+{% extends 'base/base.html'%}
+{% load crispy_forms_tags %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+{% block title %}Delege Login{% endblock title %}
+{% block content %}
+<!-- delegate_admin_login.html -->
+<h2>Delegate Admin Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {% crispy form %}
+    <button type="submit">Login</button>
+</form>
+{% endblock content %}

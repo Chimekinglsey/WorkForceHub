@@ -32,11 +32,12 @@
     <div class="left-pane">
         <div class="featuresToggleContainer">   <h2 class="featuresToggle">Features</h2> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
         <ul class="featuresList">
-            <li><a class="featuresItem" href="#" id="employeeManagement" data-content="employee-management">Employee Management</a></li>
-            <li><a class="featuresItem" href="#" id="leaveManagement" data-content="leave-management">Leave Management</a></li>
-            <li><a class="featuresItem" href="#" id="payrollManagement" data-content="payroll-management">Payroll Management</a></li>
-            <li><a class="featuresItem" href="#" id="performanceReporting"data-content="perfomance">Performance Reporting</a></li>
-            <li><a class="featuresItem" href="#" id="accountSettings" data-content="settings">Account Settings</a></li>
+            <li><a class="featuresItem" href="#" id="employeeManagement" data-content="employee-management"><i class="fas fa-user-tie"></i>Employee Management</a></li>
+            <li><a class="featuresItem" href="#" id="leaveManagement" data-content="leave-management"><i class="fas fa-calendar-alt"></i>Leave Management</a></li>
+            <li><a class="featuresItem" href="#" id="payrollManagement" data-content="payroll-management"><i class="fas fa-file-invoice-dollar"></i>Payroll Management</a></li>
+            <li><a class="featuresItem" href="#" id="performanceReporting"data-content="performance"><i class="fas fa-chart-line"></i>Performance Reporting</a></li>
+            <li><a class="featuresItem" href="#" id="transfers" data-content="transfers"><i class="fas fa-exchange-alt"></i>Transfers</a></li>
+            <li><a class="featuresItem" href="#" id="accountSettings" data-content="settings"><i class="fas fa-cog"></i>Account Settings</a></li>
         </ul>
     </div>
     <div class="right-pane">
@@ -190,7 +191,7 @@
                     <div class="statistics-grid">
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-users"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Employees</h3>
@@ -225,7 +226,7 @@
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-user-check"></i>
+                                <i class="fas fa-users-rectangle"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Active Employees</h3>
@@ -1016,7 +1017,7 @@
                         </div>
                         <div class="">
                             <button type="submit" id="submitArchiveBtn" class="archive-submit-btn btn btn-primary">Confirm</button>
-                            <button type="button" onclick="getElementById('archive-modal').style.display='none'" class="archive-submit-btn btn btn-danger close-btn">Cancel</button>
+                            <button type="button" onclick="getElementById('archive-modal').style.display='none'" class="btn btn-danger close-btn">Cancel</button>
                         </div>
                     </form>
                     </center>
@@ -1035,7 +1036,7 @@
                         <div class="statistics-grid">
                             <div class="statistic-item">
                                 <div class="statistic-icon">
-                                    <i class="fas fa-user"></i>
+                                    <i class="fas fa-users"></i>
                                 </div>
                                 <div class="statistic-info">
                                     <h3>Total Employees</h3>
@@ -1062,7 +1063,7 @@
                             </div>
                             <div class="statistic-item">
                                 <div class="statistic-icon">
-                                    <i class="fas fa-user-check"></i>
+                                    <i class="fas fa-user-clock"></i>
                                 </div>
                                 <div class="statistic-info">
                                     <h3>Active Employees</h3>
@@ -1109,7 +1110,7 @@
 
                 <div id="archive-modal2" class="archive-modal" style="display: none;">
                     <div class="modal-content">
-                        <span class="close" aria-hidden="true" onclick="getElementById('archive-modal').style.display='none'">&times;</span>
+                        <span class="close" aria-hidden="true" onclick="getElementById('archive-modal2').style.display='none'">&times;</span>
                         <center>
                     <h4>Archive Employee</h4>
                     <form id="archiveEmployeeForm2" method="post">
@@ -1120,7 +1121,7 @@
                         </div>
                         <div class="">
                             <button type="submit" id="submitArchiveBtn2" class="archive-submit-btn btn btn-primary">Confirm</button>
-                            <button type="button" onclick="getElementById('archive-modal').style.display='none'" class="archive-submit-btn btn btn-danger close-btn">Cancel</button>
+                            <button type="button" onclick="getElementById('archive-modal2').style.display='none'" class="btn btn-danger close-btn">Cancel</button>
                         </div>
                     </form>
                     </center>
@@ -1332,7 +1333,7 @@
                     <div class="statistics-grid">
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-users"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Employees</h3>
@@ -1389,7 +1390,7 @@
                             <div class="statistic-info">
                                 <h3>Average Leave Duration</h3>
                                 {% if average_leave_duration %}
-                                <p class="statsVal">{{ average_leave_duration|intcomma }} days</p>
+                                <p class="statsVal">{{ average_leave_duration |floatformat:"2"|intcomma }} days</p>
                                 {% else %}
                                 <p class="statsVal" style="color: red;">3.5 days</p>
                                 {% endif %}
@@ -1650,7 +1651,7 @@
                     <div class="statistics-grid">
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-users"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Employees</h3>
@@ -1821,6 +1822,576 @@
                         
             </div>
 
+
+            {% comment %} Performance Management {% endcomment %}
+            <div class="performance mgt">
+                <div class="menuToggle">
+                    <h2>Manage Employee Performance</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                </div>
+            
+                <div class="performance-navigation actions">
+                    <button class="tab4 nav-tab active" data-tab4="performance-list">Performance Summary</button>
+                    <button class="tab4 nav-tab" data-tab4="high-performers">High Performers</button>
+                    <button class="tab4 nav-tab" data-tab4="underperformance">Low Performance</button>
+                    <button class="tab4 nav-tab" data-tab4="statistics">Statistics</button>
+                </div>
+
+                {% comment %} Performance Summary {% endcomment %}
+                <div class="tab-contents4" id="performance-list">
+                    <div class="searchFlex">
+                        <h3>Performance Summary</h3>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search performance..."><button><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    {% if performance %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Review</th>
+                                <th>Rating</th>
+                                <th>Date</th>
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for perf in performance %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
+                                <td>{{ perf.employee.department }}</td>
+                                {% if perf.performance_review|length > 30 %}
+                                <td>{{ perf.performance_review|slice:':30'}}...</td>
+                                {% elif perf.performance_review|length > 0 %}
+                                <td>{{ perf.performance_review }}</td>
+                                {% else %}
+                                <td>No review yet</td>
+                                {% endif %}
+                                <td>{{ perf.performance_rating }}%</td>
+                                <td>{{ perf.updated_at|date:'d/m/y' }}</td>
+                                <td class="controlButton">
+                                    <a class="pf-btn  btn btn-block" href="/employeePerformance/{{ perf.employee.pk }}/">Detail</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h3>No Employee Performance yet</h3>
+                        <p>Leave requests will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+                
+                {% comment %} High Performers Summary {% endcomment %}
+                <div class="tab-contents4" id="high-performers">
+                    <div class="searchFlex">
+                        <h3>High Performers</h3>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search high performers..."><button><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    {% if high_performers %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Review</th>
+                                <th>Rating</th>
+                                <th>Date</th>
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for perf in high_performers %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
+                                <td>{{ perf.employee.department }}</td>
+                                {% if perf.performance_review|length > 30 %}
+                                <td>{{ perf.performance_review|slice:':30'}}...</td>
+                                {% elif perf.performance_review|length > 0 %}
+                                <td>{{ perf.performance_review }}</td>
+                                {% else %}
+                                <td>No review yet</td>
+                                {% endif %}
+                                <td>{{ perf.performance_rating }}%</td>
+                                <td>{{ perf.updated_at|date:'d/m/y' }}</td>
+                                <td class="controlButton">
+                                    <a class="pf-btn btn btn-block" href="/employeePerformance/{{ perf.employee.pk }}/">Detail</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h3>No High Performers </h3>
+                        <p>Performance rating of <b style="color: lime;">80+</b> will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+
+                {% comment %} Underperformance Summary {% endcomment %}
+                <div class="tab-contents4" id="underperformance">
+                    <div class="searchFlex">
+                        <h3>Underperformance</h3>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search underperformance..."><button><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    {% if underperformance %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Review</th>
+                                <th>Rating</th>
+                                <th>Date</th>
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for perf in underperformance %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
+                                <td>{{ perf.employee.department }}</td>
+                                {% if perf.performance_review|length > 30 %}
+                                <td>{{ perf.performance_review|slice:':30'}}...</td>
+                                {% elif perf.performance_review|length > 0 %}
+                                <td>{{ perf.performance_review }}</td>
+                                {% else %}
+                                <td>No review yet</td>
+                                {% endif %}
+                                <td>{{ perf.performance_rating }}%</td>
+                                <td>{{ perf.updated_at|date:'d/m/y' }}</td>
+                                <td class="controlButton">
+                                    <a class="pf-btn btn btn-block" href="/employeePerformance/{{ perf.employee.pk }}/">Detail</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h3>No Underperforming Employees</h3>
+                        <p>Performance rating less than <b>60</b> will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+
+
+            
+                {% comment %} Performance Statistics {% endcomment %}
+                <div class="tab-contents4 statistics" id="statistics">
+                    <div class="container">
+                        <h2>Performance Statistics</h2>
+                        <div class="statistics-grid">
+                          <div class="statistic-item">
+                            <div class="statistic-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="statistic-info">
+                              <h3>Total Employees</h3>
+                                 {% if total_employees_count %}
+                                <p class="statsVal">{{ total_employees_count|intcomma }}</p>
+                                {% else %}
+                                    <p class="statsVal" style="color: red;">50</p>
+                                {% endif %}
+                            </div>
+                          </div>
+                          <div class="statistic-item">
+                            <div class="statistic-icon">
+                              <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="statistic-info">
+                              <h3>Performance Average</h3>
+                              {% if average_performance_rating %}
+                                <p class="statsVal">{{ average_performance_rating|floatformat:'2'|intcomma }}%</p>
+                                {% else %}
+                                    <p class="statsVal" style="color: red;">74%</p>
+                                {% endif %}
+                            </div>
+                          </div>
+                          <div class="statistic-item">
+                            <div class="statistic-icon">
+                              <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="statistic-info">
+                              <h3>Top Performers</h3>
+                              {% if high_performers %}
+                                <p class="statsVal">{{ high_performers.count|intcomma }}</p>
+                                {% else %}
+                                    <p class="statsVal" style="color: red;">20</p>
+                                {% endif %}
+                            </div>
+                          </div>
+                          <div class="statistic-item">
+                            <div class="statistic-icon">
+                              <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="statistic-info">
+                              <h3>Improvement Rate</h3>
+                              {% if improvement_rate %}
+                                <p class="statsVal">{{ improvement_rate|floatformat:"2"|intcomma }}%</p>
+                                {% else %}
+                                    <p class="statsVal" style="color: red;">10%</p>
+                                {% endif %}
+                            </div>
+                          </div>
+                          <div class="statistic-item">
+                            <div class="statistic-icon">
+                              <i class="fas fa-star"></i>
+                            </div>
+                            <div class="statistic-info">
+                              <h3>Highest Rating</h3>
+                                {% if highest_rating %}
+                                    <p class="statsVal">{{ highest_rating }}</p>
+                                    {% else %}
+                                        <p class="statsVal" style="color: red;">95%</p>
+                                    {% endif %}
+                            </div>
+                          </div>
+                          <div class="statistic-item">
+                            <div class="statistic-icon">
+                              <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="statistic-info">
+                              <h3>Employee Engagement</h3>
+                              {% if employee_engagement %}
+                                <p class="statsVal">{{ employee_engagement }}</p>
+                                {% else %}
+                                    <p class="statsVal" style="color: red;">High</p>
+                                {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                 </div>
+            </div>
+
+            
+
+            {% comment %} Performance Management {% endcomment %}
+            <div class="transfers mgt">
+                <div class="menuToggle">
+                    <h2>Manage Staff Transfers</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                </div>
+            
+                <div class="performance-navigation actions">
+                    <button class="tab6 nav-tab active" data-tab6="transfer-request">Request Transfer</button>
+                    <button class="tab6 nav-tab" data-tab6="pending-transfers">Pending</button>
+                    <button class="tab6 nav-tab" data-tab6="declined-transfers">Declines</button>
+                    <button class="tab6 nav-tab" data-tab6="transfer-history">History</button>
+                    <button class="tab6 nav-tab" data-tab6="transfer-statistics">Statistics</button>
+                </div>
+
+                {% comment %} Make a transfer request {% endcomment %}
+                <div class="tab-contents6" id="transfer-request">
+                    <h3>Make Transfer Request</h3>
+                    {% if transfer_form %}
+                        <div class="transfer-form">
+                            <form action="{% url 'transfer_request' %}" method="post">
+                                {% csrf_token %}
+                                {% crispy transfer_form %}
+                            </form>
+                        </div>
+                    {% else %}
+                        <center>
+                            <h3>No Transfer Form</h3>
+                            <p>Transfer form will be displayed here</p>
+                        </center>
+                    {% endif %}
+                </div>
+        
+                {% comment %} Pending Requests Summary {% endcomment %}
+                <div class="tab-contents6" id="pending-transfers">
+                    <div class="searchFlex">
+                        <h3>Pending Requests</h3>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    {% if pending_transfers %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transfer in pending_transfers %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                <td>{{ transfer.employee.department }}</td>
+                                {% if transfer.reason|length > 30 %}
+                                <td>{{ transfer.reason|slice:':30'}}...</td>
+                                {% elif transfer.reason|length > 0 %}
+                                <td>{{ transfer.reason }}</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                <td>{{ transfer.status }}</td>
+                                <td>{{ transfer.created_at|date:'d/m/y' }}</td>
+                                <td class="controlButton">
+                                    <a class="tr-btn btn btn-block" href="{% url 'cancel_transfer' transfer.id %}">Cancel</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h3>No Pending Transfers </h3>
+                        <p> Pending transfers will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+
+                {% comment %} Declined Requests Summary {% endcomment %}
+                <div class="tab-contents6" id="declined-transfers">
+                <div class="searchFlex">
+                    <h3>Declined Requests</h3>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search declined trans..."><button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {% if declined_transfers %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Name</th>
+                            <th>Dept</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Decline Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transfer in declined_transfers %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                            <td>{{ transfer.employee.department }}</td>
+                            {% if transfer.reason|length > 30 %}
+                            <td>{{ transfer.reason|slice:':30'}}...</td>
+                            {% elif transfer.reason|length > 0 %}
+                            <td>{{ transfer.reason }}</td>
+                            {% else %}
+                            <td>None</td>
+                            {% endif %}
+                            <td>{{ transfer.status }}%</td>
+                            <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <center>
+                    <h3>No Declined Transfers </h3>
+                    <p> Declined transfers will be displayed here</p>
+                </center>
+                {% endif %}                        
+                </div>
+            
+                {% comment %} Underperformance Summary {% endcomment %}
+                <div class="tab-contents6" id="transfer-history">
+                    <div class="searchFlex">
+                        <h3>Transfer History</h3>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search transfer history..."><button><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    {% if transfer_history %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Approval Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transfer in transfer_history %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                <td>{{ transfer.employee.department }}</td>
+                                {% if transfer.reason|length > 30 %}
+                                <td>{{ transfer.reason|slice:':30'}}...</td>
+                                {% elif transfer.reason|length > 0 %}
+                                <td>{{ transfer.reason }}</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                <td>{{ transfer.status }}%</td>
+                                <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h3>No Transfers </h3>
+                        <p> All approved transfers will be displayed here</p>
+                    </center>
+                    {% endif %}                     
+                </div>
+
+                {% comment %} Employee transfers {% endcomment %}
+                <div class="tab-contents6 statistics" id="transfer-statistics">
+                    <div class="container">
+                        <h2>Transfer Statistics</h2>
+                        <div class="statistics-grid">
+                            <div class="statistic-item">
+                                <div class="statistic-icon">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                                <div class="statistic-info">
+                                    <h3>Total Transfers</h3>
+                                    {% if transfers %}
+                                        <p class="statsVal">{{ transfers.count|intcomma }}</p>
+                                    {% else %}
+                                        <p class="statsVal" style="color: red;">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="statistic-item">
+                                <div class="statistic-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="statistic-info">
+                                    <h3>Approved Transfers</h3>
+                                    {% if approved_transfers %}
+                                        <p class="statsVal">{{ approved_transfers.count|intcomma }}</p>
+                                    {% else %}
+                                        <p class="statsVal" style="color: red;">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="statistic-item">
+                                <div class="statistic-icon">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <div class="statistic-info">
+                                    <h3>Declined Transfers</h3>
+                                    {% if declined_transfers %}
+                                        <p class="statsVal">{{ declined_transfers.count|intcomma }}</p>
+                                    {% else %}
+                                        <p class="statsVal" style="color: red;">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="statistic-item">
+                                <div class="statistic-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="statistic-info">
+                                    <h3>Total Employees</h3>
+                                    {% if employees %}
+                                        <p class="statsVal">{{ employees.count|intcomma }}</p>
+                                    {% else %}
+                                        <p class="statsVal" style="color: red;">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {% comment %} Account Settings {% endcomment %}
+            <div class="settings mgt">
+                <div class="menuToggle">
+                    <h2>Account Settings</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                </div>
+            
+                <div class="settings-navigation actions">
+                    <button class="tab5 nav-tab active" data-tab5="update-profile">Update Profile</button>
+                    <button class="tab5 nav-tab" data-tab5="change-passwd">Change Password</button>
+                    <button class="tab5 nav-tab" data-tab5="upload-docs">Upload Docs</button>
+                </div>
+
+                {% comment %} Email and Picture update {% endcomment %}
+                <div class="tab-contents5" id="update-profile">
+                    <h3>User Profile</h3>
+                    <div class="profile-picture">
+                        <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                    </div>
+                    <center>
+                        <h3 style="font-family: 'rowdies' ;">Hello {{user.first_name}}</h3>
+                        <h5>Update your email or profile picture</h5>
+                    </center>
+                    {% if profile_form %}
+                        <form class="container" method="post" action="{% url 'profile_settings'%}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% crispy profile_form %}
+                        </form>
+                    {% else %}
+                    <center>
+                        <h3>Hello {{ user.username }}</h3>
+                    </center>
+                    {% endif %}                        
+                </div>
+                
+                {% comment %} Password update {% endcomment %}
+                <div class="tab-contents5" id="change-passwd">
+                    <h3>Update Your Password</h3>
+                    <div class="profile-picture">
+                        <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                    </div>
+                    {% if change_password_form %}
+                        <form class="container" method="post" action="{% url 'change_delegate_password'%}">
+                            {% csrf_token %}
+                            {% crispy change_password_form %}
+                        </form>
+                    {% else %}
+                    <center>
+                        <h3>Hello {{ user.username }}</h3>
+                    </center>
+                    {% endif %}                        
+                </div>
+
+                {% comment %} Password update {% endcomment %}
+                <div class="tab-contents5" id="upload-docs">
+                    <h3>Upload docs</h3>
+                    <div class="profile-picture">
+                        <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                    </div>
+                    {% if branch_documents_form %}
+                        <form class="container" method="post" action="{% url 'upload_branch_docs'%}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% crispy branch_documents_form %}
+                        </form>
+                    {% else %}
+                    <center>
+                        <h3>Hello {{ user.username }}</h3>
+                    </center>
+                    {% endif %}                        
+                </div>
+            </div>
+    
         </div>
     </div>
 </div>

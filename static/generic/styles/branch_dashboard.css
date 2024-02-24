@@ -54,12 +54,10 @@ body {
 .featuresToggleContainer {
     display: flex;
     justify-content: space-between;
+    padding: 0 5px;
+    border-radius: 5px;
 }
 
-.featuresToggleContainer:hover {
-    cursor: pointer;
-    background-color: #0056b3;
-}
 
 .featuresToggleContainer:hover .fa-angle-down {
     transform: rotate(180deg);
@@ -94,7 +92,9 @@ body {
 }
 /* Adjust tab width */
 
-.tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5 {
+.tab-contents, .tab-contents2, 
+.tab-contents3, .tab-contents4, 
+.tab-contents5, .tab-contents6 {
     display: none;
     margin-top: 20px;
 }
@@ -120,7 +120,11 @@ body {
 }
 
 /* Adjust tab width for mgt sections */
-.nav-tab, .actions .tab.active, .actions .tab2.active, .actions .tab3.active {
+.nav-tab, .actions .tab.active,
+.actions .tab2.active,
+.actions .tab3.active, 
+.actions .tab4.active, 
+.actions .tab5.active {
     background-color: #0056b3;
 }
 
@@ -229,7 +233,11 @@ tbody tr:nth-child(even) {
 .view-leave-list, .leave-history {
     margin-top: 20px;
 }
-.tab-contents th, .apply-leave th, .tab-contents2 th, .tab-contents3 th, .tab-contents4 th, .tab-contents5 th {
+.tab-contents th, .apply-leave th,
+.tab-contents2 th, .tab-contents3 th, 
+.tab-contents4 th, .tab-contents5 th,
+.tab-contents6 th
+{
     border: 1px solid rgba(196, 192, 192, 0.401);
 }
 
@@ -510,6 +518,7 @@ tr:hover {
 .close {
     color: red;
     opacity: 0.5;
+    cursor: pointer;
 }
 .close:hover {
     color: red;
@@ -559,6 +568,12 @@ tr:hover {
 .payroll-navigation .tab3 {
     width: 24%;
 }
+.performance-navigation .tab4{
+    width: 24%;
+}
+.transfers .tab6 {
+    width: 19%;
+}
 
 .view-bank-info {
     margin: 20px;
@@ -569,8 +584,62 @@ tr:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #fefff9;
 }
+.pf-btn {
+    margin: 2px;
+    opacity: 0.7;
+}
+
+.pf-btn:hover {
+    opacity: 1;
+    color: #111;
+}
+
+.settings {
+    font-family: 'Saira', sans-serif;
+}
+.settings h3 {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.settings .col-md {
+    display: flex;
+    justify-content: flex-end;
+}
+.settings .tab5 {
+    width: 32%;
+}
+
+.settings #update-profile,
+.transfers #transfer-request,
+.performance #performance-list {
+    display: block;
+}
 
 
+.featuresToggle{
+    user-select: none;
+}
+.featuresList .fas {
+    margin-right: 8px;
+    text-align: left;
+    color: #a9edf6;
+}
+
+.featuresList li a {
+    color: rgb(214, 240, 238);
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#change-passwd .form-row {
+    text-align: center;
+}
+#change-passwd #hint_id_new_password1 {
+    text-align: left;
+}
   /* Optional: Make modal smaller on smaller screens */
   @media (max-width: 768px) {
     .modal-lg {
@@ -595,21 +664,43 @@ tr:hover {
     .approve, .reject {
         width: 90%;
     }
-.tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5 {
+.tab-contents,
+.tab-contents2, 
+.tab-contents3, 
+.tab-contents4, 
+.tab-contents5,
+.tab-contents6 {
     overflow: auto;
     }
 }
    @media screen and (max-width: 1000px){
     /* Adjust tab width for mgt sections */
-    .actions .tab, .actions .tab2, .actions .tab3 {
+    .actions .tab, .actions .tab2,
+     .actions .tab3, .actions .tab4, 
+     .actions .tab5, .actions .tab6 {
         padding: 10px;
     }
    }
 @media screen and (max-width: 900px) {
     /* Adjust tab width for mgt sections */
-    .employee-nav .tab, .leave-navigation .tab2, .payroll-navigation .tab3 {
+    .featuresToggleContainer:hover {
+        cursor: pointer;
+        background-color: #0056b3;
+    }
+    .employee-nav .tab, 
+    .leave-navigation .tab2, 
+    .payroll-navigation .tab3, 
+    .performance-navigation .tab4, 
+    .settings .tab5,
+    .transfers .tab6
+     {
         width: 100%;
     }
+
+    .btn {
+        padding: 5px 10px;
+    }
+    
     h2 {
         font-size: 1.5rem;
     }
@@ -632,13 +723,19 @@ tr:hover {
     }
 
     /* Adjust tab width for mgt sections */
-    .tab, .tab2, .tab3 {
+    .tab, .tab2, .tab3, 
+    .tab4, .tab5, .tab6 {
         display: block;
         width: 100%;
         margin-bottom: 10px;
     }
 
-    .tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5{
+    .tab-contents, 
+    .tab-contents2, 
+    .tab-contents3, 
+    .tab-contents4, 
+    .tab-contents5,
+    .tab-contents6{
         display: none;
     }
     .dropdown-menu {
@@ -674,13 +771,16 @@ tr:hover {
 }
 
 /* Adjust tab width for mgt sections */
-.tab, .tab2, .tab3{
+.tab, .tab2, .tab3, 
+.tab4, .tab5, .tab6 {
     display: block;
     width: 100%;
     margin-bottom: 10px;
 }
 
-.tab-contents, .tab-contents2, .tab-contents3, .tab-contents4, .tab-contents5 {
+.tab-contents, .tab-contents2,
+.tab-contents3, .tab-contents4, 
+.tab-contents5, .tabcontent6 {
     display: none;
 }
 }

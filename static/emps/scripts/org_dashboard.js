@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    // Function to update the left pane's position
+
     // close modal button
     $('.closeModal').click(function() {
         $('.modal').hide();
@@ -70,6 +72,40 @@ $(document).ready(function() {
             }
         });
     });
+
+
+    $('#delegate-admin-form').submit(function(e) {
+        // start spinner
+        e.preventDefault();
+        $('.spinner-container').show();
+
+        // Serialize form data
+        let formData = $(this).serialize();
+        let form = $(this);
+
+        // Send AJAX request to create organization
+        $.ajax({
+            url: '/org/createDelegate/',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                // Handle success response, e.g., redirect to branch creation
+                form.trigger('reset');
+                // reload the page
+                window.location.href = '/createOrg/';
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                $('.spinner-container').hide();
+                form.hide()
+                $('.backdrop').hide();
+                $('#ErrorModal').show()
+                $('.create-org').show();
+                console.error(error);
+            }
+        });
+    });
+
         // Function to show organization form and backdrop
         function showOrgModal() {
             $('.create-org').hide();
@@ -80,6 +116,11 @@ $(document).ready(function() {
             $('.create-org').hide();
             $('#branch-form').show();
             $('.backdrop').show();
+        }
+        function showDelegateModal() {
+            $('.create-org').hide();
+            $('.backdrop').show();
+            $('#delegate-admin-form').show();
         }
 
 
@@ -95,6 +136,12 @@ $(document).ready(function() {
             $('#branch-form').hide();
             $('.create-org').show();
         }
+        function hideDelegateModal() {
+            $('.backdrop').hide();
+            $('#delegate-admin-form').hide();
+            $('.create-org').show();
+        }
+
 
         
 
@@ -105,6 +152,10 @@ $(document).ready(function() {
         $('.createBranchBtn').click(function() {
             showBranchModal();
         });
+        $('.createDelegateBtn').click(function() {
+            showDelegateModal();
+        });
+
 
 
 
@@ -112,6 +163,7 @@ $(document).ready(function() {
         $('.close').click(function() {
             hideBranchModal();
             hideOrgModal();
+            hideDelegateModal();
         });
     
         $('.listBranches').click(function(event){
@@ -123,22 +175,53 @@ $(document).ready(function() {
                 $('.showBranches').show();
             }
         });
+        // listDelegates
+        $('.listDelegates').click(function(event){
+            // Prevent the click event from propagating to the document
+            event.stopPropagation();
+            if ($('.showDelegates').is(':visible')) {
+                $('.showDelegates').hide();
+            } else {
+                $('.showDelegates').show();
+            }
+        });
         $(window).click(function(event) {
             // Check if .showBranches is currently displayed
             if ($('.showBranches').is(':visible')) {
                 $('.showBranches').hide();
             }
+            if ($('.showDelegates').is(':visible')) {
+                $('.showDelegates').hide();
+            }
         });
-
-        // TODO control left pane
-        function updateLeftPanePosition() {
-            $(window).scroll(function() {
-              let scrollTop = $(this).scrollTop();
-              if (scrollTop > 0) {
-                $('.spaceUp').css({'margin-top': 100 - scrollTop + 'px'})
-              }
-            });
-          }
-          
-        //   updateLeftPanePosition();
     });
+    
+    //   updateLeftPanePosition();
+    $(document).ready(function() {
+        // Function to update left pane position
+        function updateLeftPanePosition() {
+            let headerHeight = $('.header').outerHeight();
+            let footerHeight = $('.footer').outerHeight();
+            let leftPane = $('.left-pane-org');
+            let scrollTop = $(window).scrollTop();
+    
+            // Calculate the desired top position for the left pane
+            let desiredTop = 85.5 - scrollTop;
+            if (desiredTop < 10) desiredTop = 10; // Minimum top position
+            if (desiredTop + leftPane.outerHeight() > $(window).innerHeight() - footerHeight) {
+                desiredTop = $(window).innerHeight() - footerHeight - leftPane.outerHeight();
+            }
+    
+            // Update the left pane's top position
+            leftPane.css('top', desiredTop + 'px');
+        }
+    
+        // Update left pane position on window scroll and resize
+        $(window).on('scroll resize', function() {
+            updateLeftPanePosition();
+        });
+    
+        // Initial position update
+        updateLeftPanePosition();
+    });
+    

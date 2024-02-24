@@ -155,6 +155,20 @@
         {% csrf_token %}
         {% crispy form %}
     </form>
+
+    <form id="delegate-admin-form" class="container mt-5" method="post" enctype="multipart/form-data">
+        <div class="close-btn">
+            <span class="close">&times;</span>
+        </div>
+        <center>
+            <h3>Delegate Admin Information</h3>
+            <p>Use this form to create a delegate admin for a specific branch within your organization. Delegate admins have restricted access and can manage operations only within their assigned branch.</p>
+        </center>
+            <hr>
+        {% csrf_token %}
+        {% crispy delegate_admin_form %}
+    </form>
+
     <div class="spinner-container">
         <div class="spinner"></div>
     </div>
@@ -178,7 +192,83 @@
     </div>
 
     <div class="create-org">
+        <!-- Left Pane -->
+        <div class="left-pane-org">
+            <div class="left-pane-content">
+                <div class="cardie">
+                    <section class="user_details">
+                        {% if user.profile_picture and user.profile_picture.url %}
+                        <img class="tiny_images" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                        {% else %}
+                        <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="profile pics">
+                        {% endif %}
+                        <center><p class="user_name">{{ user.username }}</p></center>
+                    </section>
+                    {% if org %}
+                    {% if org.name|length > 10 %}
+                    <p> Welcome Back,  <span><b class="org_name">{{ org.name|slice:':10' }}...</b></span> </p>
+                    {% else %}
+                    <p> Welcome Back,  <span><b class="org_name">{{ org.name }}</b></span> </p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="left-down-content">
+                    <div class="action-links">
+                        {% if org %}
+                        <h4 class="saira"> My Organization</h4>
+                        <ul>
+                            <li><button class="createBranchBtn">Create Branch</button></li>
+                            {% if branches %}
+                            <li class="createDelegateBtn"><i class="fas fa-user-plus"></i>Create Delegate</li>
+                            {% endif %}
+                        </ul>
+                        {% else %}
+                        <h4>Organization Dashboard</h4>
+                        <ul>
+                            <li><button class="createOrgBtn">Create Organization</button></li>
+                        </ul>
+                        {% endif %}
+                        <ul>
+                            <li><a class="listBranches"><i class="fas fa-code-branch"></i>&nbsp;Branches</a></li>
+                            <div class="showBranches">
+                                {% if branches %}
+                                <ul>
+                                    {% for branch in branches %}
+                                    <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.branch_id %}">{{ branch.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <ul>
+                                    <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
+                                </ul>
+                                {% endif %}
+                            </div>
+                            <li><a class="listDelegates"><i class="fas fa-user-friends"></i>Delegates</a></li>
+                            <div class="showDelegates">
+                                {% if delegate_admins %}
+                                <ul>
+                                    {% for delegate in delegate_admins %}
+                                    <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' delegate.branch.branch_id %}">{{ delegate.first_name }} - {{ delegate.branch.name|slice:':10'}}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <ul>
+                                    <li class="list-group-item list-color"></li><a href="">No Account Delegate</a></li>
+                                </ul>
+                                {% endif %}
+                            </div>
+                            <li><a href=""><i class="fas fa-file-alt"></i> Reports</a></li>
+                            <li><a href=""><i class="fas fa-exchange-alt"></i>Transfer</a></li>
+                        </ul>
+                    </div>
+                </div>
 
+                <div class="logout">
+                    <p class="logoutBtn"> <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></p>
+                </div>
+            </div>
+        </div>
+        
         <!-- Right Pane -->
         <div class="right-pane-org">
             <!-- Create Organization Card -->
@@ -245,49 +335,7 @@
                 <p>Join thousands of organizations that trust WorkForceHub for their HR needs. Experience efficient workforce management, robust security, and exceptional support.</p>
             </div>
         </div> 
-        <!-- Left Pane -->
-            <div class="left-pane-org">
-                <div class="spaceUp"></div>
-                    <div class="left-pane-content">
-                        <div class="cardie">
-                            <section class="user_details">
-                                {% if user.profile_picture and user.profile_picture.url %}
-                                <img class="tiny_images" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
-                                {% else %}
-                                <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="profile pics">
-                                {% endif %}
-                                <center><p class="user_name">{{ user.username }}</p></center>
-                            </section>
-                            {% if org %}
-                            <p> Welcome Back,  <span><b class="org_name">{{ org.name }}</b></span> </p>
-                            </div>
-                            <h4 class="saira"> My Organization</h4>
-                            <ul>
-                                <li><button class="createBranchBtn">Create Branch</button></li>
-                        {% else %}
-                            <h2>Organization Dashboard</h2>
-                            <ul>
-                            <li><button class="createOrgBtn">Create Organization</button></li>
-                        {% endif %}
-                            <li><a class="listBranches list-group">Branches</a></li>
-                            <div class="showBranches">
-                                {% if branches %}
-                                <ul>
-                                    {% for branch in branches %}
-                                        <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.id %}">{{ branch.name }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                                {%else%}
-                                <ul>
-                                        <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
-                                </ul>
-                                {% endif %}
-                            </div>
-                            <li><a href="">Reports</a></li>
-                            <li><a href="">Transfer</a></li>
-                        </ul>
-                    </div>
-            </div>
+
 
     </div>
 {% comment %} Create Organization Modal Form {% endcomment %}

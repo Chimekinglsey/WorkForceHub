@@ -12,16 +12,26 @@ router.register(r'organizatons', org_views.OrganizationViewSet, basename='organi
 
 urlpatterns = [
     path('', emp_view.landing_page, name='landing_page'),
+
+    # Admin User urls
     path('signUp/', emp_view.signup, name='signUp'),
     path('login/', emp_view.login_view, name='login'),
     path('logout/', emp_view.logout_view, name='logout'),
     path('profileUpdate/', emp_view.profile_update, name='profile_update'),
 
+    # Delegate admin urls
+    path('accountSettings/', emp_view.profile_settings, name='profile_settings'),
+    path('changePassword/', emp_view.change_password, name='change_delegate_password'),
+    path('uploadBranchDocs/', emp_view.upload_documents, name='upload_branch_docs'),
+
     # Dashboard urls (org and branch)
+    path('orgDashboard/', emp_view.org_dashboard, name='org_dashboard'),
     path('createOrg/', emp_view.org_dashboard, name="create_org"),
     path('org/createBranch/', emp_view.create_branch, name="create_branch"),
     path('org/branch/<int:branch_id>/', emp_view.branch_dashboard, name="branch_dashboard"),
+    path('org/createDelegate/', emp_view.create_delegate, name="create_delegate"),
 
+ 
     # Employee Management
     path('updateEmployee/<int:emp_id>/', emp_view.update_employee, name="update_employee"),
     path('archiveEmployee/<int:emp_id>/', emp_view.archive_employee, name="archive_employee"),
@@ -39,11 +49,23 @@ urlpatterns = [
     path('deletePayroll/<int:payroll_id>/', emp_view.delete_payroll, name='delete_payroll'),
     path('payrollHistory/<int:emp_id>/', emp_view.payroll_history, name='payroll_history'),
 
+    # Performance Management
+    path('employeePerformance/<int:emp_id>/', emp_view.performance_dashboard, name='performance_dashboard'),
+    path('performanceReview/<int:emp_id>/', emp_view.performance_review, name='performance_review'),
+    path('projectPerformance/<int:emp_id>/', emp_view.project_performance, name='project_performance'),
+    path('otherPerformance/<int:emp_id>/', emp_view.other_performance, name='other_performance'),
+
     # Password urls
     path('forgotPassword/', emp_view.forgot_password, name='forgot_password'),
     path('restoreArchive/<int:emp_id>/', emp_view.restore_archive, name='restore_archive'),
     path('resetToken/', emp_view.confirm_password_reset_token, name='reset_token'),
     path('resetPassword/', emp_view.reset_password, name='reset_password'),
+
+
+    # Transfer Management
+    path('transferRequest/', emp_view.transfer_request, name='transfer_request'),
+    path('cancelTransfer/<int:transfer_id>/', emp_view.cancel_transfer_request, name='cancel_transfer'),
+    path('manageTransferRequest/<int:transfer_id>/', emp_view.manage_transfer_request, name='manage_transfer_request'),
 
     # API URLS
     path('api/', include(router.urls)),

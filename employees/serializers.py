@@ -16,7 +16,6 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
                     'supervised_employees', 'created_at', 'updated_at', 'adminuser', 'bank_name', 'account_number',
                    'account_name', 'pension_id', 'tax_id',
                    )
-                  
 
 class AdminUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

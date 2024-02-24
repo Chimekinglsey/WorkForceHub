@@ -41,69 +41,36 @@ function flashMessage(response) {
         $('.mgt').hide();
         $(`.${content}`).show();
     });
-    // Function to toggle Feature list on heading click for screens less than 900px
     $('.featuresToggleContainer').click(function () {
         if ($(window).width() <= 754) {
             $('.featuresList').slideToggle();
         }
     });
-    
-    $('.featuresItem').click(function () {
+
+    // Function to close Feature list when window is resized to larger than 900px
+    $(window).resize(function () {
+        if ($(window).width() > 754) {
+            $('.featuresList').slideDown();
+            $('.actions').slideDown();
+        } else {
+            $('.featuresList').slideUp();
+            $('.actions').slideUp();
+        }
+    });
+
+    // Handle mouse enter and leave events for the left pane
+    $('.left-pane').hover(
+        function() { // Mouse enter
             if ($(window).width() <= 754) {
-                $('.featuresList').slideToggle();
-            }
-        });
-
-        // Function to close Feature list when window is resized to larger than 900px
-        $(window).resize(function () {
-            if ($(window).width() > 754) {
                 $('.featuresList').slideDown();
-                $('.actions').slideDown();
-                $('.featuresToggle').removeClass('shake');
-                $('.left-pane').removeClass('shake-parent')
-                $('.left-pane').on('mouseleave', function() {
-                    $('.featuresList').slideDown();
-                });
-    
             }
-            else {
+        },
+        function() { // Mouse leave
+            if ($(window).width() <= 754) {
                 $('.featuresList').slideUp();
-                $('.actions').slideUp();
-                $('.featuresToggle').addClass('shake');
-                $('.left-pane').addClass('shake-parent')
-    
-                $('.featuresToggleContainer').on('mouseenter click', function() {
-                    $('.featuresList').slideDown();
-                });
-                $('.left-pane').on('mouseleave', function() {
-                    $('.featuresList').slideUp();
-                });
             }
-        });
-        
-
-
-        // display leave requests when #payrollManagement is clicked
-
-        // leave and employee management
-        if ($(window).width() <= 754) {
-            $(".actions").slideToggle();
-            $(".featuresList").slideToggle(
-            );
-            $('.featuresToggle').addClass('shake');
-            $('.left-pane').addClass('shake-parent')
-
-            $('.featuresToggleContainer').on('mouseenter click', function() {
-                $('.featuresList').slideDown();
-            });
-            $('.left-pane').on('mouseleave', function() {
-                $('.featuresList').slideUp();
-            });
         }
-        else {
-            $('.featuresToggle').removeClass('shake');
-            $('.left-pane').removeClass('shake-parent')
-        }
+    );
         // employee management tab
         $(".tab").on("click", function() {
             $(".tab").removeClass("active");
@@ -140,6 +107,23 @@ function flashMessage(response) {
             $(`#${tab}`).show();
         });
 
+        // Account Management tab
+        $(".tab5").on("click", function() {
+            $(".tab5").removeClass("active");
+            $(this).addClass("active");
+            let tab = $(this).data("tab5");
+            $(".tab-contents5").hide();
+            $(`#${tab}`).show();
+        });
+
+        // Transfer Management tab
+        $(".tab6").on("click", function() {
+            $(".tab6").removeClass("active");
+            $(this).addClass("active");
+            let tab = $(this).data("tab6");
+            $(".tab-contents6").hide();
+            $(`#${tab}`).show();
+        });
         
 
         
