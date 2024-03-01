@@ -1,0 +1,558 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Statistis - {{org.name|truncatechars:15}}{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
+    <script src="{% static 'generic/scripts/branch_dashboard.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'emps/styles/performance.css' %}">
+    <script src="{% static 'emps/scripts/performance.js'%}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'generic/styles/statistics.css' %}">
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<div class="statisticContainer">
+    <div class="menuToggle">
+        <h2>Stastics Overview</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+    </div>
+    <center>
+        {% comment %} <h2>Stastics Overview</h2> {% endcomment %}
+        <div class="actions">
+            <button class="tablinks nav-tab tab" data-tab="employee-statistics">Employee</button>
+            <button class="tablinks nav-tab tab" data-tab="leave-statistics">Leave</button>
+            <button class="tablinks nav-tab tab" data-tab="payroll-statistics">Payroll</button>
+            <button class="tablinks nav-tab tab" data-tab="statistics">Performance</button>
+            <button class="tablinks nav-tab tab" data-tab="transfer-statistics">Transfer</button>
+            <button class="tablinks nav-tab tab" data-tab="finance-statistics">Finance</button>
+        </div>
+    </center>
+    
+    {% comment %} delete employee {% endcomment %}
+    <div class="tab-contents statistics container" id="employee-statistics">
+        <h2>Employee Statistics</h2>
+        <div class="statistics-grid">
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Employees</h3>
+                    {% if total_employees_count is not None %}
+                    <p class="statsVal">{{ total_employees_count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-archive badStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Archived Employees</h3>
+                    {% if archived_employees_count is not None %}
+                    <p class="statsVal">{{ active_employees_count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Current Employees on Leave</h3>
+                    {% if total_employees_on_leave_count is not None %}
+                    <p class="statsVal">{{ total_employees_on_leave_count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-users-rectangle goodStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Active Employees</h3>
+                    {% if active_employees_count is not None %}
+                    <p class="statsVal">{{ active_employees_count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-user-times badStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Inactive Employees</h3>
+                    {% if inactive_employees_count is not None %}
+                    <p class="statsVal">{{ inactive_employees_count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-user-plus goodStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>New Hires This Month</h3>
+                    {% if monthly_created_employees is not None %}
+                    <p class="statsVal">{{ monthly_created_employees|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% comment %} Leave Statistics {% endcomment %}
+    <div class="tab-contents statistics container" id="leave-statistics">
+        <h2>Leave Statistics</h2>
+        <div class="statistics-grid">
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Employees</h3>
+                    {% if total_employees_count is not None %}
+                    <p class="statsVal">{{ total_employees_count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Leave Requests</h3>
+                    {% if leave_requests is not None %}
+                    <p class="statsVal">{{ leave_requests.count|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-calendar-check goodStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Approved Leave Requests</h3>
+                    {% if approved_leave_requests is not None %}
+                    <p class="statsVal">{{ approved_leave_requests|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Pending Leave Requests</h3>
+                    {% if pending_leave_requests is not None %}
+                    <p class="statsVal">{{ pending_leave_requests|intcomma }}</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Average Leave Duration</h3>
+                    {% if average_leave_duration is not None %}
+                    <p class="statsVal">{{ average_leave_duration |floatformat:"2"|intcomma }} days</p>
+                    {% else %}
+                    <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Leave Trends</h3>
+                    <p>Upward trend in leave requests</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% comment %} Leave Statistics {% endcomment %}
+    <div class="tab-contents statistics container" id="payroll-statistics">
+        <h2>Payroll Statistics</h2>
+        <div class="statistics-grid">
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Employees</h3>
+                    {% if total_employees_count is not None %}
+                        <p class="statsVal">{{ total_employees_count|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Payroll</h3>
+                    {% if total_payment is not None %}
+                        <p class="statsVal">${{ total_payment|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-money-check-alt badStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Deductions</h3>
+                    {% if total_deductions is not None %}
+                        <p class="statsVal">${{ total_deductions|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-dollar-sign goodStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Bonus</h3>
+                    {% if total_allowances is not None %}
+                        <p class="statsVal">${{ total_allowances|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Net Pay</h3>
+                    {% if total_netpay is not None %}
+                        <p class="statsVal">${{ total_netpay|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Average Salary</h3>
+                    {% if average_salary is not None %}
+                        <p class="statsVal">${{ average_salary|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Add more statistics items as needed -->
+        </div>
+    </div>
+
+
+    {% comment %} Performance Statistics {% endcomment %}
+    <div class="tab-contents statistics" id="statistics">
+        <div class="container">
+            <h2>Performance Statistics</h2>
+            <div class="statistics-grid">
+                <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Total Employees</h3>
+                        {% if total_employees_count is not None %}
+                    <p class="statsVal">{{ total_employees_count|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+                </div>
+                <div class="statistic-item">
+                <div class="statistic-icon">
+                    {% if average_performance_rating is not None and average_performance_rating > 70 %}
+                        <i class="fas fa-chart-line goodStat"></i>
+                    {% else %}
+                        <i class="fas fa-chart-line badStat"></i>
+                    {% endif %}
+                </div>
+                <div class="statistic-info">
+                    <h3>Performance Average</h3>
+                    {% if average_performance_rating is not None %}
+                        <p class="statsVal">{{ average_performance_rating|floatformat:'2'|intcomma }}%</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+                </div>
+                <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-chart-pie goodStat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Top Performers</h3>
+                    {% if high_performers is not None %}
+                    <p class="statsVal">{{ high_performers.count|intcomma }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+                </div>
+                <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Improvement Rate</h3>
+                    {% if improvement_rate is not None %}
+                    <p class="statsVal">{{ improvement_rate|floatformat:"2"|intcomma }}%</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+                </div>
+                <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-star" style="color: gold;"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Highest Rating</h3>
+                    {% if highest_rating  is not None %}
+                        <p class="statsVal">{{ highest_rating }}</p>
+                        {% else %}
+                            <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                </div>
+                </div>
+                <div class="statistic-item">
+                <div class="statistic-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="statistic-info">
+                    <h3>Employee Engagement</h3>
+                    {% if employee_engagement is not None %}
+                    <p class="statsVal">{{ employee_engagement }}</p>
+                    {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% comment %}  Transfers Statistics{% endcomment %}
+    <div class="tab-contents statistics" id="transfer-statistics">
+        <div class="container">
+            <h2>Transfer Statistics</h2>
+            <div class="statistics-grid">
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Transfers</h3>
+                        {% if transfers is not None %}
+                            <p class="statsVal">{{ transfers.count|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-check-circle goodStat"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Approved Transfers</h3>
+                        {% if approved_transfers is not None %}
+                            <p class="statsVal">{{ approved_transfers.count|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-times-circle badStat"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Declined Transfers</h3>
+                        {% if declined_transfers is not None %}
+                            <p class="statsVal">{{ declined_transfers.count|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Employees</h3>
+                        {% if employees %}
+                            <p class="statsVal">{{ employees.count|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Transfers This Month</h3>
+                        {% if monthly_transfer_count is not None %}
+                        <p class="statsVal">{{ monthly_transfer_count }}</p>
+                        {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Transfers Last Month</h3>
+                        {% if last_month_transfer_count is not None %}
+                        <p class="statsVal">{{ last_month_transfer_count }}</p>
+                        {% else %}
+                        <p class="statsVal" style="color: red;">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} Finance Statistics {% endcomment %}
+    <div class="tab-contents statistics container" id="finance-statistics">
+        <div>
+            <h2>Financial Statistics</h2>
+            <div class="statistics-grid">
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Employees</h3>
+                        {% if total_employees is not None %}
+                            <p class="statsVal">{{ total_employees|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-hand-holding-dollar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Revenue</h3>
+                        {% if total_revenue is not None %}
+                            <p class="statsVal">{{ total_revenue|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-dollar-sign goodStat"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Profit</h3>
+                        {% if total_profit is not None %}
+                            <p class="statsVal">{{ total_profit|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-money-check-dollar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Expenses</h3>
+                        {% if total_expenses %}
+                            <p class="statsVal">{{ total_expenses|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Employees Salary</h3>
+                        {% if total_employees_salary is not None %}
+                        <p class="statsVal">{{ total_employees_salary }}</p>
+                        {% else %}
+                        <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Reports</h3>
+                        {% if total_reports is not None %}
+                        <p class="statsVal">{{ total_reports }}</p>
+                        {% else %}
+                        <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

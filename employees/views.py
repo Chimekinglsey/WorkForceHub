@@ -4,16 +4,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.db.models import Q
 from .backends import AdminUserAuthBackend
 from django.contrib.auth import login, logout
 from employees.models import Employee, AdminUser, PasswordResetToken, Education, WorkHistory,\
-      Performance, EmployeeDocs, Payroll, Appointments, Attendance, Leave
-from organizations.models import Organization, Branch, Transfer
-from .forms import EmployeeForm, ProjectPerformanceForm, SignUpForm, ProfileUpdateForm, BranchForm, PayrollForm
-from .forms import ProjectPerformanceForm, PerformanceReviewForm, OtherPerformanceForm, DelegateAdminCreationForm
+      Performance, EmployeeDocs, Payroll, Appointments, Attendance, Leave, Finance
+from organizations.models import Organization, Branch, Transfer, Report
+from .forms import DetailedFinanceForm, EmployeeForm, SignUpForm, ProfileUpdateForm, BranchForm, PayrollForm
+from .forms import  PerformanceReviewForm, DelegateAdminCreationForm, ReportForm, BasicFinanceForm, \
+        DetailedFinanceForm
 from .forms import UserProfileForm, ChangePasswordForm, BranchDocumentsForm, TransferForm
 from django.contrib.auth import update_session_auth_hash
 from django.http import JsonResponse, Http404
+from smtplib import SMTPException
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -25,20 +28,20 @@ from statistics import mean
 
 """Helper Functions"""
 def generate_org_id():
-    """Generate 10 digits and 2 Uppercase organization ID"""
+    """Generate 10 digits and 2 uppercase organization ID"""
     while True:
         org_id = ''.join(random.choices(string.digits, k=8)) + ''.join(random.choices(string.ascii_uppercase, k=2))
-        if not Organization.objects.filter(org_id=org_id).exists():
+        # Check if the first character is not zero
+        if org_id[0] != '0' and not Organization.objects.filter(org_id=org_id).exists():
             return org_id
 
 def generate_branch_id():
     """Generate 5 digits branch ID"""
     while True:
         branch_id = ''.join(random.choices(string.digits, k=5))
-        if not Branch.objects.filter(branch_id=branch_id).exists():
+        # Check if the first character is not zero
+        if branch_id[0] != '0' and not Branch.objects.filter(branch_id=branch_id).exists():
             return branch_id
-
-
 
 def parse_date(date_str):
     """Parse a date string in the format yyyy-mm-dd to a date object.
@@ -70,7 +73,7 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Account created successfully')
+            messages.success(request, 'Account created successfully, Please login to continue.')
             return redirect('login')
         elif form.errors:
             messages.error(request, f'Conflict in {list(form.errors)}')
@@ -128,16 +131,38 @@ def org_dashboard(request):
     """Organization Dashboard"""
     if request.user.is_delegate:
         branch = request.user.branch
-        return redirect('branch_dashboard', branch_id=branch.id)
+        return redirect('branch_dashboard', branch_id=branch.branch_id)
     form = BranchForm(request.user)
     org = Organization.objects.filter(admin_user=request.user).first()
     branches = Branch.objects.filter(organization=org)
     admin = request.user
     # Get all delegate admins associated with the organization outside the current user
-    delegate_admins = AdminUser.objects.filter(branch__organization=org).exclude(id=admin.id)
+    delegate_admins = AdminUser.objects.filter(branch__organization=org, is_delegate=True, is_superuser=False)
+    delegate_admin_form = DelegateAdminCreationForm(organization=org, prefix='create_delegate_admin')        
+    change_password_form = ChangePasswordForm(request.user)
+   
 
-    # Create an instance of the delegate admin creation form
-    delegate_admin_form = DelegateAdminCreationForm(organization=org, prefix='create_delegate_admin')           
+
+    organization = Organization.objects.filter(admin_user=request.user).first()
+    reports = Report.objects.filter(branch__organization=organization)
+
+
+    """Transfer Statistics"""
+    transfers = Transfer.objects.filter(organization=org)
+    pending_transfers = transfers.filter(status='Pending')
+    approved_transfers = transfers.filter(status='Approved')
+    declined_transfers = transfers.filter(status='Declined')
+    monthly_transfer_count = transfers.filter(created_at__month=timezone.now().month).count()
+    last_month_transfer_count = transfers.filter(created_at__month=timezone.now().month-1).count()
+    employees = Employee.objects.filter(branch__organization=organization)
+
+
+    """context"""
+    context = {'form': form, 'org': org, 'branches': branches, 'user': admin, 'delegate_admin_form': delegate_admin_form,
+                'delegate_admins': delegate_admins, 'transfers': transfers, 'pending_transfers': pending_transfers,
+                'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers, 'monthly_transfer_count': monthly_transfer_count,
+                'last_month_transfer_count': last_month_transfer_count, 'employees': employees, 'reports': reports, 'admin_password_form': change_password_form
+                }
 
     if request.method == 'POST':
         admin_user = get_object_or_404(AdminUser, id=request.user.id)
@@ -158,8 +183,7 @@ def org_dashboard(request):
             org.save()
             messages.success(request, 'Organization created successfully')
         return redirect('org_dashboard')
-    return render(request, 'employees/org_dashboard.html', {'form': form, 'org': org, 'branches': branches,
-                 'user': admin, 'delegate_admin_form': delegate_admin_form, 'delegate_admins': delegate_admins})
+    return render(request, 'employees/org_dashboard.html', context=context)
 
 
 # Delete Branch
@@ -208,7 +232,6 @@ def create_delegate(request):
         can_change_password = form.cleaned_data['can_change_password']
         is_delegate = True
         is_superuser = False
-        assigned_branches
 
 
         # Create delegate admin and associate it with the selected branch
@@ -218,10 +241,10 @@ def create_delegate(request):
         delegate_admin.save()
 
         messages.success(request, 'Delegate admin created successfully')
-        return redirect('org_dashboard')
+        return JsonResponse({'success': True}, status=status.HTTP_201_CREATED)
     else:
         messages.error(request, 'Delegate admin creation failed')
-        return redirect('org_dashboard')
+        return JsonResponse({'success': False, 'error_message': form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # create branch of organization
@@ -239,6 +262,10 @@ def create_branch(request):
             branch = form.save(commit=False)
             branch.branch_id = generate_branch_id()
             branch.save()
+            superuser, created = AdminUser.objects.get(pk=request.user.pk)
+            if not superuser.branch:
+                superuser.branch = branch
+                superuser.save()
             messages.success(request, 'Branch created successfully')
             return JsonResponse({'success': True}, status=status.HTTP_201_CREATED)
         else:
@@ -246,8 +273,9 @@ def create_branch(request):
             return JsonResponse({'success': False, 'error_message': form.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         messages.error(request, f'Error occurred: {str(e)}')
+        print('Exception:', e)
         return JsonResponse({'success': False, 'error_message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
 
 """Branch Management and Employee Creation"""
 # branch dashboard
@@ -255,6 +283,8 @@ def create_branch(request):
 def branch_dashboard(request, branch_id):
     """Branch Dashboard"""
     # delegate admin can only view their branch dashboard
+    if (branch_id) <= 9999:
+        branch_id = f"0{branch_id}"
 
     if request.user.is_delegate:
         if str(request.user.branch.branch_id) != str(branch_id):
@@ -274,11 +304,11 @@ def branch_dashboard(request, branch_id):
 
 
     # forms
-    form = EmployeeForm(organization=organization, adminuser=request.user)
+    form = EmployeeForm(initial={'branch': branch, 'adminuser': request.user})
     profile_form = UserProfileForm(instance=request.user)
     change_password_form = ChangePasswordForm(request.user)
     branch_documents_form = BranchDocumentsForm()
-    transfer_form = TransferForm(organization=organization, initial={'source_branch': branch})
+    transfer_form = TransferForm(organization=organization, adminuser=request.user, initial={'source_branch': branch})
 
     # employee statistics
     total_employees_count = Employee.objects.filter(branch=branch, is_archived=False).count()
@@ -322,9 +352,11 @@ def branch_dashboard(request, branch_id):
     approved_transfers = transfers.filter(status='Approved')
     declined_transfers = transfers.filter(status='Declined')
     transfer_history = transfers.filter(status='Approved')
-    
+    incoming_transfers_count = Transfer.objects.filter(destination_branch=branch, status='Approved').count()
+    outgoing_transfers_count = Transfer.objects.filter(source_branch=branch, status='Approved').count()
 
-    context = {'branch': branch, 'branches': branches, 'employees': employees,'branch_id': branch.id, 'form': form, 
+
+    context = {'branch': branch, 'branches': branches, 'employees': employees,'branch_id': branch.branch_id, 'form': form, 
                 'archived_employees': archived_employees, 'total_employees_count': total_employees_count,
                 'archived_employees_count': archived_employees_count, 'active_employees_count': active_employees_count,
                 'inactive_employees_count': inactive_employees_count, 'active_leave': active_leave,
@@ -339,10 +371,11 @@ def branch_dashboard(request, branch_id):
                 'employee_engagement': employee_engagement, 'profile_form': profile_form, 'change_password_form': change_password_form,
                 'branch_documents_form': branch_documents_form, 'transfer_form': transfer_form, 'transfers': transfers,
                 'pending_transfers': pending_transfers, 'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers,
-                'transfer_history': transfer_history
+                'transfer_history': transfer_history, 'incoming_transfers_count': incoming_transfers_count, 'outgoing_transfers_count': outgoing_transfers_count
               }
     if request.method == 'POST':
-        form = EmployeeForm(organization=organization, adminuser=request.user, data=request.POST, files=request.FILES)
+        print(request.POST)
+        form = EmployeeForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             employee_id = request.POST.get('employee_id')
             existing_employee = Employee.objects.filter(employee_id=employee_id, branch=branch).first()
@@ -350,14 +383,16 @@ def branch_dashboard(request, branch_id):
                 messages.error(request, 'Employee with this ID already exists')
                 return render(request, 'employees/branch_dashboard.html', context=context)
             else:
+                form.save(commit=False)
+                form.instance.branch = branch
+                form.instance.adminuser = request.user
                 form.save()
                 messages.success(request, 'Employee created successfully')
-                return redirect('branch_dashboard', branch_id=branch.id)
+                return redirect('branch_dashboard', branch_id=branch.branch_id)
         else:
-            messages.error(request, 'Employee creation failed')
+            messages.error(request, 'Employee creation failed, invalid form data')
             return render(request, 'employees/branch_dashboard.html', context=context)    
     return render(request, 'employees/branch_dashboard.html', context=context)
-
 
 
 
@@ -458,16 +493,16 @@ def leave_request(request):
     """Employee leave request"""
     data = request.POST.dict()
     try:
-        branch = Branch.objects.get(pk=data['branch_id'])
+        branch = Branch.objects.get(branch_id=data['branch_id'])
         employee = Employee.objects.filter(employee_id=data['employee_id'].strip(), branch=branch).first()
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
-        return redirect('branch_dashboard', branch_id=branch.id)
+        return redirect('branch_dashboard', branch_id=branch.branch_id)
     leave = Leave(employee=employee, leave_type=data['leave_type'], leave_start_date=parse_date(data['start_date']),
                    leave_end_date=parse_date(data['end_date']), leave_reason=data['reason'])
     leave.save()
     messages.success(request, f"Leave request submitted successfully")
-    return redirect('branch_dashboard', branch_id=branch.id)
+    return redirect('branch_dashboard', branch_id=branch.branch_id)
 
 # Accept and decline leave request
 @csrf_exempt
@@ -487,7 +522,7 @@ def manage_leave_request(request, leave_id):
         leave.leave_status = 'Declined'
         leave.save()
         messages.success(request, 'Leave request declined')
-    return redirect('branch_dashboard', branch_id=leave.employee.branch.id)
+    return redirect('branch_dashboard', branch_id=leave.employee.branch.branch_id)
 
 
 
@@ -563,7 +598,7 @@ def delete_payroll(request, payroll_id):
     payroll = get_object_or_404(Payroll, id=payroll_id)
     payroll.delete()
     messages.success(request, f'Payroll deleted successfully')
-    return redirect('branch_dashboard', branch_id=payroll.employee.branch.id)
+    return redirect('branch_dashboard', branch_id=payroll.employee.branch.branch_id)
 
 
 
@@ -578,11 +613,16 @@ def performance_dashboard(request, emp_id):
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
         return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
-    performance_instance = Performance.objects.filter(employee=employee).first() #prepopulate the forms for each employee
-
-    review_form = PerformanceReviewForm(instance=performance_instance)
-    project_form = ProjectPerformanceForm(instance=performance_instance)
-    other_performance_form = OtherPerformanceForm(instance=performance_instance)
+    try:
+        performance_instance = Performance.objects.filter(employee=employee).first()
+        if performance_instance:
+            review_form = PerformanceReviewForm(instance=performance_instance)
+            performance_id = performance_instance.id
+        else:
+            review_form = PerformanceReviewForm()
+            performance_id = None
+    except Performance.DoesNotExist:
+        pass
 
     performance = Performance.objects.filter(employee=employee)
     education = Education.objects.filter(employee=employee)
@@ -594,11 +634,11 @@ def performance_dashboard(request, emp_id):
     leave = Leave.objects.filter(employee=employee)
     return render(request, 'performance/performance_dashboard.html', {'employee': employee, 'performance': performance,
                                                          'education': education, 'work_history': work_history,
-                                                         'employee_docs': employee_docs,
+                                                         'employee_docs': employee_docs, 'performance_id': performance_id,
                                                          'payroll': payroll, 'appointments': appointments,
                                                          'attendance': attendance, 'leave': leave,
-                                                         'review_form': review_form, 'project_form': project_form,
-                                                         'other_performance_form': other_performance_form})
+                                                         'review_form': review_form}
+                                                        )
 
 @require_POST
 def performance_review(request, emp_id):
@@ -608,59 +648,37 @@ def performance_review(request, emp_id):
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
         return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
-    
     form = PerformanceReviewForm(request.POST)
     if form.is_valid():
         performance = form.save(commit=False)
         performance.employee = employee
         performance.save()
         messages.success(request, 'Performance review submitted successfully')
-        return redirect('branch_dashboard', branch_id=employee.branch.pk)
-    else:
-        form = PerformanceReviewForm()
+    return redirect('branch_dashboard', branch_id=employee.branch.branch_id)
+
+
+# update project performance
+@require_POST
+def update_performance_review(request, performance_id):
+    """Update project performance"""
+    performance = get_object_or_404(Performance, pk=performance_id)
+    form = PerformanceReviewForm(request.POST, instance=performance)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Project performance feedback updated successfully')
+        return redirect('branch_dashboard', branch_id=performance.employee.branch.branch_id)
     return render(request, 'performance_dashboard.html', {'review_form': form})
 
-@require_POST
-def project_performance(request, emp_id):
-    """Submit performance feedback"""
-    try:
-        employee = Employee.objects.get(pk=emp_id)
-    except Employee.DoesNotExist:
-        messages.error(request, "Employee not found")
-        return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
-    
-    form = ProjectPerformanceForm(request.POST)
-    if form.is_valid():
-        performance = form.save(commit=False)
-        performance.employee = employee
-        performance.save()
-        messages.success(request, 'Project performance feedback submitted successfully')
-        return redirect('branch_dashboard', branch_id=employee.branch.pk)
-    else:
-        form = ProjectPerformanceForm()
-        return render(request, 'performance_dashboard.html', {'project_form': form})
-
-@require_POST
-def other_performance(request, emp_id):
-    """Submit other performance feedback"""
-    try:
-        employee = Employee.objects.get(pk=emp_id)
-    except Employee.DoesNotExist:
-        messages.error(request, "Employee not found")
-        return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
-    
-    form = OtherPerformanceForm(request.POST)
-    if form.is_valid():
-        performance = form.save(commit=False)
-        performance.employee = employee
-        performance.save()
-        messages.success(request, 'Performance feedback submitted successfully')
-        return redirect('branch_dashboard', branch_id=employee.branch.pk)
-    else:
-        form = OtherPerformanceForm()
-        return render(request, 'performance_dashboard.html', {'other_performance_form': form})
 
 
+# delete performance review
+@csrf_exempt
+def delete_performance_review(request, performance_id):
+    """Delete performance review"""
+    performance = get_object_or_404(Performance, pk=performance_id)
+    performance.delete()
+    messages.success(request, 'Performance review deleted successfully')
+    return redirect('branch_dashboard', branch_id=performance.employee.branch.branch_id)
 
 
 
@@ -672,11 +690,12 @@ def transfer_request(request):
     org = get_object_or_404(Organization, id=request.user.branch.organization.id)
     if not org:
         raise Http404('No Organization Found for this user')
-    form = TransferForm(org, request.POST)
+    form = TransferForm(org, request.user, request.POST)
     if form.is_valid():
         transfer_request = form.save(commit=False)
         transfer_request.requested_by = request.user
         transfer_request.source_branch=request.user.branch
+        transfer_request.organization = org
         transfer_request.save()
         messages.success(request, 'Transfer request submitted successfully.')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
@@ -701,6 +720,7 @@ def cancel_transfer_request(request, transfer_id):
 
 # accept or decline transfer request
 @require_POST
+@csrf_exempt
 def manage_transfer_request(request, transfer_id):
     """Accept or decline transfer request"""
     if request.user.is_delegate:
@@ -712,13 +732,221 @@ def manage_transfer_request(request, transfer_id):
     action = request.POST.get('action')
     if action == 'accept':
         transfer.status = 'Approved'
+        transfer.employee.branch = transfer.destination_branch
+        transfer.employee.save()
         transfer.save()
         messages.success(request, 'Transfer request accepted')
     elif action == 'decline':
         transfer.status = 'Declined'
         transfer.save()
         messages.success(request, 'Transfer request declined')
-    return JsonResponse({'type': 'success', 'message': 'Transfer request managed successfully'}, status=200)
+    return JsonResponse({'type': 'success', 'message': 'Transfer request processed successfully'}, status=200)
+
+
+
+
+
+"""Reports Management and Statistics"""
+# create a report
+@login_required
+def create_report(request):
+    """Create a report"""
+    try:
+        branch = get_object_or_404(Branch, id=request.user.branch.id)
+    except Branch.DoesNotExist:
+        messages.error(request, "Branch not found")
+        return JsonResponse({'type': 'error', 'message': 'Branch not found'}, status=404)
+    
+    try:
+        report = Report.objects.filter(branch=branch).first()
+        if report:
+            report_id = report.id
+            update_form = ReportForm(instance=report, initial={'created_by': request.user, 'branch': branch})
+        else:
+            report_id = None
+            update_form = ReportForm(initial={'created_by': request.user, 'branch': branch})
+        form = ReportForm(initial={'created_by': request.user, 'branch': branch})
+
+    except Report.DoesNotExist:
+        pass
+
+    reports = Report.objects.filter(branch=branch)
+    
+    user = request.user
+    if request.method == 'POST':
+        form = ReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            report_instance = form.save(commit=False)
+            report_instance.branch = branch
+            report_instance.created_by = user
+            report_instance.save()
+            messages.success(request, 'Report created successfully')
+            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+        else:
+            messages.error(request, 'Failed to create report. Please check the form.')
+            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+    return render(request, 'reports/reports.html', {'form': form, 'user': user, 'report_id': report_id, 'reports': reports,
+                                                    'update_form': update_form})
+
+
+# Update a report
+@require_POST
+def update_report(request, report_id):
+    """Update a report"""
+    report = get_object_or_404(Report, pk=report_id)
+    form = ReportForm(request.POST, instance=report)
+    if form.is_valid():
+        form.save(commit=False)
+        form.instance.version += 1
+        form.save()
+        messages.success(request, 'Report updated successfully')
+        return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+    else:
+        messages.error(request, 'Failed to update report. Please check the form.')
+        return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+
+# Org statistics
+@login_required
+def statistics(request):
+    """ Render organization statistics"""
+    if not request.user.is_superuser:
+        messages.error(request, 'You do not have permission to access this page')
+        return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+    
+    organization = Organization.objects.filter(admin_user=request.user).first()
+    fin_reports = Finance.objects.filter(branch__organization=organization)
+
+
+        # Overall Statistics
+    employees = Employee.objects.filter(branch__organization=organization)
+    branches = Branch.objects.filter(organization=organization)
+    total_branches_count = branches.count()
+
+        # Finance statistics
+    total_employee_salary = sum([p.net_pay for p in  Payroll.objects.filter(employee__branch__organization=organization)])
+    total_employees = employees.count()
+    total_revenue = sum([r.total_revenue for r in fin_reports])
+    total_expenses = sum([r.total_expenses for r in fin_reports])
+    total_profit = total_revenue - total_expenses
+    total_reports = fin_reports.count()
+
+   # employee statistics
+    
+    total_employees_count = employees.filter(is_archived=False).count()
+    archived_employees_count = employees.filter(is_archived=True).count()
+    active_employees_count = employees.filter(is_archived=False, employment_status='Active').count()
+    inactive_employees_count = employees.filter(is_archived=False, employment_status='Inactive').count()
+    total_employees_on_leave_count = Leave.objects.filter(employee__branch__organization=organization, 
+                                                          leave_status='Approved', leave_end_date__gte=timezone.now().date()).count()
+    monthly_created_employees = sum([b.monthly_created_employees for b in branches])
+
+    # leave statistics
+    leave_requests = Leave.objects.filter(employee__branch__organization=organization)
+    pending_leave_requests = leave_requests.filter(leave_status='Pending').count()
+    approved_leave_requests = leave_requests.filter(leave_status='Approved').count()
+    declined_leave_requests = leave_requests.filter(leave_status='Declined').count()
+    active_leave = leave_requests.filter(leave_status='Approved', leave_end_date__gte=timezone.now().date())
+    leave_history = leave_requests.filter(leave_status='Approved', leave_end_date__lt=timezone.now()) # used for average leave duration
+    leave_durations = [(leave.leave_end_date - leave.leave_start_date).days for leave in leave_history]
+    average_leave_duration = mean(leave_durations) if leave_durations else 0
+
+    # payroll statistics
+    payroll = Payroll.objects.filter(employee__branch__organization=organization).order_by('-year', '-month')
+    total_payroll = payroll.count()
+    total_netpay = sum([p.net_pay for p in payroll])
+    total_deductions = sum([p.total_deductions for p in payroll])
+    total_allowances = sum([p.total_allowance for p in payroll])
+    average_netpay = total_netpay / total_payroll if total_payroll else 0
+    total_payment = total_netpay + total_allowances
+
+    # performance statistics
+    performance = Performance.objects.filter(employee__branch__organization=organization).order_by('-performance_rating')
+    underperforming_employees = performance.filter(performance_rating__lt=60)
+    average_performance_rating = mean([p.performance_rating for p in performance]) if performance else 0
+    high_performers = performance.filter(performance_rating__gte=80)
+    improvement_rate = (high_performers.count() / performance.count()) * 100 if performance else 0
+    highest_rating = performance.first()
+    employee_engagement = 'High' if average_performance_rating >= 70 else 'Low'
+
+    """Transfer Statistics"""
+    transfers = Transfer.objects.filter(organization=organization)
+    pending_transfers = transfers.filter(status='Pending')
+    approved_transfers = transfers.filter(status='Approved')
+    declined_transfers = transfers.filter(status='Declined')
+    monthly_transfer_count = transfers.filter(created_at__month=timezone.now().month).count()
+    last_month_transfer_count = transfers.filter(created_at__month=timezone.now().month-1).count()
+    employees = Employee.objects.filter(branch__organization=organization)
+
+
+
+
+    """context"""
+    context = {'org': organization, 'branches': branches, 'transfers': transfers, 'pending_transfers': pending_transfers,
+                'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers, 'monthly_transfer_count': monthly_transfer_count,
+                'last_month_transfer_count': last_month_transfer_count, 'employees': employees, 'total_branches_count': total_branches_count,
+                'total_employees_count': total_employees_count, 'archived_employees_count': archived_employees_count, 'active_employees_count': active_employees_count,
+                'inactive_employees_count': inactive_employees_count, 'active_leave': active_leave, 'total_employees_on_leave_count': total_employees_on_leave_count,
+                'monthly_created_employees': monthly_created_employees, 'pending_leave_requests': pending_leave_requests, 'approved_leave_requests': approved_leave_requests,
+                'declined_leave_requests': declined_leave_requests, 'average_leave_duration': average_leave_duration, 'payroll': payroll, 'total_payroll': total_payroll,
+                'total_payment': total_payment, 'total_deductions': total_deductions, 'total_allowances': total_allowances, 'total_netpay': total_netpay,
+                'average_salary': average_netpay, 'performance': performance, 'underperformance': underperforming_employees, 'average_performance_rating': average_performance_rating,
+                'high_performers': high_performers, 'improvement_rate': improvement_rate, 'highest_rating': highest_rating, 'employee_engagement': employee_engagement,
+                'leave_requests': leave_requests, 'leave_history': leave_history, 'total_employee_salary': total_employee_salary, 'total_employees': total_employees,
+                'total_revenue': total_revenue, 'total_expenses': total_expenses, 'total_profit': total_profit, 'total_reports': total_reports
+                }
+
+
+
+    return render(request, 'reports/statistics.html', context=context)
+
+
+
+"""Finance Management"""
+@login_required
+def finance_report(request, type=None):
+    """Create a finance report"""
+    try:
+        branch = get_object_or_404(Branch, id=request.user.branch.id)
+    except Branch.DoesNotExist:
+        messages.error(request, "Branch not found")
+        return JsonResponse({'type': 'error', 'message': 'Branch not found'}, status=404)
+    
+    basic_form = BasicFinanceForm(initial={'created_by': request.user, 'branch': branch})
+    detailed_form = DetailedFinanceForm(initial={'created_by': request.user, 'branch': branch})
+    reports = Finance.objects.filter(branch=branch)
+    user = request.user
+
+    # Finance statistics
+    total_employee_salary = sum([p.net_pay for p in Payroll.objects.filter(employee__branch=branch)])
+    total_employees = Employee.objects.filter(branch=branch).count()
+    total_revenue = sum([r.total_revenue for r in reports])
+    total_expenses = sum([r.total_expenses for r in reports])
+    total_profit = total_revenue - total_expenses
+    total_reports = reports.count()
+
+    context =  {'basic_form': basic_form, 'user': user, 'reports': reports,
+                'detailed_form': detailed_form, 'branch': branch, 'total_employee_salary': total_employee_salary,
+                'total_employees': total_employees, 'total_revenue': total_revenue, 'total_expenses': total_expenses,
+                'total_profit': total_profit, 'total_reports': total_reports
+                }
+    if request.method == 'POST':
+        if type == 'basic':
+            form = BasicFinanceForm(request.POST, request.FILES)
+        else:
+            form = DetailedFinanceForm(request.POST, request.FILES)
+            
+        if form.is_valid():
+            report_instance = form.save(commit=False)
+            report_instance.branch = branch
+            report_instance.created_by = user
+            report_instance.save()
+            messages.success(request, 'Finance report created successfully')
+            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+        else:
+            messages.error(request, 'Failed to create finance report. Please check the form.')
+    return render(request, 'reports/finances.html', context=context)
+
+
 
 
 """Account Settings"""
@@ -766,34 +994,45 @@ def upload_documents(request):
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
 
 
+@require_POST
+def reset_delegate_password(request):
+    """Reset delegate password"""
+    if request.user.can_change_password:
+        delegate = get_object_or_404(AdminUser, id=request.POST.get('delegate_id').strip())
+        if not delegate or not delegate.is_delegate or not delegate.branch.organization == request.user.branch.organization:
+            messages.error(request, 'Invalid delegate')
+            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+        new_password = request.POST.get('password').strip()
+        can_change_password = request.POST.get('can_change_password').strip()
+        delegate.set_password(new_password)
+        delegate.can_change_password = True if int(can_change_password) else False
+        delegate.save()
+        messages.success(request, 'Password reset successfully')
+        return JsonResponse({'type': 'success', 'message': 'Password reset successfully', 'success': True}, status=200)
+    else:
+        messages.error(request, 'You do not have permission to reset password')
+        return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
 
 
-"""Transfer Management"""
 
-
-# statistics for an employee
-@login_required
-def employee_statistics(request, emp_id):
-    try:
-        employee = Employee.objects.get(pk=emp_id)
-    except Employee.DoesNotExist:
-        messages.error(request, "Employee not found")
-        return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
-    performance = Performance.objects.filter(employee=employee)
-    education = Education.objects.filter(employee=employee)
-    work_history = WorkHistory.objects.filter(employee=employee)
-    employee_docs = EmployeeDocs.objects.filter(employee=employee)
-    payroll = Payroll.objects.filter(employee=employee)
-    appointments = Appointments.objects.filter(employee=employee)
-    attendance = Attendance.objects.filter(employee=employee)
-    leave = Leave.objects.filter(employee=employee)
-    return render(request, 'employees/employee_statistics.html', {'employee': employee, 'performance': performance,
-                                                                 'education': education, 'work_history': work_history,
-                                                                 'employee_docs': employee_docs,
-                                                                 'payroll': payroll, 'appointments': appointments,
-                                                                 'attendance': attendance, 'leave': leave})
-
-
+"""Search Feature"""
+def search_employee(request):
+    if request.method == 'GET':
+        search_term = request.GET.get('search_term', '')
+        if search_term:
+            # Perform the search query across multiple fields
+            employees = Employee.objects.filter(
+                Q(first_name__icontains=search_term) |
+                Q(last_name__icontains=search_term) |
+                Q(middle_name__icontains=search_term) |
+                Q(employee_id__icontains=search_term) |
+                Q(email__icontains=search_term)
+            )
+        else:
+            # Return all employees if no search term provided
+            employees = Employee.objects.none()
+        return render(request, 'search_results.html', {'employees': employees})
+    
 # Forgot Password
 def forgot_password(request):
     """Forgot Password"""
@@ -812,70 +1051,78 @@ def forgot_password(request):
 
             message = f"Your password reset code is {token} (expires in one hour).\n\nPlease do not share this code with anyone\nIf you didn't request this pin, we recommend you change your WorkForceHub password.\n\nRegards, \nKingsley, WorkForceHub Team"
             try:
+                print('sending')
                 send_mail(subject, message, sender, [recipient])
-                response_data = {'success': True}
-            except Exception as e:
-                response_data = {'success': False, 'error_message': str(e)}
-            return JsonResponse(response_data)
+                print('sent')
+                messages.success(request, 'Password reset code sent successfully')
+                return render(request, 'password/reset_token.html', context={'user_email': recipient})
+            except SMTPException as e:
+                messages.error(request, 'Failed to send password reset code, please try again later')
+                return redirect('login')
         else:
             messages.error(request, 'User does not exist')
-            return JsonResponse({'success': False, 'error_message': 'User does not exist'})
-    return render(request, 'user/user_login.html', context={'user_email': recipient})
+            return redirect('login')
+    return render(request, 'employee/login.html', context={'user_email': recipient})
 
 
 # Genereate password reset token
 def generate_password_reset_token():
     """Generate password reset token"""
-    first_digit = random.choice(string.digits[1:])
-    rest_of_digits = ''.join(random.choices(string.digits, k=5))
-    token = first_digit + rest_of_digits
-    return int(token)
+    while True:
+        first_digit = random.choice(string.digits[1:])
+        rest_of_digits = ''.join(random.choices(string.digits, k=5))
+        token = first_digit + rest_of_digits
+        if not PasswordResetToken.objects.filter(token=token).exists():
+            return int(token)
 
 
 #confirm password reset token
-def confirm_password_reset_token(request):
+def confirm_password_reset_token(request, email):
     """Confirm password reset token"""
     if request.method == 'POST':
         token = request.POST.get('token')
-        user_email = request.POST.get('user_email')
+        user_email = email.strip()
         user = get_object_or_404(AdminUser, email=user_email)
         
         try:
             password_reset_token = PasswordResetToken.objects.get(user=user)
+            print(token, password_reset_token.token, password_reset_token.is_expired())
         except PasswordResetToken.DoesNotExist:
-            return JsonResponse({'success': False, 'error_message': 'Token not found'})
-
+            messages.error(request, 'User does not exist')
+            return render(request, 'password/reset_token.html', context={'user_email': email})
         # Check if the provided token matches and is not expired
         if token == password_reset_token.token and not password_reset_token.is_expired():
             # Token is valid, you can proceed with the next steps
-            return JsonResponse({'success': True})
+            messages.success(request, 'Token is valid, you can reset your password')
+            return render(request, 'password/reset_password.html', context={'user_email': user_email, 'token': token})
         else:
             messages.error(request, 'Invalid or expired token')
-            return JsonResponse({'success': False, 'error_message': 'Invalid or expired token'})
-
-    return JsonResponse({'success': False})
+            return redirect('login')
+    return render(request, 'password/reset_token.html', context={'user_email': email})
 
 
 # reset password
-def reset_password(request):
+def reset_password(request, email):
     """Reset Password"""
     if request.method == 'POST':
         password = request.POST.get('newPassword')
         confirm_password = request.POST.get('confirmPassword')
-        email = request.POST.get('user_email').strip()
+        token = request.POST.get('token')
+        email = email.strip()
         if password != confirm_password:
             messages.error(request, 'Passwords do not match')
-            return JsonResponse({'success': False, 'error_message': 'Passwords do not match'})
+            return render(request, 'password/reset_password.html', context={'user_email': email, 'token': token})
         try:
             user = get_object_or_404(AdminUser, email=email)
-            user.set_password(password)
-            user.save()
-            messages.success(request, 'Password reset successful, Please Login')
-            return JsonResponse({'success': True, 'redirect_url': reverse('login')})
+            if user.password_reset_token.token == token and not user.password_reset_token.is_expired():
+                user.set_password(password)
+                user.save()
+                messages.success(request, 'Password reset successful, Please Login')
+                return redirect('login')
         except AdminUser.DoesNotExist:
             messages.error(request, 'User does not exist')
-            return JsonResponse({'success': False, 'error_message': 'User does not exist'})
-    return render(request, 'employee/login.html')
+            return redirect('login')
+    return render(request, 'employees/login.html')
 
 
 @login_required
@@ -883,3 +1130,40 @@ def logout_view(request):
     logout(request)
     messages.success(request, "You Logged Out")
     return redirect('login') 
+
+
+# Error 404
+def error_404(request, exception):
+    return render(request, 'error/404.html', status=404)
+
+# Error 500
+def error_500(request):
+    return render(request, 'error/500.html', status=500)
+
+# Error 403
+def error_403(request, exception):
+    return render(request, 'error/403.html', status=403)
+
+
+
+
+""" Footer Section Navs"""
+def privacy(request):
+    """Privacy Policy"""
+    return render(request, 'base/privacy.html')
+
+def terms(request):
+    """Terms and Conditions"""
+    return render(request, 'base/terms.html')
+
+def about(request):
+    """About Us"""
+    return render(request, 'base/about.html')
+
+def faq(request):
+    return render(request, 'base/faq.html')
+
+def developers(request):
+    """Developers"""
+    return render(request, 'base/developers.html')
+

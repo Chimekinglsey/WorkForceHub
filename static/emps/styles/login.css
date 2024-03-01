@@ -110,6 +110,10 @@ label{
     height: 20px;
 }
 
+.reset_password_container label, .forgot_password_container label {
+  color: #fcfafa;
+}
+
 /* Email response */
 /* Add your modal styles here */
 .modal, .reset_password {
@@ -124,9 +128,9 @@ label{
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2px);
 }
-#emailSentModalForm .continue, #resetPasswordForm .continue {
+/* #emailSentModalForm .continue, #resetPasswordForm .continue {
     margin-left: 75%;
-}
+} */
 .modal-content {
 	background-color: #e2ece4b2;
 	margin: 10% auto;
@@ -332,6 +336,12 @@ label{
     width: 500px;
     min-width: 400px;
   }
+  .image-slider img{
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 100%;
+  }
+
   .btn{
       padding: 2%;
   }

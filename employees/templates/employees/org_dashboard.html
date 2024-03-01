@@ -1,14 +1,22 @@
 {% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
+{% load humanize %}
+{% load filters %}
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'emps/styles/landing_page.css' %}">
     <script src="{% static 'emps/scripts/landing_page.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css'%}">
+    <script src="{% static 'generic/scripts/branch_dashboard.js'%}"></script>
     <link rel="stylesheet" href="{% static 'emps/styles/org_dashboard.css'%}">
     <script src="{% static 'emps/scripts/org_dashboard.js'%}"></script>
 {% endblock head %}
-{% block title %}Dashboard{% endblock title %}
+
+
+{% block title %}{% if org %}{{ org.name }}{% else %}Dashboard{% endif %}{% endblock title %}
+
+
 
 {% block signIn %}<a class="loginBtn btn logoutBtn" href="{% url 'logout' %}" >Logout</a>{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
@@ -169,6 +177,65 @@
         {% crispy delegate_admin_form %}
     </form>
 
+    <form id="change_admin_password_form" method="post" action="{% url 'change_password' %}" class="container mt-5">
+        <div class="close-btn">
+            <span class="close">&times;</span>
+        </div>
+        <center>
+            <h3>Change Your Password</h3>
+        </center>
+            <hr>
+        {% csrf_token %}
+        {% crispy admin_password_form%}
+    </form>
+
+
+    {% comment %} Reset Delegate Form {% endcomment %}
+    <form id="reset_delegate_password" class="container mt-5" action="{% url 'reset_delegate_password' %}" method="post">
+        {% csrf_token %}
+        <div class="close-btn">
+            <span class="close">&times;</span>
+        </div>
+        <center>
+            <h3>Reset Delegate Password</h3>
+            <p>Use this form to change or reset a delegate admin's password.</p>
+        </center>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="delegate_id">Delegate Admin</label>
+                <select name="delegate_id" id="delegate_id" class="form-control" required>
+                    <option value="" disabled>--Select--</option>
+                    {% for delegate in delegate_admins %}
+                    <option value="{{ delegate.pk }}">{{ delegate.first_name }} {{ delegate.last_name }} - {{ delegate.branch.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="password">New Password</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="can_change_password">Can Change Password?</label>
+                <select name="can_change_password" id="can_change_password" class="form-control" required>
+                    <option value="" disabled>--Select--</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+        </div>         
+        <div class="form-row">
+            <div class="form-group btnHandle">
+                <button id="resetDelegateBtn" type="submit" class="btn btn-primary">Reset Password</button>
+            </div>
+        </div>           
+    </form>
+
     <div class="spinner-container">
         <div class="spinner"></div>
     </div>
@@ -176,7 +243,7 @@
     <!-- error modal -->
     <div id="ErrorModal" class="modal">
         <div class="modal-content">
-            <span class="closeModal">&times;</span>
+            <span class="closeModal close">&times;</span>
             <h1 class="error-message"> An Error Occurred</h1>
             <p >There was an issue processing your request. Please try again.</p>
         </div>
@@ -185,7 +252,7 @@
     <!-- success modal -->
     <div id="SuccessModal" class="modal">
         <div class="modal-content">
-            <span class="closeModal">&times;</span>
+            <span class="closeModal close">&times;</span>
             <h1 class="success-message"> Success!</h1>
             <p >Completed Successfully</p>
         </div> 
@@ -205,10 +272,10 @@
                         <center><p class="user_name">{{ user.username }}</p></center>
                     </section>
                     {% if org %}
-                    {% if org.name|length > 10 %}
-                    <p> Welcome Back,  <span><b class="org_name">{{ org.name|slice:':10' }}...</b></span> </p>
+                    {% if org.name|length > 12 %}
+                        <center><p> Welcome Back,  <span><b class="org_name">{{ org.name|slice:':10' }}...</b></span> </p></center>
                     {% else %}
-                    <p> Welcome Back,  <span><b class="org_name">{{ org.name }}</b></span> </p>
+                        <center><p> Welcome Back,  <span><b class="org_name">{{ org.name }}</b></span> </p></center> 
                     {% endif %}
                     {% endif %}
                 </div>
@@ -219,7 +286,7 @@
                         <ul>
                             <li><button class="createBranchBtn">Create Branch</button></li>
                             {% if branches %}
-                            <li class="createDelegateBtn"><i class="fas fa-user-plus"></i>Create Delegate</li>
+                            <li class="createDelegateBtn"><i class="fas fa-user-plus"></i>Add Delegate</li>
                             {% endif %}
                         </ul>
                         {% else %}
@@ -232,37 +299,48 @@
                             <li><a class="listBranches"><i class="fas fa-code-branch"></i>&nbsp;Branches</a></li>
                             <div class="showBranches">
                                 {% if branches %}
-                                <ul>
-                                    {% for branch in branches %}
-                                    <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.branch_id %}">{{ branch.name }}</a></li>
-                                    {% endfor %}
-                                </ul>
+                                    <ul>
+                                        {% for branch in branches %}
+                                        <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.branch_id %}">{{ branch.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
                                 {% else %}
-                                <ul>
-                                    <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
-                                </ul>
+                                    <ul>
+                                        <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
+                                    </ul>
                                 {% endif %}
                             </div>
                             <li><a class="listDelegates"><i class="fas fa-user-friends"></i>Delegates</a></li>
                             <div class="showDelegates">
-                                {% if delegate_admins %}
-                                <ul>
-                                    {% for delegate in delegate_admins %}
-                                    <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' delegate.branch.branch_id %}">{{ delegate.first_name }} - {{ delegate.branch.name|slice:':10'}}</a></li>
-                                    {% endfor %}
-                                </ul>
+                                {% if delegate_admins.count > 0 %}
+                                    <ul>
+                                        {% for delegate in delegate_admins %}
+                                        <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' delegate.branch.branch_id %}">{{ delegate.first_name }} - {{ delegate.branch.name|slice:':10'}}</a></li>
+                                        {% endfor %}
+                                    </ul>
                                 {% else %}
-                                <ul>
-                                    <li class="list-group-item list-color"></li><a href="">No Account Delegate</a></li>
-                                </ul>
+                                    <ul>
+                                        <li class="list-group-item list-color"><a>No Account Delegate</a></li>
+                                    </ul>
                                 {% endif %}
                             </div>
-                            <li><a href=""><i class="fas fa-file-alt"></i> Reports</a></li>
-                            <li><a href=""><i class="fas fa-exchange-alt"></i>Transfer</a></li>
+                            <li><a id="reports" data-content="reports" class=""><i class="fas fa-file-alt"></i> Reports</a></li>
+                            <li><a id="transfers" data-content="transfers" class=""><i class="fas fa-exchange-alt"></i>Transfers</a></li>
                         </ul>
                     </div>
                 </div>
-
+                <div class="password">
+                    <p>
+                        <a class="change-password-superuser" title="Change Superuser Password" id="adminResetPwd">
+                            <i class="fas fa-lock"></i> Admin 
+                        </a>
+                    </p>
+                    <p>
+                        <a class="change-password-delegate" title="Reset Delegate Password" id="delegateResetPwd">
+                            <i class="fas fa-user-lock"></i>Delegate
+                        </a>
+                    </p>
+                                    </div>
                 <div class="logout">
                     <p class="logoutBtn"> <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></p>
                 </div>
@@ -272,71 +350,392 @@
         <!-- Right Pane -->
         <div class="right-pane-org">
             <!-- Create Organization Card -->
+            <div class="right-pane-content">
+                <div class="welcome-section mgt2 active">
+                    <div class="cardie">
+                        {% if org %}
+                            <h3>Create Branch</h3>
+                            <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
+                            <button class="createBranchBtn">Create Branch</button>
+                            {% else %}
+                            <h3>Create Organization</h3>
+                            <p>Start managing your organization's workforce efficiently. Create an organization to consolidate and centralize your employee data across branches.</p>
+                            <button class="createOrgBtn">Create Organization</button>
+                        {% endif %}
+                    </div>
+                    {% comment %} floating images {% endcomment %}
+                    <div class="landing-left">
+                        <h6 class="script">. . . your one-stop solution to employee management</h6>
+        
+                        <div class="image-slider">
+                            <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
+                            <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
+                            <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
+                            <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
+                            <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
+                            <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
+                            <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
+                            <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
+                            <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
+                            <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
+                            <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
+                            <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
+                        </div>
+                    </div>
+                    <!-- About Card -->
+                    <div class="cardie clearfix">
+                        <h3>About WorkForceHub</h3>
+                        <p>WorkForceHub provides a comprehensive solution for managing your organization's workforce. From payroll to leave management, WorkForceHub streamlines all your HR processes.</p>
+                    </div>
+        
+                    <!-- How it Works Card -->
+                    <div class="cardie">
+                        <h3>How it Works</h3>
+                        <p>After creating your organization, easily manage your employees across branches. Utilize features like payroll management, leave tracking, and inter-branch transfers.</p>
+                    </div>
+        
+                    <!-- Get Started Card -->
+                    <div class="cardie">
+                        <h3>Get Started</h3>
+                        <p>Follow these five simple steps to get started: 
+                            <ol>
+                                <li>Sign up for WorkForceHub</li>
+                                <li>Create your organization</li>
+                                <li>Add branches</li>
+                                <li>Create delegate admin</li>
+                                <li>Start managing your workforce seamlessly</li>
+                            </ol>
+                        <button  class="createOrgBtn">Get started</button>
+                    </div>
+        
+                    <!-- Why Choose WorkForceHub Card -->
+                    <div class="cardie">
+                        <h3>Why Choose WorkForceHub</h3>
+                        <p>Join thousands of organizations that trust WorkForceHub for their HR needs. Experience efficient workforce management, robust security, and exceptional support.</p>
+                    </div>
+                </div>
 
-            <div class="cardie">
-                {% if org %}
-                    <h3>Create Branch</h3>
-                    <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
-                    <button class="createBranchBtn">Create Branch</button>
+                {% comment %} Employee requests {% endcomment %}
+                <div class="transfers mgt2">
+                    <div class="menuToggle">
+                        <h2>Manage Transfer Requests</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    </div>
+                
+                    <div class="actions">
+                        <button class="tab6 nav-tab" data-tab6="pending-transfers">Requests</button>
+                        <button class="tab6 nav-tab" data-tab6="declined-transfers">Declined</button>
+                        <button class="tab6 nav-tab" data-tab6="approved-transfers">Approved</button>
+                        <button class="tab6 nav-tab" data-tab6="transfer-statistics">Statistics</button>
+                    </div>
+    
+                    {% comment %} Pending Requests Summary {% endcomment %}
+                    <div class="tab-contents6" id="pending-transfers">
+                        <div class="searchFlex">
+                            <h3>Pending Requests</h3>
+                            <div class="search-bar">
+                                <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                        {% if pending_transfers %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SN</th>
+                                    <th>From</th>
+                                    <th>To</th>   
+                                    <th>Employee</th>
+                                    <th>Dept</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transfer in pending_transfers %}
+                                <tr>
+                                    <td>{{ forloop.counter }}.</td>
+                                    <td>{{ transfer.source_branch.name }}</td>
+                                    <td>{{ transfer.destination_branch.name }}</td>
+                                    <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                    <td>{{ transfer.employee.department }}</td>
+                                    {% if transfer.reason|length > 30 %}
+                                    <td>{{ transfer.reason|slice:':30'}}...</td>
+                                    {% elif transfer.reason|length > 0 %}
+                                    <td>{{ transfer.reason }}</td>
+                                    {% else %}
+                                    <td>None</td>
+                                    {% endif %}
+                                    <td>{{ transfer.status }}</td>
+                                    <td>{{ transfer.created_at|date:'d/m/y' }}</td>
+                                    <td class="controlButton">
+                                        <button class="approve-transfer-btn approve" data-transferid="{{ transfer.pk }}">Approve</button>
+                                        <button class="decline-transfer-btn reject" data-transferid="{{ transfer.pk }}">Decline</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <center>
+                            <h3>No Transfer Requests </h3>
+                            <p> Transfer requests from branches will be displayed here</p>
+                        </center>
+                        {% endif %}                        
+                    </div>
+    
+                    {% comment %} Declined Requests Summary {% endcomment %}
+                    <div class="tab-contents6" id="declined-transfers">
+                        <div class="searchFlex">
+                            <h3>Declined Transfers</h3>
+                            <div class="search-bar">
+                                <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                        {% if declined_transfers %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>From</th>
+                                        <th>To</th>   
+                                        <th>Employee</th>
+                                        <th>Dept</th>
+                                        <th>Reason</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Declined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for transfer in declined_transfers %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}.</td>
+                                            <td>{{ transfer.employee.source_branch.name }}</td>
+                                            <td>{{ transfer.destination_branch.name }}</td>
+                                            <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                            <td>{{ transfer.employee.department }}</td>
+                                            {% if transfer.reason|length > 30 %}
+                                            <td>{{ transfer.reason|slice:':30'}}...</td>
+                                            {% elif transfer.reason|length > 0 %}
+                                            <td>{{ transfer.reason }}</td>
+                                            {% else %}
+                                            <td>None</td>
+                                            {% endif %}
+                                            <td>{{ transfer.status }}</td>
+                                            <td>{{ transfer.created_at|date:'d/m/y' }}</td>
+                                            <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <center>
+                                <h3>No Declined Requests </h3>
+                                <p> Declined transfer requests from branches will be displayed here</p>
+                            </center>
+                        {% endif %}                        
+                    </div>
+                
+                    {% comment %} Approved Requests Summary {% endcomment %}
+                    <div class="tab-contents6" id="approved-transfers">
+                        <div class="searchFlex">
+                            <h3>Approved Transfers</h3>
+                            <div class="search-bar">
+                                <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                        {% if approved_transfers %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>From</th>
+                                        <th>To</th>   
+                                        <th>Employee</th>
+                                        <th>Dept</th>
+                                        <th>Reason</th>
+                                        <th>Status</th>
+                                        <th>Req.Date</th>
+                                        <th>Approved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for transfer in approved_transfers %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}.</td>
+                                            <td>{{ transfer.source_branch.name}}</td>
+                                            <td>{{ transfer.destination_branch.name }}</td>
+                                            <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                            <td>{{ transfer.employee.department }}</td>
+                                            {% if transfer.reason|length > 30 %}
+                                            <td>{{ transfer.reason|slice:':30'}}...</td>
+                                            {% elif transfer.reason|length > 0 %}
+                                            <td>{{ transfer.reason }}</td>
+                                            {% else %}
+                                            <td>None</td>
+                                            {% endif %}
+                                            <td>{{ transfer.status }}</td>
+                                            <td>{{ transfer.created_at|date:'d/m/y' }}</td>
+                                            <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <center>
+                                <h3>No Approved Requests </h3>
+                                <p> Approved branch transfer requests will be displayed here</p>
+                            </center>
+                        {% endif %}                        
+                    </div>
+    
+                    {% comment %} Employee transfers {% endcomment %}
+                    <div class="tab-contents6 statistics" id="transfer-statistics">
+                        <div class="container">
+                            <h2>Transfer Statistics</h2>
+                            <div class="statistics-grid">
+                                <div class="statistic-item">
+                                    <div class="statistic-icon">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </div>
+                                    <div class="statistic-info">
+                                        <h3>Total Transfers</h3>
+                                        {% if transfers is not None %}
+                                            <p class="statsVal">{{ transfers.count|intcomma }}</p>
+                                        {% else %}
+                                            <p class="statsVal" style="color: red;">N/A</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="statistic-item">
+                                    <div class="statistic-icon">
+                                        <i class="fas fa-check-circle goodStat"></i>
+                                    </div>
+                                    <div class="statistic-info">
+                                        <h3>Approved Transfers</h3>
+                                        {% if approved_transfers is not None %}
+                                            <p class="statsVal">{{ approved_transfers.count|intcomma }}</p>
+                                        {% else %}
+                                            <p class="statsVal" style="color: red;">N/A</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="statistic-item">
+                                    <div class="statistic-icon">
+                                        <i class="fas fa-times-circle badStat"></i>
+                                    </div>
+                                    <div class="statistic-info">
+                                        <h3>Declined Transfers</h3>
+                                        {% if declined_transfers is not None %}
+                                            <p class="statsVal">{{ declined_transfers.count|intcomma }}</p>
+                                        {% else %}
+                                            <p class="statsVal" style="color: red;">N/A</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="statistic-item">
+                                    <div class="statistic-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="statistic-info">
+                                        <h3>Total Employees</h3>
+                                        {% if employees %}
+                                            <p class="statsVal">{{ employees.count|intcomma }}</p>
+                                        {% else %}
+                                            <p class="statsVal" style="color: red;">N/A</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="statistic-item">
+                                    <div class="statistic-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="statistic-info">
+                                        <h3>Transfers This Month</h3>
+                                        {% if monthly_transfer_count is not None %}
+                                        <p class="statsVal">{{ monthly_transfer_count }}</p>
+                                        {% else %}
+                                        <p class="statsVal" style="color: red;">N/A</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="statistic-item">
+                                    <div class="statistic-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div class="statistic-info">
+                                        <h3>Transfers Last Month</h3>
+                                        {% if last_month_transfer_count is not None %}
+                                        <p class="statsVal">{{ last_month_transfer_count }}</p>
+                                        {% else %}
+                                        <p class="statsVal" style="color: red;">N/A</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %} Reports {% endcomment %}
+                <div id="report-history-modal" class="reports mgt2">
+                    <div class="history-container archive-modal-content">
+                        <div class="reportStats">
+                            <h4>Reports</h4> 
+                            <button id="overallStatBtn" class="statsBtn">
+                                <a href="{% url 'statistics'%}" target="_blank" rel="noreferrer">Statistics</a>
+                                    <i class="fas fa-arrow-alt-circle-right"></i>
+                            </button>
+                        </div >
+                    {% if reports %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Branch</th>
+                                <th>Created By</th>
+                                <th>File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in reports %}
+                            <tr>
+                                    <td>{{ forloop.counter }}.</td>
+                                    <td>{{ report.title }}</td>
+                                    <td>{{ report.report_type }}</td>
+                                    <td>{{ report.category }}</td>
+                                    <td title="{{ report.description }}">{{ report.description|truncatechars:20 }}</td>
+                                    <td>{{ report.created_at|date:'d/m/y' }}</td>
+                                    <td>{{ report.status }}</td>
+                                    <td>{{ report.branch.name }}</td>
+                                    <td>{{ report.created_by.get_full_name }}</td>
+                                    {% if report.attachments %}
+                                    <td><a href="{{report.attachments.url}}" target="_blank">View</a></td>
+                                    {% else %}
+                                    <td>None</td>
+                                    {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                     {% else %}
-                    <h3>Create Organization</h3>
-                    <p>Start managing your organization's workforce efficiently. Create an organization to consolidate and centralize your employee data across branches.</p>
-                    <button class="createOrgBtn">Create Organization</button>
-                {% endif %}
-            </div>
-            {% comment %} floating images {% endcomment %}
-            <div class="landing-left">
-                <h6 class="script">. . . your one-stop solution to employee management</h6>
-
-                <div class="image-slider">
-                    <img src="{% static 'base/images/employees2.jpg' %}" alt="slide img2">
-                    <img src="{% static 'base/images/employees3.webp' %}" alt="slide img3">
-                    <img src="{% static 'base/images/employees4.webp' %}" alt="slide img4">
-                    <img src="{% static 'base/images/employees5.png' %}" alt="slide img5">
-                    <img src="{% static 'base/images/employees60.jpg' %}" alt="slide img6">
-                    <img src="{% static 'base/images/employees7.jpg' %}" alt="slide img7">
-                    <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8">
-                    <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
-                    <img src="{% static 'base/images/employees9.webp' %}" alt="slide img9">
-                    <img src="{% static 'base/images/employees10.png' %}" alt="slide img10">
-                    <img src="{% static 'base/images/employees11.jpg' %}" alt="slide img11">
-                    <img src="{% static 'base/images/employees12.jpg' %}" alt="slide img12">
+                    <center class="space-top">
+                        <h3>No Reports </h3>
+                        <p>Reports will be displayed here</p>
+                    </center>
+                    {% endif %} 
+                    </div>
                 </div>
             </div>
-            <!-- About Card -->
-            <div class="cardie clearfix">
-                <h3>About WorkForceHub</h3>
-                <p>WorkForceHub provides a comprehensive solution for managing your organization's workforce. From payroll to leave management, WorkForceHub streamlines all your HR processes.</p>
-            </div>
 
-            <!-- How it Works Card -->
-            <div class="cardie">
-                <h3>How it Works</h3>
-                <p>After creating your organization, easily manage your employees across branches. Utilize features like payroll management, leave tracking, and inter-branch transfers.</p>
-            </div>
-
-            <!-- Get Started Card -->
-            <div class="cardie">
-                <h3>Get Started</h3>
-                <p>Follow these five simple steps to get started: 
-                    <ol>
-                        <li>Sign up for WorkForceHub</li>
-                        <li>Create your organization</li>
-                        <li>Add branches</li>
-                        <li>Invite team members</li>
-                        <li>Start managing your workforce seamlessly</li>
-                    </ol>
-                <button  class="createOrgBtn">Get started</button>
-            </div>
-
-            <!-- Why Choose WorkForceHub Card -->
-            <div class="cardie">
-                <h3>Why Choose WorkForceHub</h3>
-                <p>Join thousands of organizations that trust WorkForceHub for their HR needs. Experience efficient workforce management, robust security, and exceptional support.</p>
-            </div>
         </div> 
-
-
     </div>
 {% comment %} Create Organization Modal Form {% endcomment %}
 </div>

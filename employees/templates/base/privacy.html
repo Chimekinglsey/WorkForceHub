@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Privacy{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'base/styles/privacy.css' %}">
+
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<center>
+    <h2>Privacy Policy</h2>
+</center>
+    <section>
+        <h4>1. Introduction</h4>
+        <p>Welcome to WorkforceHub, your trusted workforce management platform. We are dedicated to safeguarding your privacy and ensuring that your personal information is handled securely and responsibly. This Privacy Policy outlines how we collect, use, disclose, and protect your information.</p>
+    
+        <h4>2. Information Collection</h4>
+        <h5>2.1 Personal Information</h5>
+        <p>When you register on our platform, we collect personal information such as your name, email address, and contact number. If you are an administrator, we may also collect information about your role and responsibilities within the organization.</p>
+    
+        <h5>2.2 Payment Information</h5>
+        <p>We collect transactional information and payment details when you make payments or transactions on WorkforceHub. We use secure payment gateways and do not store your credit card information.</p>
+    
+        <h5>2.3 Usage Information</h5>
+        <p>We collect information about your usage of our platform, including the features you access, actions you take, and interactions with other users.</p>
+    
+        <h5>2.4 Device Information</h5>
+        <p>We automatically collect certain information, such as IP addresses, device identifiers, browser type, and operating system, to improve user experience and analyze platform usage.</p>
+    
+        <h4>3. Use of Your Information</h4>
+        <h5>3.1 Providing Our Services</h5>
+        <p>We use your personal information to provide our services, authenticate users, process transactions, and communicate with you about your account and organizational activities.</p>
+    
+        <h5>3.2 Improving Our Platform</h5>
+        <p>We use the information we collect to understand how our platform is used, identify areas for improvement, and develop new features and functionalities.</p>
+    
+        <h5>3.3 Communication</h5>
+        <p>We may use your contact information to send you important updates, announcements, and notifications related to your account or organizational activities. You can opt out of receiving these communications at any time.</p>
+    
+        <h4>4. Information Sharing</h4>
+        <p>We may share your personal information with third-party service providers who assist us in providing our services, such as hosting, analytics, and customer support. We may also disclose your information as required by law or to protect our rights, property, or safety.</p>
+    
+        <h4>5. Security</h4>
+        <p>We employ security measures, such as encryption, access controls, and regular security audits, to protect your personal information from unauthorized access, disclosure, or misuse.</p>
+    
+        <h4>6. Your Rights</h4>
+        <p>You have the right to access, update, or delete your personal information. You can also opt out of receiving marketing communications from us. To exercise these rights, please contact us using the information provided below.</p>
+    
+        <h4>7. Changes to This Policy</h4>
+        <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. We will notify you of any material changes by posting the updated policy on our website.</p>
+    
+        <h4>8. Contact Us</h4>
+        <p>If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:developers.workforcehub@gmail.com">developers.workforcehub@gmail.com</a>.</p>
+    
+        <p><strong>Consent</strong><br>By using WorkforceHub, you consent to the collection, use, and disclosure of your personal information as outlined in this Privacy Policy.</p>
+    
+        <p><strong>Last Updated:</strong> 29 February, 2024</p>
+    </section>    
+
+{% endblock %}
+

@@ -2,8 +2,8 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import UserCreationForm
-from employees.models import AdminUser, Payroll
-from organizations.models import Branch, Organization,Transfer, OrgDocuments as OrgDocs
+from employees.models import AdminUser, Payroll, Finance
+from organizations.models import Branch, Organization,Transfer, OrgDocuments as OrgDocs, Report
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Field
 from crispy_forms.bootstrap import TabHolder, Tab
@@ -233,7 +233,7 @@ class EmployeeForm(forms.ModelForm):
         }
         
 
-    def __init__(self, organization, adminuser, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -334,16 +334,22 @@ class EmployeeForm(forms.ModelForm):
             )
         )
         # Filter branches based on organization
-        self.fields['branch'].queryset = Branch.objects.filter(organization=organization)
-        self.fields['branch'].empty_label = 'Select Branch'
+        # self.fields['branch'].queryset = Branch.objects.filter(organization=organization)
+        self.fields['branch'].empty_label = 'Branch'
+        self.fields['branch'].required = False
+        self.fields['branch'].disabled = True
         # self.fields['adminuser'].queryset = AdminUser.objects.filter(pk=organization.admin_user.id)       
-        self.fields['adminuser'].queryset = AdminUser.objects.filter(pk=adminuser.id)       
+        # self.fields['adminuser'].queryset = AdminUser.objects.filter(pk=adminuser.id)
+        self.fields['adminuser'].label = 'Admin'       
+        self.fields['adminuser'].required = False
+        self.fields['adminuser'].disabled = True
         self.fields['gender'].choices = GENDER_CHOICES
         self.fields['employment_status'].choices = EMPLOYMENT_STATUS_CHOICES
         self.fields['employment_type'].choices = EMPLOYEE_STATUS_CHOICES
         self.fields['designation'].choices = DESIGNATION_CHOICES
         self.fields['next_of_kin_relationship'].choices = NEXT_OF_KIN_RELATIONSHIP_CHOICES
         self.fields['joining_date'].label = 'Date Employed'
+        self.fields['employee_id'].required = True
 
 
 # Payroll form
@@ -425,10 +431,23 @@ class PayrollForm(forms.ModelForm):
 class PerformanceReviewForm(forms.ModelForm):
     class Meta:
         model = Performance
-        fields = ['performance_review', 'performance_rating']
+        fields = ['performance_review', 'performance_rating', 'project_performance', 'customer_feedback', 
+                  'manager_assessment', 'peer_feedback', 'kpis', 'self_assessment','professional_development', 
+                  'improvement_plan', 'recognition_rewards', 'attendance_punctuality'
+                  ]
         widgets = {
-            'performance_review': forms.Textarea(attrs={'rows': 4}),
-            'performance_rating': forms.NumberInput(attrs={'type': 'number', 'min': 0, 'max': 100, 'title': 'Rate the employee performance between 0-100'}),
+            'performance_review': forms.Textarea(attrs={'rows': 2}),
+            'performance_rating': forms.NumberInput(attrs={'type': 'number', 'min': 0, 'max': 100, 'help_text': 'Rate the employee performance between 0-100'}),
+            'project_performance': forms.Textarea(attrs={'rows': 2}),
+            'customer_feedback': forms.Textarea(attrs={'rows': 2}),
+            'manager_assessment': forms.Textarea(attrs={'rows': 2}),
+            'peer_feedback': forms.Textarea(attrs={'rows': 2}),
+            'professional_development': forms.Textarea(attrs={'rows': 2}),
+            'improvement_plan': forms.Textarea(attrs={'rows': 2}),
+            'kpis': forms.Textarea(attrs={'rows': 2}),
+            'self_assessment': forms.Textarea(attrs={'rows': 2}),
+            'recognition_rewards': forms.Textarea(attrs={'rows': 2}),
+            'attendance_punctuality': forms.Textarea(attrs={'rows': 2}),
         }
 
 
@@ -439,35 +458,10 @@ class PerformanceReviewForm(forms.ModelForm):
             Fieldset(
                 'Performance Review',
                 Row(
-                    Column('performance_review', css_class='form-group col-md-12'),
-                    Column('performance_rating', css_class='form-group col-md-12'),
+                    Column('performance_review', css_class='form-group col-md-6 mb-0'),
+                    Column('performance_rating', css_class='form-group col-md-6 mb-0'),
                     css_class='form-row'
                 ),
-                Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
-                    css_class='btnHandle'
-                )
-            )
-        )
-
-
-class ProjectPerformanceForm(forms.ModelForm):
-    class Meta:
-        model = Performance
-        fields = ['project_performance', 'customer_feedback', 'manager_assessment', 'peer_feedback']
-        widgets = {
-            'project_performance': forms.Textarea(attrs={'rows': 4}),
-            'customer_feedback': forms.Textarea(attrs={'rows': 4}),
-            'manager_assessment': forms.Textarea(attrs={'rows': 4}),
-            'peer_feedback': forms.Textarea(attrs={'rows': 4}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                'Performance Feedback',
                 Row(
                     Column('project_performance', css_class='form-group col-md-6 mb-0'),
                     Column('customer_feedback', css_class='form-group col-md-6 mb-0'),
@@ -479,38 +473,6 @@ class ProjectPerformanceForm(forms.ModelForm):
                     Column('peer_feedback', css_class='form-group col-md-6 mb-0'),
                     css_class='form-row'
                 ),
-
-                Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
-                    css_class='btnHandle'
-                ),
-            )
-        )
-        
-
-# other performance forms
-        
-class OtherPerformanceForm(forms.ModelForm):
-    class Meta:
-        model = Performance
-        fields = ['kpis', 'self_assessment','professional_development', 
-                  'improvement_plan', 'recognition_rewards', 
-                  'attendance_punctuality']
-        widgets = {
-            'professional_development': forms.Textarea(attrs={'rows': 4}),
-            'improvement_plan': forms.Textarea(attrs={'rows': 4}),
-            'kpis': forms.Textarea(attrs={'rows': 4}),
-            'self_assessment': forms.Textarea(attrs={'rows': 4}),
-            'recognition_rewards': forms.Textarea(attrs={'rows': 4}),
-            'attendance_punctuality': forms.Textarea(attrs={'rows': 4}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                'Performance Feedback',
                 Row(
                     Column('professional_development', css_class='form-group col-md-6 mb-0'),
                     Column('improvement_plan', css_class='form-group col-md-6 mb-0'),
@@ -529,8 +491,14 @@ class OtherPerformanceForm(forms.ModelForm):
                     Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
                     css_class='btnHandle'
                 )
+
             )
         )
+        self.fields['performance_review'].label = 'Overall Performance Review'
+        self.fields['performance_review'].help_text = 'This is the overall performance review of the employee. It should be a summary of the employee\'s performance for the period.'
+        self.fields['performance_rating'].label = 'Overall Performance Rating'
+        self.fields['performance_rating'].help_text = 'Rate the employee performance between 0-100'
+
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -621,22 +589,53 @@ class BranchDocumentsForm(forms.ModelForm):
         self.fields['document'].help_text = 'Select a document to Upload'
         self.fields['document'].widget.attrs['accept'] = '.pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt'
 
-
-
+# # Allow super admin reset password for delegates
+# class ChangeDelegatePasswordForm(PasswordChangeForm):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.helper = FormHelper()
+#         self.helper.layout = Layout(
+#             Fieldset(
+#                 '',
+#                 Row(
+#                     Column('old_password', css_class='form-group col-md-6 mb-0'),
+#                     Column('can_change_password', css_class='form-group col-md-6 mb-0'),
+#                     css_class='form-row flex-center'
+#                 ),
+#                 Row(
+#                     Column('new_password1', css_class='form-group col-md-6 mb-0'),
+#                     Column('new_password2', css_class='form-group col-md-6 mb-0'),
+#                     css_class='form-row'
+#                 ),
+#                 Row(
+#                     Column('delegate_id', css_class='form-group col-md-6 mb-0'),
+#                     css_class='form-row'
+#                 ),
+#                 Row(
+#                     Column(Submit('submit', 'Submit', css_class='btn btn-primary mb-5')),
+#                     css_class='btnHandle'
+#                 )
+#             )
+#         )
+#         self.helper.form_method = 'post'
+        
 # Transfer form
 class TransferForm(forms.ModelForm):
     class Meta:
         model = Transfer
-        fields = ['employee', 'source_branch', 'destination_branch', 'reason']
+        fields = ['organization', 'employee', 'source_branch', 'destination_branch', 'reason']
 
-    def __init__(self, organization, *args, **kwargs):
+    def __init__(self, organization, adminuser, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Filter source branch based on organization and current user
         self.fields['source_branch'].queryset = Branch.objects.filter(organization=organization)
         self.fields['source_branch'].disabled = True
         self.fields['source_branch'].required = False
+        self.fields['organization'].required = False
         self.fields['destination_branch'].queryset = Branch.objects.filter(organization=organization)
         self.fields['reason'].widget.attrs={'rows': 4}
+        # only employees in a particular branch should be in the queryset
+        self.fields['employee'].queryset = Employee.objects.filter(branch=adminuser.branch)
 
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -665,4 +664,238 @@ class TransferForm(forms.ModelForm):
             ),
             Submit('submit', 'Submit', css_class='btn btn-primary')
         )
-            
+
+# Branch reports form
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['title', 'branch', 'report_date', 'description', 'status', 'comments',
+                'attachments', 'created_by', 'report_type', 'category']
+        widgets = {
+            'report_date': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'comments': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Report Form',
+                Row(
+                    Column('title', css_class='form-group col-md-6 mb-0'),
+                    Column('branch', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('report_type', css_class='form-group col-md-6 mb-0'),
+                    Column('category', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('description', css_class='form-group col-md-6 mb-0'),
+                    Column('attachments', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('report_date', css_class='form-group col-md-6 mb-0'),
+                    Column('status', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('comments', css_class='form-group col-md-6 mb-0'),
+                    Column('created_by', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    css_class='btnHandle'
+                )
+            )
+        )
+        self.fields['title'].required = True
+        self.fields['branch'].disabled = True
+        self.fields['branch'].required = False
+        self.fields['created_by'].disabled = True
+        self.fields['created_by'].required = False
+
+class BasicFinanceForm(forms.ModelForm):
+    class Meta:
+        model = Finance
+        fields = ['branch', 'report_date', 'total_revenue', 'total_expenses', 'created_by', 'status', 'description', 'attachments']
+    
+        widgets = {
+            'report_date': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Basic Financial Information',
+                Row(
+                    Column('branch', css_class='form-group col-md-6 mb-0'),
+                    Column('report_date', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('total_revenue', css_class='form-group col-md-6 mb-0'),
+                    Column('total_expenses', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('created_by', css_class='form-group col-md-6 mb-0'),
+                    Column('status', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('description', css_class='form-group col-md-6 mb-0'),
+                    Column('attachments', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    css_class='btnHandle'
+                )
+            )
+        )
+
+        self.fields['branch'].disabled = True
+        self.fields['branch'].required = False
+        self.fields['created_by'].disabled = True
+        self.fields['created_by'].required = False
+        self.fields['report_date'].widget.attrs['type'] = 'date'
+        self.fields['report_date'].required = True
+
+class DetailedFinanceForm(forms.ModelForm):
+    """This form is used to capture detailed financial information"""
+    class Meta:
+        model = Finance
+        fields = ['branch', 'report_date', 'total_revenue', 'total_expenses', 'created_by', 'status', 'description',
+                    'attachments', 'total_profit_loss', 'net_profit', 'gross_profit', 'operating_profit', 'ebitda',
+                    'operating_expenses', 'taxes', 'interest_expenses', 'profit_margin', 'return_on_assets', 'return_on_equity',
+                    'current_ratio', 'quick_ratio', 'debt_to_equity_ratio', 'interest_coverage_ratio', 'asset_turnover_ratio',
+                    'inventory_turnover_ratio', 'budgeted_revenue', 'budgeted_expenses', 'budget_variance', 'forecasted_revenue',
+                    'forecasted_expenses', 'comments'
+                    ]
+                    
+        widgets = {
+            'report_date': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 2}),
+            'comments': forms.Textarea(attrs={'rows': 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            TabHolder(
+                Tab(
+                    'Basic Financial Information',
+                    Row(
+                        Column('branch', css_class='form-group col-md-6 mb-0'),
+                        Column('report_date', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('total_revenue', css_class='form-group col-md-6 mb-0'),
+                        Column('total_expenses', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('created_by', css_class='form-group col-md-6 mb-0'),
+                        Column('status', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('description', css_class='form-group col-md-6 mb-0'),
+                        Column('attachments', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                ),
+                Tab(
+                    'Financial Metrics',
+                    Row(
+                        Column('net_profit', css_class='form-group col-md-6 mb-0'),
+                        Column('gross_profit', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('operating_profit', css_class='form-group col-md-6 mb-0'),
+                        Column('ebitda', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('operating_expenses', css_class='form-group col-md-6 mb-0'),
+                        Column('taxes', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('interest_expenses', css_class='form-group col-md-6 mb-0'),
+                        Column('total_profit_loss', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                ),
+                Tab(
+                    'Financial Ratios',
+                    Row(
+                        Column('profit_margin', css_class='form-group col-md-6 mb-0'),
+                        Column('return_on_assets', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('return_on_equity', css_class='form-group col-md-6 mb-0'),
+                        Column('current_ratio', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+
+                    Row(
+                        Column('quick_ratio', css_class='form-group col-md-6 mb-0'),
+                        Column('debt_to_equity_ratio', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('interest_coverage_ratio', css_class='form-group col-md-6 mb-0'),
+                        Column('asset_turnover_ratio', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('inventory_turnover_ratio', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                ),
+                Tab(
+                    'Budget and Forecast',
+                    Row(
+                        Column('budgeted_revenue', css_class='form-group col-md-6 mb-0'),
+                        Column('budgeted_expenses', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('budget_variance', css_class='form-group col-md-6 mb-0'),
+                        Column('forecasted_revenue', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column('forecasted_expenses', css_class='form-group col-md-6 mb-0'),
+                        Column('comments', css_class='form-group col-md-6 mb-0'),
+                        css_class='form-row'
+                    ),
+                    Row(
+                        Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                        css_class='btnHandle'
+                    )
+                )
+            )
+        )
+        self.fields['branch'].disabled = True
+        self.fields['branch'].required = False
+        self.fields['created_by'].disabled = True
+        self.fields['created_by'].required = False
+

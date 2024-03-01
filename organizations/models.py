@@ -1,5 +1,6 @@
+import datetime
+from turtle import title
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -125,13 +126,13 @@ class OrgDocuments(models.Model):
 
 class Transfer(models.Model):
     STATUS_CHOICES = (
-        ('pending', _('Pending')),
-        ('approved', _('Approved')),
-        ('declined', _('Declined')),
+        ('Pending', _('Pending')),
+        ('Approved', _('Approved')),
+        ('Declined', _('Declined')),
     )
     
-
-    employee = models.ForeignKey('employees.Employee', on_delete=models.CASCADE, related_name='transfers')
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='transfers')
+    employee = models.ForeignKey('employees.Employee', on_delete=models.CASCADE, related_name='transfers_history')
     source_branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='outgoing_transfers')
     destination_branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='incoming_transfers')
     reason = models.TextField(_('Reason for Transfer'))
@@ -144,3 +145,58 @@ class Transfer(models.Model):
     class Meta:
         verbose_name = _('Transfer')
         verbose_name_plural = _('Transfers')
+        ordering = ['-created_at']
+
+class Report(models.Model):
+    """Model for reports"""
+    STATUS_CHOICES = [
+        ('draft', _('Draft')),
+        ('submitted', _('Submitted')),
+        ('approved', _('Approved')),
+        ('rejected', _('Rejected')),
+    ]
+
+    REPORT_TYPE_CHOICES = [
+        ('monthly', _('Monthly')),
+        ('quarterly', _('Quarterly')),
+        ('annual', _('Annual')),
+        ('ad-hoc', _('Ad-hoc')),
+    ]
+
+    REPORT_CATEGORY_CHOICES = [
+        ('financial', _('Financial')),
+        ('performance', _('Performance')),
+        ('employee', _('Employee')),
+        ('sales', _('Sales')),
+        ('marketing', _('Marketing')),
+        ('inventory', _('Inventory')),
+        ('customer_service', _('Customer Service')),
+        ('production', _('Production')),
+        ('quality_control', _('Quality Control')),
+        ('research_and_development', _('Research and Development')),
+        ('human_resources', _('Human Resources')),
+        ('training_and_development', _('Training and Development')),
+        ('other', _('Other')),
+    ]
+
+    branch = models.ForeignKey('Branch', on_delete=models.CASCADE, related_name='reports')
+    report_date = models.DateField(_('Report Date'), default=datetime.date.today)
+    title = models.CharField(_('Title'), max_length=250)
+    report_type = models.CharField(_('Report Type'), max_length=20, choices=REPORT_TYPE_CHOICES, default='monthly')
+    category = models.CharField(_('Category'), max_length=50, choices=REPORT_CATEGORY_CHOICES, default='other')
+    description = models.TextField(_('Description'), blank=True)
+    created_by = models.ForeignKey('employees.AdminUser', on_delete=models.SET_NULL, null=True, related_name='owned_reports')
+    status = models.CharField(_('Status'), max_length=20, choices=STATUS_CHOICES, default='draft')
+    version = models.PositiveIntegerField(_('Version'), default=1)
+    comments = models.TextField(_('Comments'), blank=True)
+    attachments = models.FileField(_('Attachments'), upload_to='report_attachments/', blank=True)
+    created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
+
+    class Meta:
+        verbose_name = _('Report')
+        verbose_name_plural = _('Reports')
+        ordering = ['-report_date']
+
+    def __str__(self):
+        return f"{self.report_type} - {self.branch.name}"

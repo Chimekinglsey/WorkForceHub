@@ -21,7 +21,6 @@ urlpatterns = [
 
     # Delegate admin urls
     path('accountSettings/', emp_view.profile_settings, name='profile_settings'),
-    path('changePassword/', emp_view.change_password, name='change_delegate_password'),
     path('uploadBranchDocs/', emp_view.upload_documents, name='upload_branch_docs'),
 
     # Dashboard urls (org and branch)
@@ -36,6 +35,7 @@ urlpatterns = [
     path('updateEmployee/<int:emp_id>/', emp_view.update_employee, name="update_employee"),
     path('archiveEmployee/<int:emp_id>/', emp_view.archive_employee, name="archive_employee"),
     path('deleteEmployee/<int:emp_id>/', emp_view.delete_employee, name="delete_employee"),
+    path('restoreArchive/<int:emp_id>/', emp_view.restore_archive, name='restore_archive'),
 
     # Leave Management
     path('leaveRequest/', emp_view.leave_request, name='leave_request'),
@@ -52,20 +52,44 @@ urlpatterns = [
     # Performance Management
     path('employeePerformance/<int:emp_id>/', emp_view.performance_dashboard, name='performance_dashboard'),
     path('performanceReview/<int:emp_id>/', emp_view.performance_review, name='performance_review'),
-    path('projectPerformance/<int:emp_id>/', emp_view.project_performance, name='project_performance'),
-    path('otherPerformance/<int:emp_id>/', emp_view.other_performance, name='other_performance'),
-
-    # Password urls
-    path('forgotPassword/', emp_view.forgot_password, name='forgot_password'),
-    path('restoreArchive/<int:emp_id>/', emp_view.restore_archive, name='restore_archive'),
-    path('resetToken/', emp_view.confirm_password_reset_token, name='reset_token'),
-    path('resetPassword/', emp_view.reset_password, name='reset_password'),
+    path('updatePerformance/<int:performance_id>/', emp_view.update_performance_review, name='update_performance'),
+    path('deletePerformance/<int:performance_id>/', emp_view.delete_performance_review, name='delete_performance'),
 
 
     # Transfer Management
     path('transferRequest/', emp_view.transfer_request, name='transfer_request'),
     path('cancelTransfer/<int:transfer_id>/', emp_view.cancel_transfer_request, name='cancel_transfer'),
     path('manageTransferRequest/<int:transfer_id>/', emp_view.manage_transfer_request, name='manage_transfer_request'),
+
+
+    # Reports and statistics
+    path('branch/reports/', emp_view.create_report, name='create_report'),
+    path('branch/updateReport/<int:report_id>/', emp_view.update_report, name='update_report'),
+    path('statistics/', emp_view.statistics, name='statistics'),
+
+
+    # Finance URL
+    path('finance/', emp_view.finance_report, name='finance_dashboard'),
+    path('finance/<str:type>/', emp_view.finance_report, name='finance_report'),
+
+    # Password urls for admin
+    path('changePassword/', emp_view.change_password, name='change_password'), # used by both admin and delegate with can_change_password privilege
+    path('forgotPassword/', emp_view.forgot_password, name='forgot_password'),
+    path('resetPasswordToken/<str:email>/', emp_view.confirm_password_reset_token, name='reset_token'),
+    path('resetPassword/<str:email>/', emp_view.reset_password, name='reset_password'),
+    path('resetDelegatePassword/', emp_view.reset_delegate_password, name='reset_delegate_password'),
+
+
+
+    # Footer urls
+    path('about/', emp_view.about, name='about'),
+    path('terms/', emp_view.terms, name='terms'),
+    path('privacy/', emp_view.privacy, name='privacy'),
+    path('faq/', emp_view.faq, name='faq'),
+    path('developers/', emp_view.developers, name='developers'),
+
+
+
 
     # API URLS
     path('api/', include(router.urls)),

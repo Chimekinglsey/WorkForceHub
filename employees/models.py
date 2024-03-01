@@ -1,10 +1,11 @@
-from email.policy import default
-from random import choices
+from enum import unique
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group, Permission
-from datetime import datetime
+from datetime import datetime, date
 from django.utils import timezone
 from organizations.models import Branch
 from PIL import Image
@@ -239,8 +240,8 @@ class Employee(BaseUser):
         return f'{self.last_name} {self.first_name}'
 
 class PasswordResetToken(models.Model):
-    user = models.OneToOneField(AdminUser, on_delete=models.CASCADE)
-    token = models.CharField(max_length=6)
+    user = models.OneToOneField(AdminUser, on_delete=models.CASCADE, related_name='password_reset_token')
+    token = models.CharField(max_length=6, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_expired(self):
@@ -541,6 +542,7 @@ class Performance(models.Model):
             return 'Fair'
         else:
             return 'Poor' 
+
 class WorkHistory(models.Model):
     """Model for employee work history"""
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='work_history')
@@ -560,3 +562,71 @@ class WorkHistory(models.Model):
 
     def __str__(self):
         return f'{self.employee} - {self.branch} - {self.job_role}'
+
+
+class Finance(models.Model):
+    """Model for organization financial reports"""
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('archived', 'Archived'),
+    ]
+
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='finances')
+    report_date = models.DateField(_('Report Date'), default=date.today)
+    description = models.TextField(_('Description'), blank=True)
+    created_by = models.ForeignKey('employees.AdminUser', on_delete=models.SET_NULL, null=True, related_name='owned_finances')
+    status = models.CharField(_('Status'), max_length=20, choices=STATUS_CHOICES, default='draft')
+    version = models.PositiveIntegerField(_('Version'), default=1)
+    comments = models.TextField(_('Comments'), blank=True)
+    attachments = models.FileField(_('Attachments'), upload_to='finance_attachments/', blank=True)
+    # Financial Metrics
+    total_revenue = models.DecimalField(_('Total Revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
+    total_expenses = models.DecimalField(_('Total Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    total_profit_loss = models.DecimalField(_('Total Profit/Loss'), max_digits=10, decimal_places=2, default=0)
+    net_profit = models.DecimalField(_('Net Profit'), max_digits=15, decimal_places=2, null=True, blank=True)
+    gross_profit = models.DecimalField(_('Gross Profit'), max_digits=15, decimal_places=2, null=True, blank=True)
+    operating_profit = models.DecimalField(_('Operating Profit'), max_digits=15, decimal_places=2, null=True, blank=True)
+    ebitda = models.DecimalField(_('EBITDA'), max_digits=15, decimal_places=2, null=True, blank=True)
+    operating_expenses = models.DecimalField(_('Operating Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    taxes = models.DecimalField(_('Taxes'), max_digits=15, decimal_places=2, null=True, blank=True)
+    interest_expenses = models.DecimalField(_('Interest Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    # Financial Ratios
+    profit_margin = models.DecimalField(_('Profit Margin (%)'), max_digits=8, decimal_places=2, null=True, blank=True)
+    return_on_assets = models.DecimalField(_('Return on Assets (%)'), max_digits=8, decimal_places=2, null=True, blank=True)
+    return_on_equity = models.DecimalField(_('Return on Equity (%)'), max_digits=8, decimal_places=2, null=True, blank=True)
+    current_ratio = models.DecimalField(_('Current Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    quick_ratio = models.DecimalField(_('Quick Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    debt_to_equity_ratio = models.DecimalField(_('Debt-to-Equity Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    interest_coverage_ratio = models.DecimalField(_('Interest Coverage Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    asset_turnover_ratio = models.DecimalField(_('Asset Turnover Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    inventory_turnover_ratio = models.DecimalField(_('Inventory Turnover Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    # Budget Variance Analysis
+    budgeted_revenue = models.DecimalField(_('Budgeted Revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
+    budgeted_expenses = models.DecimalField(_('Budgeted Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    budget_variance = models.DecimalField(_('Budget Variance'), max_digits=15, decimal_places=2, null=True, blank=True)
+    # Forecasting
+    forecasted_revenue = models.DecimalField(_('Forecasted Revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
+    forecasted_expenses = models.DecimalField(_('Forecasted Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    # Audit and Logging
+    created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
+
+    class Meta:
+        verbose_name = _('Finance')
+        verbose_name_plural = _('Finances')
+        ordering = ['-report_date']
+
+    def __str__(self):
+        return f"{self.organization.name} - {self.report_date}"
+
+# @receiver(pre_save, sender=Finance)
+# def update_finance_totals(sender, instance, **kwargs):
+#     # Calculate total income, expenses, and profit/loss
+#     total_income = instance.income_items.aggregate(total=models.Sum('amount'))['total']
+#     total_expenses = instance.expense_items.aggregate(total=models.Sum('amount'))['total']
+#     instance.total_income = total_income if total_income is not None else 0
+#     instance.total_expenses = total_expenses if total_expenses is not None else 0
+#     instance.total_profit_loss = instance.total_income - instance.total_expenses

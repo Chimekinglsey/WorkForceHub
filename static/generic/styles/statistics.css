@@ -1,0 +1,76 @@
+.container {
+    font-family: 'Montserrat', sans-serif;
+}
+
+h4 {
+  color: #009dff;
+}
+
+.tab-contents {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.actions {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 80%;
+}
+
+#employee-statistics {
+    display: block;
+}
+
+.actions button {
+    font-weight: bold;
+    width: 16%;
+}
+
+.menuToggle h2 {
+    margin: auto auto;
+}
+.badStat {
+    color: red !important;
+}
+.goodStat {
+    color: green;
+}
+
+.statisticContainer {
+    min-height: 102vh !important;
+}
+
+@media screen and (max-width: 900px) {
+    .actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .actions button {
+        margin: 10px;
+    }
+}
+@media  screen and (max-width: 768px) {
+    .actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+    }
+    .actions button {
+        margin: 5px 10px;
+        width: 100%;
+    }
+}
+
+/* @media screen and (max-width: 600px) {
+    .actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+} */

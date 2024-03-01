@@ -3,6 +3,8 @@
 {% load crispy_forms_tags %}
 {% load filters %}
 {% load humanize %}
+{% block title %}Performance - {{employee.first_name}}{% endblock title %}
+
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
@@ -26,6 +28,7 @@
 
 {% block content %}
 <div class="performance-dashboard">
+  <center ><h2 class="db-title">Performance Dashboard</h2></center>
     <div class="employee-profile">
       <div class="profile-picture">
         <img id="profilePictureView" src="{{employee.profile_picture.url}}" alt="dp icon">
@@ -33,17 +36,13 @@
 
     <div class="employee-info">
         <h2>{{employee.first_name}} {{employee.last_name}}</h2>
-        <p>Department: {{ employee.department }}</p>
-        <p>Designation: {{ employee.designation }}</p>
-        <p>Job Role: {{employee.job_role}}</p>
-      </div>
+        <p class="db-title">{{employee.branch.name}}</p>
     </div>
 
     <div class="performance-actions">
-      <button class="action-button" id="review-btn">Review and Rate</button>
-      <button class="action-button" id="project-btn">Project Performance</button>
-      <button class="action-button" id="otherPerf-btn">Other Performance</button>
-      <button class="action-button" id="performanceHistory-btn">Performance History</button>
+      <button class="action-button" id="review-btn">Review {{employee.first_name}}</button>
+      <button class="action-button" id="update-rev-btn">Update Review</button>
+      <button class="action-button" id="performanceHistory-btn">View Performance</button>
       <!-- Add more buttons for other actions -->
     </div>
  
@@ -61,30 +60,25 @@
       </form>
     </div>
 
-    </div>
-    <div id="project-modal" class="archive-modal">
-      <form class="container" action="{% url 'project_performance' employee.pk %}" method="post" enctype="multipart/form-data">
+    <div id="update-rev-modal" class="archive-modal">
+      {% if performance_id %}
+      <form class="container" action="{% url 'update_performance' performance_id %}" method="post" enctype="multipart/form-data">
         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
-          <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('project-modal').style.display='none'">&times;</span>
+          <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('update-rev-modal').style.display='none'">&times;</span>
         </button>
 
         {% csrf_token %}
-        {% crispy project_form %}                    
+        {% crispy review_form %}                    
       </form>
-    </div>
-
-    <div id="otherPerf-modal" class="archive-modal">
-      <!-- Rating form content -->
-      <form class="container" action="{% url 'other_performance' employee.pk %}" method="post" enctype="multipart/form-data">
+      {% else %}
+      <center style="margin-top: 100px;">
         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
-          <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('otherPerf-modal').style.display='none'">&times;</span>
+          <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('update-rev-modal').style.display='none'">&times;</span>
         </button>
+        <h3>No Performance Review to update</h3>
+        <p>Recent performance review will be displayed here</p>
+      {% endif %}
 
-        {% csrf_token %}
-        <div class="rating_tips">
-        </div>
-        {% crispy other_performance_form %}                    
-      </form>
     </div>
     <!-- Add more modals for other forms -->
     
@@ -95,49 +89,49 @@
       </button>
        <center><h4>Performance History</h4></center>
        {% if performance %}
-       <table>
-           <thead>
-               <tr>
-                   <th>SN</th>
-                   <th>Manager Asst.</th>
-                   <th>Customer Feed.</th>
-                   <th>Project perf.</th>
-                   <th>Peer Feed.</th>
-                   <th>Improv. plan</th>
-                   <th>Attendance perf.</th>
-                   <th>Pro.dev. perf.</th>
-                   <th>KPIs</th>
-                   <th>Self-Asst.</th>
-                   <th>Overall Review</th>
-                   <th>Overall Rating</th>
-                   <th>Date</th>
-               </tr>
-           </thead>
-           <tbody>
-               {% for perf in performance %}
-               <tr>
-                   <td>{{ forloop.counter }}</td>
-                   <td>{{ perf.manager_assessment }}</td>
-                   <td>{{ perf.customer_feedback }}</td>
-                   <td>{{ perf.project_performance }}</td>
-                   <td>{{ perf.peer_feedback }}</td>
-                   <td>{{ perf.improvement_plan }}</td>
-                   <td>{{ perf.attendance_punctuality }}</td>
-                   <td>{{ perf.professional_development}}</td>
-                   <td>{{ perf.kpis}}</td>
-                   <td>{{ perf.self_assessment }}</td>
-                   <td>{{ perf.performance_review }}</td>
-                   <td>{{ perf.performance_rating }}%</td>
-                   <td>{{ perf.created_at|date:'d/m/y' }}</td>
-               </tr>
-               {% endfor %}
-           </tbody>
-       </table>
+          <table>
+              <thead>
+                  <tr>
+                      <th>SN</th>
+                      <th>Manager Asst.</th>
+                      <th>Customer Feed.</th>
+                      <th>Project perf.</th>
+                      <th>Peer Feed.</th>
+                      <th>Improv. plan</th>
+                      <th>Attendance perf.</th>
+                      <th>Pro.dev. perf.</th>
+                      <th>KPIs</th>
+                      <th>Self-Asst.</th>
+                      <th>Overall Review</th>
+                      <th>Overall Rating</th>
+                      <th>Date</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for perf in performance %}
+                  <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ perf.manager_assessment }}</td>
+                      <td>{{ perf.customer_feedback }}</td>
+                      <td>{{ perf.project_performance }}</td>
+                      <td>{{ perf.peer_feedback }}</td>
+                      <td>{{ perf.improvement_plan }}</td>
+                      <td>{{ perf.attendance_punctuality }}</td>
+                      <td>{{ perf.professional_development}}</td>
+                      <td>{{ perf.kpis}}</td>
+                      <td>{{ perf.self_assessment }}</td>
+                      <td>{{ perf.performance_review }}</td>
+                      <td>{{ perf.performance_rating }}%</td>
+                      <td>{{ perf.created_at|date:'d/m/y' }}</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
        {% else %}
-       <center>
-           <h3>No Performance History </h3>
-           <p>Performance history will be displayed here</p>
-       </center>
+          <center>
+              <h3>No Performance History </h3>
+              <p>Performance history will be displayed here</p>
+          </center>
        {% endif %} 
      </div>
   </div>

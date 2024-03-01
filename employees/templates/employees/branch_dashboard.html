@@ -11,10 +11,11 @@
     <script src="{% static 'generic/scripts/font-awesome.js' %}"></script>
     <link rel="stylesheet" href="{% static 'generic/styles/view_employee_detail.css' %}"> 
     <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}"> 
+    <link rel="stylesheet" href="{% static 'generic/styles/welcome-dashboard.css' %}">
     <script src="{% static 'generic/scripts/branch_dashboard.js' %}"></script>
 {% endblock head %}
 
-{% block title %}Dashboard{% endblock title %}
+{% block title %}Branch Dashboard{% endblock title %}
 {% block signIn %}<a class="loginBtn btn logoutBtn" href="{% url 'logout' %}" >Logout</a>{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
 {% block content %}
@@ -30,35 +31,103 @@
 
 <div class="dashboard-container">
     <div class="left-pane">
-        <div class="featuresToggleContainer">   <h2 class="featuresToggle">Features</h2> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
+        <div class="featuresToggleContainer">   <h4 class="featuresToggle">{{branch.name}}</h4> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
         <ul class="featuresList">
-            <li><a class="featuresItem" href="#" id="employeeManagement" data-content="employee-management"><i class="fas fa-user-tie"></i>Employee Management</a></li>
-            <li><a class="featuresItem" href="#" id="leaveManagement" data-content="leave-management"><i class="fas fa-calendar-alt"></i>Leave Management</a></li>
-            <li><a class="featuresItem" href="#" id="payrollManagement" data-content="payroll-management"><i class="fas fa-file-invoice-dollar"></i>Payroll Management</a></li>
-            <li><a class="featuresItem" href="#" id="performanceReporting"data-content="performance"><i class="fas fa-chart-line"></i>Performance Reporting</a></li>
-            <li><a class="featuresItem" href="#" id="transfers" data-content="transfers"><i class="fas fa-exchange-alt"></i>Transfers</a></li>
-            <li><a class="featuresItem" href="#" id="accountSettings" data-content="settings"><i class="fas fa-cog"></i>Account Settings</a></li>
+            <li><a class="featuresItem" id="employeeManagement" data-content="employee-management"><i class="fas fa-user-tie"></i>Employees</a></li>
+            <li><a class="featuresItem" id="leaveManagement" data-content="leave-management"><i class="fas fa-calendar-alt"></i>Leaves</a></li>
+            <li><a class="featuresItem" id="payrollManagement" data-content="payroll-management"><i class="fas fa-file-invoice-dollar"></i>Payrolls</a></li>
+            <li><a class="featuresItem" id="performanceReporting"data-content="performance"><i class="fas fa-chart-line"></i>Performances</a></li>
+            <li><a class="featuresItem" id="transfers" data-content="transfers"><i class="fas fa-exchange-alt"></i>Transfers</a></li>
+            <li><a class="featuresItem2" href="{% url 'finance_dashboard' %}" id="finance"><i class="fas fa-sack-dollar"></i>Finances</a></li>
+            <li><a class="featuresItem2" href="{% url 'create_report' %}" id="reports"><i class="fas fa-file-circle-plus"></i>Reports</a></li>
+            <li><a class="featuresItem" id="accountSettings" data-content="settings"><i class="fas fa-cog"></i>Account Settings</a></li>
         </ul>
     </div>
     <div class="right-pane">
         <div id="content">
             <div class="backdrop"></div>
 
+            {% comment %} Welcome Section {% endcomment %}
+            <div class="welcomeSection mgt">
+                <div class="container">
+                    <div class="welcomeTop">
+                        <section class="hero">
+                            <div class="container">
+                                <h1>Welcome, {{ user.first_name }}</h1>
+                                <div class="profile-picture">
+                                    <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                                </div>
+                                <section class="featureSlide">
+                                    <div class="feature">
+                                        <i class="fas fa-users"></i>
+                                        <h3>Employees</h3>
+                                        <p>Effortlessly manage your branch's workforce.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-users"></i>
+                                        <h3>Employees</h3>
+                                        <p>Effortlessly manage your branch's workforce.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-leaf" style="color: green;"></i>
+                                        <h3>Leaves</h3>
+                                        <p>Handle employee leave requests with ease.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                        <h3>Payrolls</h3>
+                                        <p>Streamline payroll management processes.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-chart-line"></i>
+                                        <h3>Performances</h3>
+                                        <p>Track employee performance and set goals.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-exchange-alt"></i>
+                                        <h3>Transfers</h3>
+                                        <p>Manage employee transfers efficiently.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <h3>Finances</h3>
+                                        <p>Monitor financial data and performance.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-chart-pie"></i>
+                                        <h3>Reports</h3>
+                                        <p>Generate insightful reports for analysis.</p>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-cog"></i>
+                                        <h3>Account Settings</h3>
+                                        <p>Customize your dashboard settings.</p>
+                                    </div>
+                                </section>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            
+            
+
             <!-- manage employee -->
             <div class="employee-management mgt">
                 <div class="menuToggle">
-                    <h2>Manage Employee Records</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    <h3>Manage Employee Records</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
                 </div>
                 <div class="employee-nav actions">
-                    <button class="tab nav-tab active" data-tab="add-employee">Add </button>
-                    <button class="tab nav-tab" data-tab="view-employees">View All </button>
-                    <button class="tab nav-tab" data-tab="archived-employees">Archived </button>
-                    <button class="tab nav-tab" data-tab="employee-statistics">Statistics </button>
+                    <button class="tab nav-tab active" data-tab="add-employee"><i class="fas fa-user-plus"></i> Add </button>
+                    <button class="tab nav-tab" data-tab="view-employees"><i class="fas fa-users"></i> All </button>
+                    <button class="tab nav-tab" data-tab="archived-employees"> <i class="fas fa-archive"></i> Archived </button>
+                    <button class="tab nav-tab" data-tab="employee-statistics"><i class="fas fa-chart-bar"></i> Stats </button>
                 </div>
                 {% comment %} Add employee {% endcomment %}
                 <div class="tab-contents" id="add-employee">
                     <!-- Leave Requests content -->
-                    <h3>Add Employee</h3> <!-- leave_request.html -->
+                    <h4>Add Employee</h4> <!-- leave_request.html -->
                   <form action="{% url 'branch_dashboard' branch_id %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% crispy form %}                    
@@ -70,16 +139,16 @@
                 <div class="tab-contents" id="archived-employees">
                     <!-- Leave History content -->
                     <div class="searchFlex">
-                        <h3>Archived  Employees</h3> <!-- leave_request.html -->
-                        <div class="search-bar">
+                        <h4>Archived  Employees</h4> <!-- leave_request.html -->
+                        {% comment %} <div class="search-bar">
                         <input type="text" placeholder="Search archive..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if archived_employees %}
-                    <table class="archive-employee-table apply-leave">
+                    <table class="dataTable archive-employee-table apply-leave">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>ID</th>
                                 <th>Employee</th>
                                 <th>Department</th>
@@ -88,12 +157,12 @@
                                 <th>More</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for employee in archived_employees %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ employee.employee_id }}</td>
-                                <td>{{ employee.first_name}} {{ employee.last_name }}</td>
+                                <td class="sf2">{{ employee.employee_id }}</td>
+                                <td class="sf1">{{ employee.first_name}} {{ employee.last_name }}</td>
                                 <td>{{ employee.department }}</td>
                                 <td>{{ employee.archived_at|date:'d/m/y H:i' }}</td>
                                 <td>{{ employee.archived_by }}</td>
@@ -117,7 +186,7 @@
     
                     {% else %}
                     <center>
-                        <h3>No Archived Employees</h3>
+                        <h4>No Archived Employees</h4>
                         <p>Archived employees will appear here</p>
                     </center>
                     {% endif %}
@@ -128,16 +197,16 @@
                {% comment %} summary table view of employees{% endcomment %}
                 <div class="tab-contents" id="view-employees">
                     <div class="searchFlex">
-                        <h3>All Employees</h3> <!-- leave_request.html -->
-                        <div class="search-bar">
+                        <h4>All Employees</h4> <!-- leave_request.html -->
+                        {% comment %} <div class="search-bar">
                         <input type="text" placeholder="Search employees..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                         {% if employees %}
-                        <table class="view-employee-table apply-leave">
+                        <table class="dataTable view-employee-table apply-leave">
                             <thead>
                                 <tr>
-                                    <th>SN</th>
+                                     <th>SN</th>
                                     <th>ID</th>
                                     <th>Employee</th>
                                     <th>Department</th>
@@ -146,14 +215,14 @@
                                     <th>More</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="employee-table-body">
                                 {% for employee in employees %}
-                                <tr>
+                                <tr class="s-card">
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ employee.employee_id }}</td>
-                                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
-                                    <td>{{ employee.department }}</td>
-                                    <td>{{ employee.job_role }}</td>
+                                    <td class="sf2">{{ employee.employee_id }}</td>
+                                    <td class="sf1">{{ employee.first_name }} {{ employee.last_name }}</td>
+                                    <td class="sf3">{{ employee.department }}</td>
+                                    <td class="sf4">{{ employee.job_role }}</td>
                                     <td>{{ employee.employment_status }}</td>
                                     <td>
                                         <div class="dropdown">
@@ -177,7 +246,7 @@
         
                         {% else %}
                         <center>
-                            <h3>No Employees</h3>
+                            <h4>No Employees</h4>
                             <p>Add employees to have them displayed here</p>
                         </center>
                         {% endif %}
@@ -187,7 +256,7 @@
 
                 {% comment %} delete employee {% endcomment %}
                 <div class="tab-contents statistics" id="employee-statistics">
-                    <h2>Employee Statistics</h2>
+                    <h3>Employee Statistics</h3>
                     <div class="statistics-grid">
                         <div class="statistic-item">
                             <div class="statistic-icon">
@@ -204,7 +273,7 @@
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-archive"></i>
+                                <i class="fas fa-archive badStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Archived Employees</h3>
@@ -217,49 +286,49 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Current Employees on Leave</h3>
-                                {% if total_employees_on_leave_count %}
+                                {% if total_employees_on_leave_count is not None %}
                                 <p class="statsVal">{{ total_employees_on_leave_count|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">30</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-users-rectangle"></i>
+                                <i class="fas fa-users-rectangle goodStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Active Employees</h3>
-                                {% if active_employees_count %}
+                                {% if active_employees_count is not None %}
                                 <p class="statsVal">{{ active_employees_count|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">480</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-user-times"></i>
+                                <i class="fas fa-user-times badStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Inactive Employees</h3>
-                                {% if inactive_employees_count %}
+                                {% if inactive_employees_count is not None %}
                                 <p class="statsVal">{{ inactive_employees_count|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">20</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-user-plus"></i>
+                                <i class="fas fa-user-plus goodStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>New Hires This Month</h3>
-                                {% if monthly_created_employees %}
+                                {% if monthly_created_employees is not None %}
                                 <p class="statsVal">{{ monthly_created_employees|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">10</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -394,7 +463,7 @@
                         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
                             <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('updateEmpDetailContainer').style.display='none'">&times;</span>
                         </button>
-                        <center><h3>Update Employee Data</h3></center>
+                        <center><h4>Update Employee Data</h4></center>
                             <hr>
                             <div class="profile-picture">
                                 <img id="profilePictureEditView" src="" alt="dp icon">
@@ -1135,20 +1204,20 @@
             {% comment %} Leave management {% endcomment %}
             <div class="leave-management mgt">
                 <div class="menuToggle">
-                    <h2>Leave Management</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    <h3>Leave Management</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
                 </div>
             
                 <div class="leave-navigation actions">
-                    <button class="tab2 nav-tab active" data-tab2="leave-requests">Leave Requests</button>
-                    <button class="tab2 nav-tab" data-tab2="apply-leave">Apply for Leave</button>
-                    <button class="tab2 nav-tab" data-tab2="active-leave">Active Leave</button>
-                    <button class="tab2 nav-tab" data-tab2="leave-history">Leave History</button>
-                    <button class="tab2 nav-tab" data-tab2="leave-statistics">Leave Statistics</button>
+                    <button class="tab2 nav-tab active" data-tab2="leave-requests"><i class="fas fa-list-alt"></i> Requests </button>
+                    <button class="tab2 nav-tab" data-tab2="apply-leave"><i class="fas fa-file-signature"></i> Apply </button>
+                    <button class="tab2 nav-tab" data-tab2="active-leave"><i class="fas fa-check-circle"></i> Active </button>
+                    <button class="tab2 nav-tab" data-tab2="leave-history"><i class="fas fa-history"></i> History </button>
+                    <button class="tab2 nav-tab" data-tab2="leave-statistics"><i class="fas fa-chart-bar"></i> Stats </button>
                 </div>
 
                 {% comment %} Apply for Leave {% endcomment %}
                 <div class="tab-contents2" id="apply-leave">
-                        <h3>Apply for Leave</h3>
+                        <h4>Apply for Leave</h4>
                         <form method="post" action="{% url 'leave_request' %}">
                             {% csrf_token %}
                             <table class="apply-leave table">
@@ -1202,33 +1271,33 @@
                 <div class="tab-contents2" id="leave-requests">
                     <!-- Leave Requests content -->
                     <div class="searchFlex">
-                        <h3>Leave Requests</h3> <!-- leave_request.html -->
-                        <div class="search-bar">
+                        <h4>Leave Requests</h4> <!-- leave_request.html -->
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search leave requests..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if pending_leave_requests %}
-                    <table>
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>Employee</th>
                                 <th>Type</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="expand-width">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for leave in pending_leave_requests %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ leave.employee.first_name }} {{ leave.employee.last_name }} </td>
+                                <td class="sf1">{{ leave.employee.first_name }} {{ leave.employee.last_name }} </td>
                                 <td>{{ leave.leave_type }}</td>
-                                <td>{{ leave.leave_start_date }}</td>
-                                <td>{{ leave.leave_end_date }}</td>
-                                <td>{{ leave.leave_status }}</td>
+                                <td>{{ leave.leave_start_date|date:'d/m/y' }}</td>
+                                <td>{{ leave.leave_end_date|date:'d/m/y' }}</td>
+                                <td class="sf2">{{ leave.leave_status }}</td>
                                 <td class="controlButton">
                                     <button class="approve-btn approve" data-leaveid="{{ leave.pk }}">Approve</button>
                                     <button class="decline-btn reject" data-leaveid="{{ leave.pk }}">Decline</button>
@@ -1239,7 +1308,7 @@
                     </table>
                     {% else %}
                     <center>
-                        <h3>No leave requests yet</h3>
+                        <h4>No leave requests yet</h4>
                         <p>Leave requests will be displayed here</p>
                     </center>
                     {% endif %}                        
@@ -1248,16 +1317,16 @@
                 {% comment %} Active Leave List {% endcomment %}
                 <div class="tab-contents2 view-leave-list" id="active-leave" style="display: none;">
                     <div class="searchFlex">
-                        <h3>Active Leave</h3> <!-- leave_request.html -->
-                        <div class="search-bar">
+                        <h4>Active Leave</h4> <!-- leave_request.html -->
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search employees on leave..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if active_leave %}
-                    <table>
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>ID</th>
                                 <th>Full Name</th>
                                 <th>Leave Type</th>
@@ -1265,22 +1334,22 @@
                                 <th>End Date</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for leave in active_leave %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ leave.employee.employee_id }}</td>
-                                <td>{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
+                                <td class="sf2">{{ leave.employee.employee_id }}</td>
+                                <td class="sf1">{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
                                 <td>{{ leave.leave_type }}</td>
-                                <td>{{ leave.leave_start_date }}</td>
-                                <td>{{ leave.leave_end_date }}</td>
+                                <td>{{ leave.leave_start_date|date:'d/m/y' }}</td>
+                                <td>{{ leave.leave_end_date|date:'d/m/y' }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                     {% else %}
                     <center>
-                        <h3>No employee on leave</h3>
+                        <h4>No employee on leave</h4>
                         <p>Employees on leave will be displayed here</p>
                     </center>
                     {% endif %}
@@ -1289,16 +1358,16 @@
                 {% comment %} Leave History {% endcomment %}
                 <div class="tab-contents2" id="leave-history">
                     <div class="searchFlex">
-                        <h3>Leave History</h3>
-                        <div class="search-bar">
+                        <h4>Leave History</h4>
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search leave requests..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if leave_history %}
-                    <table class="leave-history-table apply-leave">
+                    <table class="dataTable leave-history-table apply-leave">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>ID</th>
                                 <th>Employee</th>
                                 <th>Type</th>
@@ -1306,22 +1375,22 @@
                                 <th>End Date</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for leave in leave_history %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ leave.employee.employee_id }}</td>
-                                <td>{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
+                                <td class="sf2">{{ leave.employee.employee_id }}</td>
+                                <td class="sf1">{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
                                 <td>{{ leave.leave_type }}</td>
-                                <td>{{ leave.leave_start_date }}</td>
-                                <td>{{ leave.leave_end_date }}</td>
+                                <td>{{ leave.leave_start_date|date:'d/m/y' }}</td>
+                                <td>{{ leave.leave_end_date|date:'d/m/y' }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                     {% else %}
                     <center>
-                        <h3>No leave history yet</h3>
+                        <h4>No leave history yet</h4>
                         <p>Leave history will be displayed here</p>
                     </center>
                     {% endif %}
@@ -1329,7 +1398,7 @@
             
                 {% comment %} Leave Statistics {% endcomment %}
                 <div class="tab-contents2 statistics" id="leave-statistics">
-                    <h2>Leave Statistics</h2>
+                    <h3>Leave Statistics</h3>
                     <div class="statistics-grid">
                         <div class="statistic-item">
                             <div class="statistic-icon">
@@ -1337,10 +1406,10 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Employees</h3>
-                                {% if total_employees_count %}
+                                {% if total_employees_count is not None %}
                                 <p class="statsVal">{{ total_employees_count|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">50 </p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1350,36 +1419,36 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Leave Requests</h3>
-                                {% if leave_requests %}
+                                {% if leave_requests is not None %}
                                 <p class="statsVal">{{ leave_requests.count|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">50 </p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-calendar-check"></i>
+                                <i class="fas fa-calendar-check goodStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Approved Leave Requests</h3>
-                                {% if approved_leave_requests %}
+                                {% if approved_leave_requests is not None %}
                                 <p class="statsVal">{{ approved_leave_requests|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">63</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-calendar-times"></i>
+                                <i class="fas fa-calendar-times badStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Pending Leave Requests</h3>
-                                {% if pending_leave_requests %}
+                                {% if pending_leave_requests is not None %}
                                 <p class="statsVal">{{ pending_leave_requests.count|intcomma }}</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">150</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1389,10 +1458,10 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Average Leave Duration</h3>
-                                {% if average_leave_duration %}
+                                {% if average_leave_duration is not None %}
                                 <p class="statsVal">{{ average_leave_duration |floatformat:"2"|intcomma }} days</p>
                                 {% else %}
-                                <p class="statsVal" style="color: red;">3.5 days</p>
+                                 <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1413,20 +1482,20 @@
             {% comment %} Payroll {% endcomment %}
             <div class="payroll-management mgt">
                 <div class="menuToggle">
-                    <h2>Payroll Management</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    <h3>Payroll Management</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
                 </div>
             
                 <div class="payroll-navigation actions">
-                    <button class="tab3 nav-tab active" data-tab3="create-payroll">Create Payroll</button>
-                    <button class="tab3 nav-tab" data-tab3="payroll-list">Payroll List</button>
-                    <button class="tab3 nav-tab" data-tab3="bank-info">Bank Info</button>
-                    <button class="tab3 nav-tab" data-tab3="payroll-statistics">Payroll Statistics</button>
+                    <button class="tab3 nav-tab active" data-tab3="create-payroll"><i class="fas fa-plus-circle"></i> Create</button>
+                    <button class="tab3 nav-tab" data-tab3="payroll-list"><i class="fas fa-list"></i> List</button>
+                    <button class="tab3 nav-tab" data-tab3="bank-info"><i class="fas fa-university"></i> Bank Info</button>
+                    <button class="tab3 nav-tab" data-tab3="payroll-statistics"><i class="fas fa-chart-pie"></i> Statistics</button>
                 </div>
-
+                
                 {% comment %} Apply for Leave {% endcomment %}
                 <div class="tab-contents3" id="create-payroll">
                     <div class="createPayRollForm">
-                        <h3>Create a Payroll</h3>
+                        <h4>Create a Payroll</h4>
                         <form method="POST" action="{% url 'create_payroll' %}" >
                             {% csrf_token %}
                             <div class="row">
@@ -1574,7 +1643,9 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Create Payroll</button>
+                                            <div class="form-row btnHandle">
+                                                <button type="submit" class="btn btn-primary">Create Payroll</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1587,17 +1658,17 @@
                 <!-- Leave Requests content -->
                 <div class="tab-contents3" id="payroll-list">
                     <div class="searchFlex">
-                        <h3>Payroll List</h3> <!-- leave_request.html -->
-                        <div class="search-bar">
+                        <h4>Payroll List</h4> <!-- leave_request.html -->
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search payrolls..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                         <div class="table-responsive">
                             {% if payroll %}
-                          <table class="table table-striped">
+                          <table class="dataTable table table-striped">
                             <thead>
                               <tr>
-                                <th>#</th>
+                                 <th>SN</th>
                                 <th>Employee</th>
                                 <th>Month</th>
                                 <th>Total Deduction</th>
@@ -1607,12 +1678,13 @@
                                 <th>Actions</th>
                               </tr>
                             </thead>
-                            <tbody>
+                            
+                            <tbody class="employee-table-body">
                               {% for payroll in payroll %}
-                              <tr>
+                              <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ payroll.employee }}</td>
-                                <td>{{ payroll.month|month_name }}</td>
+                                <td class="sf1">{{ payroll.employee.first_name }}{{ payroll.employee.last_name}}</td>
+                                <td class="sf2" >{{ payroll.month|month_name }}</td>
                                 <td>{{ payroll.total_deductions|intcomma }}</td>
                                 <td>{{ payroll.total_allowance|intcomma }}</td>
                                 <td>{{ payroll.net_pay|intcomma }}</td>
@@ -1638,7 +1710,7 @@
                           </table>
                             {% else %}
                             <center>
-                                <h3>No payrolls yet</h3>
+                                <h4>No payrolls yet</h4>
                                 <p>Payrolls will be displayed here</p>
                             </center>
                             {% endif %}
@@ -1655,10 +1727,10 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Employees</h3>
-                                {% if total_employees_count %}
+                                {% if total_employees_count is not None %}
                                     <p class="statsVal">{{ total_employees_count|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">50</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1668,10 +1740,10 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Payroll</h3>
-                                {% if total_payment %}
+                                {% if total_payment is not None %}
                                     <p class="statsVal">{{ total_payment|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">$10,000</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1681,23 +1753,23 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Deductions</h3>
-                                {% if total_deductions %}
+                                {% if total_deductions is not None %}
                                     <p class="statsVal">{{ total_deductions|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">$1,500</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="statistic-item">
                             <div class="statistic-icon">
-                                <i class="fas fa-dollar-sign"></i>
+                                <i class="fas fa-dollar-sign goodStat"></i>
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Bonus</h3>
                                 {% if total_allowances %}
                                     <p class="statsVal">{{ total_allowances|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">$500</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1707,10 +1779,10 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Total Net Pay</h3>
-                                {% if total_netpay %}
+                                {% if total_netpay is not None %}
                                     <p class="statsVal">{{ total_netpay|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">$8,000</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1720,10 +1792,10 @@
                             </div>
                             <div class="statistic-info">
                                 <h3>Average Salary</h3>
-                                {% if average_salary %}
+                                {% if average_salary is not None %}
                                     <p class="statsVal">{{ average_salary|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">$5,000</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -1734,16 +1806,16 @@
                 {% comment %} Bank Info {% endcomment %}
                 <div class="tab-contents3 view-bank-info" id="bank-info">
                     <div class="searchFlex">
-                        <h3>Bank Information</h3>
-                        <div class="search-bar">
+                        <h4>Bank Information</h4>
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search bank information..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if employees %}
-                    <table>
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                 <th>SN</th>
                                 <th>ID</th>
                                 <th>Employee</th>
                                 <th>Bank</th>
@@ -1754,15 +1826,15 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for employee in employees %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ employee.employee_id }}</td>
-                                <td>{{ employee.first_name }} {{ employee.last_name }}</td>
-                                <td>{{ employee.bank_name }}</td>
-                                <td>{{ employee.account_number }}</td>
-                                <td>{{ employee.account_name }}</td>
+                                <td class="sf1">{{ employee.employee_id }}</td>
+                                <td class="sf2">{{ employee.first_name }} {{ employee.last_name }}</td>
+                                <td class="sf5">{{ employee.bank_name }}</td>
+                                <td class="sf3">{{ employee.account_number }}</td>
+                                <td class="sf4" >{{ employee.account_name }}</td>
                                 <td>{{ employee.pension_id }}</td>
                                 <td>{{ employee.basic_salary|intcomma }}</td>
                                 <td class="controlButton">
@@ -1774,7 +1846,7 @@
                     </table>
                         {% else %}
                         <center>
-                            <h3>No bank information available</h3>
+                            <h4>No bank information available</h4>
                             <p>Bank information will be displayed here</p>
                         </center>
                         {% endif %}
@@ -1826,29 +1898,32 @@
             {% comment %} Performance Management {% endcomment %}
             <div class="performance mgt">
                 <div class="menuToggle">
-                    <h2>Manage Employee Performance</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    <h3>Employee Performance</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
                 </div>
             
                 <div class="performance-navigation actions">
-                    <button class="tab4 nav-tab active" data-tab4="performance-list">Performance Summary</button>
-                    <button class="tab4 nav-tab" data-tab4="high-performers">High Performers</button>
-                    <button class="tab4 nav-tab" data-tab4="underperformance">Low Performance</button>
-                    <button class="tab4 nav-tab" data-tab4="statistics">Statistics</button>
+                    <button class="tab4 nav-tab" data-tab4="performance-overview"><i class="fas fa-users"></i> <span class="tabTitle">Employees</span></button>
+                    <button class="tab4 nav-tab active" data-tab4="performance-list"><i class="fas fa-list"></i> Summary</button>
+                    <button class="tab4 nav-tab" data-tab4="high-performers"><i class="fas fa-arrow-alt-circle-up"></i> Achievers</button>
+                    <button class="tab4 nav-tab" data-tab4="underperformance"><i class="fas fa-arrow-alt-circle-down"></i> Achievers</button>
+                    <button class="tab4 nav-tab" data-tab4="statistics"><i class="fas fa-chart-line"></i> Stats</button>
                 </div>
+                
 
-                {% comment %} Performance Summary {% endcomment %}
-                <div class="tab-contents4" id="performance-list">
+
+                {% comment %} overview {% endcomment %}
+                <div class="tab-contents4" id="performance-overview">
                     <div class="searchFlex">
-                        <h3>Performance Summary</h3>
-                        <div class="search-bar">
+                        <h4>Overview</h4>
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search performance..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
-                    {% if performance %}
-                    <table>
+                    {% if employees %}
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>Name</th>
                                 <th>Dept</th>
                                 <th>Review</th>
@@ -1857,23 +1932,23 @@
                                 <th>More</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for perf in performance %}
-                            <tr>
+                        <tbody class="employee-table-body">
+                            {% for emp in employees %}
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
-                                <td>{{ perf.employee.department }}</td>
-                                {% if perf.performance_review|length > 30 %}
-                                <td>{{ perf.performance_review|slice:':30'}}...</td>
-                                {% elif perf.performance_review|length > 0 %}
-                                <td>{{ perf.performance_review }}</td>
-                                {% else %}
-                                <td>No review yet</td>
-                                {% endif %}
-                                <td>{{ perf.performance_rating }}%</td>
-                                <td>{{ perf.updated_at|date:'d/m/y' }}</td>
+                                <td class="sf1">{{ emp.first_name }} {{ emp.last_name }} </td>
+                                <td class="sf2">{{ emp.department }}</td>
+                                <td title="{{emp.performance.first.performance_review}}">{{ emp.performances.first.performance_review|default:'No reviews'|truncatechars:'30'}}</td>
+                                <td class="sf3">
+                                    {% if emp.performances.first.performance_rating %}
+                                        {{ emp.performances.first.performance_rating }}%
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </td>                                
+                                <td>{{ emp.updated_at|date:'d/m/y' }}</td>
                                 <td class="controlButton">
-                                    <a class="pf-btn  btn btn-block" href="/employeePerformance/{{ perf.employee.pk }}/">Detail</a>
+                                    <a class="pf-btn  btn" href="{% url 'performance_dashboard' emp.pk %}" target="_blank" rel="noreferrer">Detail</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -1881,8 +1956,60 @@
                     </table>
                     {% else %}
                     <center>
-                        <h3>No Employee Performance yet</h3>
-                        <p>Leave requests will be displayed here</p>
+                        <h4>No Employees yet</h4>
+                        <p>Employees review will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+
+                {% comment %} Performance Summary {% endcomment %}
+                <div class="tab-contents4" id="performance-list">
+                    <div class="searchFlex">
+                        <h3>Performance Summary</h3>
+                        {% comment %} <div class="search-bar">
+                            <input type="text" placeholder="Search performance..."><button><i class="fas fa-search"></i></button>
+                        </div> {% endcomment %}
+                    </div>
+                    {% if performance %}
+                    <table class="dataTable">
+                        <thead>
+                            <tr>
+                                 <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Review</th>
+                                <th>Rating</th>
+                                <th>Date</th>
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody class="employee-table-body">
+                            {% for perf in performance %}
+                            <tr class="s-card">
+                                <td>{{ forloop.counter }}</td>
+                                <td class="sf1">{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
+                                <td >{{ perf.employee.department }}</td>
+                                <td class="sf2" title="{{perf.performance_review}}">{{ perf.performance_review|default:"No review yet"|truncatechars:20 }}</td>
+
+                                {% if perf.performance_rating %}
+                                <td class="sf3">{{ perf.performance_rating}}%</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                <td>{{ perf.updated_at|date:'d/m/y' }}</td>
+
+                                <td class="controlButton2">
+                                    <a class="pf-btn approve" href="{% url 'performance_dashboard' perf.employee.pk %}" target="_blank" rel="noreferrer"> Detail</a> 
+                                    <a class="del-pf-btn reject" href="{% url 'delete_performance' perf.pk %}">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h4>No Employee Performance yet</h4>
+                        <p>Performance Overview will be displayed here</p>
                     </center>
                     {% endif %}                        
                 </div>
@@ -1891,15 +2018,15 @@
                 <div class="tab-contents4" id="high-performers">
                     <div class="searchFlex">
                         <h3>High Performers</h3>
-                        <div class="search-bar">
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search high performers..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if high_performers %}
-                    <table>
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>Name</th>
                                 <th>Dept</th>
                                 <th>Review</th>
@@ -1908,20 +2035,24 @@
                                 <th>More</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for perf in high_performers %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
-                                <td>{{ perf.employee.department }}</td>
+                                <td class="sf1">{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
+                                <td class="sf2">{{ perf.employee.department }}</td>
                                 {% if perf.performance_review|length > 30 %}
-                                <td>{{ perf.performance_review|slice:':30'}}...</td>
+                                    <td>{{ perf.performance_review|slice:':30'}}...</td>
                                 {% elif perf.performance_review|length > 0 %}
-                                <td>{{ perf.performance_review }}</td>
+                                    <td>{{ perf.performance_review }}</td>
                                 {% else %}
-                                <td>No review yet</td>
+                                    <td>No review yet</td>
                                 {% endif %}
-                                <td>{{ perf.performance_rating }}%</td>
+                                {% if perf.performance_rating %}
+                                <td class="sf3">{{ perf.performance_rating }}%</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
                                 <td>{{ perf.updated_at|date:'d/m/y' }}</td>
                                 <td class="controlButton">
                                     <a class="pf-btn btn btn-block" href="/employeePerformance/{{ perf.employee.pk }}/">Detail</a>
@@ -1932,7 +2063,7 @@
                     </table>
                     {% else %}
                     <center>
-                        <h3>No High Performers </h3>
+                        <h4>No High Performers </h4>
                         <p>Performance rating of <b style="color: lime;">80+</b> will be displayed here</p>
                     </center>
                     {% endif %}                        
@@ -1942,15 +2073,15 @@
                 <div class="tab-contents4" id="underperformance">
                     <div class="searchFlex">
                         <h3>Underperformance</h3>
-                        <div class="search-bar">
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search underperformance..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if underperformance %}
-                    <table>
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>Name</th>
                                 <th>Dept</th>
                                 <th>Review</th>
@@ -1959,12 +2090,12 @@
                                 <th>More</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for perf in underperformance %}
-                            <tr>
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
-                                <td>{{ perf.employee.department }}</td>
+                                <td class="sf1">{{ perf.employee.first_name }} {{ perf.employee.last_name }} </td>
+                                <td class="sf2">{{ perf.employee.department }}</td>
                                 {% if perf.performance_review|length > 30 %}
                                 <td>{{ perf.performance_review|slice:':30'}}...</td>
                                 {% elif perf.performance_review|length > 0 %}
@@ -1972,7 +2103,11 @@
                                 {% else %}
                                 <td>No review yet</td>
                                 {% endif %}
-                                <td>{{ perf.performance_rating }}%</td>
+                                {% if perf.performance_rating %}
+                                <td class="sf3">{{ perf.performance_rating }}%</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
                                 <td>{{ perf.updated_at|date:'d/m/y' }}</td>
                                 <td class="controlButton">
                                     <a class="pf-btn btn btn-block" href="/employeePerformance/{{ perf.employee.pk }}/">Detail</a>
@@ -1983,7 +2118,7 @@
                     </table>
                     {% else %}
                     <center>
-                        <h3>No Underperforming Employees</h3>
+                        <h4>No Underperforming Employees</h4>
                         <p>Performance rating less than <b>60</b> will be displayed here</p>
                     </center>
                     {% endif %}                        
@@ -2002,10 +2137,10 @@
                             </div>
                             <div class="statistic-info">
                               <h3>Total Employees</h3>
-                                 {% if total_employees_count %}
+                                 {% if total_employees_count is not None %}
                                 <p class="statsVal">{{ total_employees_count|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">50</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                           </div>
@@ -2015,23 +2150,23 @@
                             </div>
                             <div class="statistic-info">
                               <h3>Performance Average</h3>
-                              {% if average_performance_rating %}
+                              {% if average_performance_rating is not None %}
                                 <p class="statsVal">{{ average_performance_rating|floatformat:'2'|intcomma }}%</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">74%</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                           </div>
                           <div class="statistic-item">
                             <div class="statistic-icon">
-                              <i class="fas fa-chart-pie"></i>
+                              <i class="fas fa-chart-pie goodStat"></i>
                             </div>
                             <div class="statistic-info">
                               <h3>Top Performers</h3>
-                              {% if high_performers %}
+                              {% if high_performers is not None %}
                                 <p class="statsVal">{{ high_performers.count|intcomma }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">20</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                           </div>
@@ -2041,23 +2176,23 @@
                             </div>
                             <div class="statistic-info">
                               <h3>Improvement Rate</h3>
-                              {% if improvement_rate %}
+                              {% if improvement_rate is not None %}
                                 <p class="statsVal">{{ improvement_rate|floatformat:"2"|intcomma }}%</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">10%</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                           </div>
                           <div class="statistic-item">
                             <div class="statistic-icon">
-                              <i class="fas fa-star"></i>
+                              <i class="fas fa-star" style="color: gold;"></i>
                             </div>
                             <div class="statistic-info">
                               <h3>Highest Rating</h3>
-                                {% if highest_rating %}
+                                {% if highest_rating is not None %}
                                     <p class="statsVal">{{ highest_rating }}</p>
                                     {% else %}
-                                        <p class="statsVal" style="color: red;">95%</p>
+                                         <p class="statsVal" style="color: red;">N/A</p>
                                     {% endif %}
                             </div>
                           </div>
@@ -2067,37 +2202,37 @@
                             </div>
                             <div class="statistic-info">
                               <h3>Employee Engagement</h3>
-                              {% if employee_engagement %}
+                              {% if employee_engagement is not None %}
                                 <p class="statsVal">{{ employee_engagement }}</p>
                                 {% else %}
-                                    <p class="statsVal" style="color: red;">High</p>
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
                             </div>
                           </div>
                         </div>
-                      </div>
-                 </div>
+                    </div>
+                </div>
             </div>
 
             
 
-            {% comment %} Performance Management {% endcomment %}
+            {% comment %} Transfer Management {% endcomment %}
             <div class="transfers mgt">
                 <div class="menuToggle">
-                    <h2>Manage Staff Transfers</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    <h3>Manage Transfers</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
                 </div>
             
                 <div class="performance-navigation actions">
-                    <button class="tab6 nav-tab active" data-tab6="transfer-request">Request Transfer</button>
-                    <button class="tab6 nav-tab" data-tab6="pending-transfers">Pending</button>
-                    <button class="tab6 nav-tab" data-tab6="declined-transfers">Declines</button>
-                    <button class="tab6 nav-tab" data-tab6="transfer-history">History</button>
-                    <button class="tab6 nav-tab" data-tab6="transfer-statistics">Statistics</button>
+                    <button class="tab6 nav-tab active" data-tab6="transfer-request"><i class="fas fa-exchange-alt"></i> Request</button>
+                    <button class="tab6 nav-tab" data-tab6="pending-transfers"><i class="fas fa-hourglass-half"></i> Pending</button>
+                    <button class="tab6 nav-tab" data-tab6="declined-transfers"><i class="fas fa-times-circle"></i> Declined</button>
+                    <button class="tab6 nav-tab" data-tab6="transfer-history"><i class="fas fa-history"></i> History</button>
+                    <button class="tab6 nav-tab" data-tab6="transfer-statistics"><i class="fas fa-chart-bar"></i> Stats</button>
                 </div>
-
+                
                 {% comment %} Make a transfer request {% endcomment %}
                 <div class="tab-contents6" id="transfer-request">
-                    <h3>Make Transfer Request</h3>
+                    <h4>Make Transfer Request</h4>
                     {% if transfer_form %}
                         <div class="transfer-form">
                             <form action="{% url 'transfer_request' %}" method="post">
@@ -2107,7 +2242,7 @@
                         </div>
                     {% else %}
                         <center>
-                            <h3>No Transfer Form</h3>
+                            <h4>No Transfer Form</h4>
                             <p>Transfer form will be displayed here</p>
                         </center>
                     {% endif %}
@@ -2116,16 +2251,16 @@
                 {% comment %} Pending Requests Summary {% endcomment %}
                 <div class="tab-contents6" id="pending-transfers">
                     <div class="searchFlex">
-                        <h3>Pending Requests</h3>
-                        <div class="search-bar">
+                        <h4>Pending Requests</h4>
+                        {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     {% if pending_transfers %}
-                    <table>
+                    <table class="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                 <th>SN</th>
                                 <th>Name</th>
                                 <th>Dept</th>
                                 <th>Reason</th>
@@ -2134,9 +2269,59 @@
                                 <th>More</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="employee-table-body">
                             {% for transfer in pending_transfers %}
+                            <tr class="s-card">
+                                <td>{{ forloop.counter }}</td>
+                                <td class="sf1">{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                <td class="sf3">{{ transfer.employee.department }}</td>
+                                {% if transfer.reason|length > 30 %}
+                                <td>{{ transfer.reason|slice:':30'}}...</td>
+                                {% elif transfer.reason|length > 0 %}
+                                <td>{{ transfer.reason }}</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                <td class="sf2">{{ transfer.status }}</td>
+                                <td>{{ transfer.created_at|date:'d/m/y' }}</td>
+                                <td class="controlButton">
+                                    <a class="tr-btn" href="{% url 'cancel_transfer' transfer.id %}">Cancel</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h4>No Pending Transfers </h4>
+                        <p> Pending transfers will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+
+                {% comment %} Declined Requests Summary {% endcomment %}
+                <div class="tab-contents6" id="declined-transfers">
+                    <div class="searchFlex">
+                        <h4>Declined Requests</h4>
+                        {% comment %} <div class="search-bar">
+                            <input type="text" placeholder="Search declined trans..."><button><i class="fas fa-search"></i></button>
+                        </div> {% endcomment %}
+                    </div>
+                    {% if declined_transfers %}
+                    <table class="dataTable">
+                        <thead>
                             <tr>
+                                 <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Decline Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="employee-table-body">
+                            {% for transfer in declined_transfers %}
+                            <tr class="s-card">
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
                                 <td>{{ transfer.employee.department }}</td>
@@ -2148,103 +2333,6 @@
                                 <td>None</td>
                                 {% endif %}
                                 <td>{{ transfer.status }}</td>
-                                <td>{{ transfer.created_at|date:'d/m/y' }}</td>
-                                <td class="controlButton">
-                                    <a class="tr-btn btn btn-block" href="{% url 'cancel_transfer' transfer.id %}">Cancel</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <center>
-                        <h3>No Pending Transfers </h3>
-                        <p> Pending transfers will be displayed here</p>
-                    </center>
-                    {% endif %}                        
-                </div>
-
-                {% comment %} Declined Requests Summary {% endcomment %}
-                <div class="tab-contents6" id="declined-transfers">
-                <div class="searchFlex">
-                    <h3>Declined Requests</h3>
-                    <div class="search-bar">
-                        <input type="text" placeholder="Search declined trans..."><button><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
-                {% if declined_transfers %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>SN</th>
-                            <th>Name</th>
-                            <th>Dept</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th>Decline Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for transfer in declined_transfers %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
-                            <td>{{ transfer.employee.department }}</td>
-                            {% if transfer.reason|length > 30 %}
-                            <td>{{ transfer.reason|slice:':30'}}...</td>
-                            {% elif transfer.reason|length > 0 %}
-                            <td>{{ transfer.reason }}</td>
-                            {% else %}
-                            <td>None</td>
-                            {% endif %}
-                            <td>{{ transfer.status }}%</td>
-                            <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <center>
-                    <h3>No Declined Transfers </h3>
-                    <p> Declined transfers will be displayed here</p>
-                </center>
-                {% endif %}                        
-                </div>
-            
-                {% comment %} Underperformance Summary {% endcomment %}
-                <div class="tab-contents6" id="transfer-history">
-                    <div class="searchFlex">
-                        <h3>Transfer History</h3>
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search transfer history..."><button><i class="fas fa-search"></i></button>
-                        </div>
-                    </div>
-                    {% if transfer_history %}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>SN</th>
-                                <th>Name</th>
-                                <th>Dept</th>
-                                <th>Reason</th>
-                                <th>Status</th>
-                                <th>Approval Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for transfer in transfer_history %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
-                                <td>{{ transfer.employee.department }}</td>
-                                {% if transfer.reason|length > 30 %}
-                                <td>{{ transfer.reason|slice:':30'}}...</td>
-                                {% elif transfer.reason|length > 0 %}
-                                <td>{{ transfer.reason }}</td>
-                                {% else %}
-                                <td>None</td>
-                                {% endif %}
-                                <td>{{ transfer.status }}%</td>
                                 <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
                             </tr>
                             {% endfor %}
@@ -2252,7 +2340,56 @@
                     </table>
                     {% else %}
                     <center>
-                        <h3>No Transfers </h3>
+                        <h4>No Declined Transfers </h4>
+                        <p> Declined transfers will be displayed here</p>
+                    </center>
+                    {% endif %}                        
+                </div>
+            
+                {% comment %} Underperformance Summary {% endcomment %}
+                <div class="tab-contents6" id="transfer-history">
+                    <div class="searchFlex">
+                        <h4>Transfer History</h4>
+                        {% comment %} <div class="search-bar">
+                            <input type="text" placeholder="Search transfer history..."><button><i class="fas fa-search"></i></button>
+                        </div> {% endcomment %}
+                    </div>
+                    {% if transfer_history %}
+                    <table class="dataTable">
+                        <thead>
+                            <tr>
+                                 <th>SN</th>
+                                <th>Name</th>
+                                <th>Dept</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>New Branch</th>
+                                <th>Approval Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="employee-table-body">
+                            {% for transfer in transfer_history %}
+                            <tr class="s-card">
+                                <td>{{ forloop.counter }}</td>
+                                <td class="sf1">{{ transfer.employee.first_name }} {{ transfer.employee.last_name }} </td>
+                                <td class="sf2">{{ transfer.employee.department }}</td>
+                                {% if transfer.reason|length > 30 %}
+                                <td>{{ transfer.reason|slice:':30'}}...</td>
+                                {% elif transfer.reason|length > 0 %}
+                                <td>{{ transfer.reason }}</td>
+                                {% else %}
+                                <td>None</td>
+                                {% endif %}
+                                <td>{{ transfer.status }}</td>
+                                <td class="sf1">{{ transfer.employee.branch.name }}</td>
+                                <td>{{ transfer.updated_at|date:'d/m/y' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h4>No Transfers </h4>
                         <p> All approved transfers will be displayed here</p>
                     </center>
                     {% endif %}                     
@@ -2261,7 +2398,7 @@
                 {% comment %} Employee transfers {% endcomment %}
                 <div class="tab-contents6 statistics" id="transfer-statistics">
                     <div class="container">
-                        <h2>Transfer Statistics</h2>
+                        <h3>Transfer Statistics</h3>
                         <div class="statistics-grid">
                             <div class="statistic-item">
                                 <div class="statistic-icon">
@@ -2269,36 +2406,36 @@
                                 </div>
                                 <div class="statistic-info">
                                     <h3>Total Transfers</h3>
-                                    {% if transfers %}
+                                    {% if transfers is not None %}
                                         <p class="statsVal">{{ transfers.count|intcomma }}</p>
                                     {% else %}
-                                        <p class="statsVal" style="color: red;">N/A</p>
+                                         <p class="statsVal" style="color: red;">N/A</p>
                                     {% endif %}
                                 </div>
                             </div>
                             <div class="statistic-item">
                                 <div class="statistic-icon">
-                                    <i class="fas fa-check-circle"></i>
+                                    <i class="fas fa-check-circle goodStat"></i>
                                 </div>
                                 <div class="statistic-info">
                                     <h3>Approved Transfers</h3>
-                                    {% if approved_transfers %}
+                                    {% if approved_transfers is not None %}
                                         <p class="statsVal">{{ approved_transfers.count|intcomma }}</p>
                                     {% else %}
-                                        <p class="statsVal" style="color: red;">N/A</p>
+                                         <p class="statsVal" style="color: red;">N/A</p>
                                     {% endif %}
                                 </div>
                             </div>
                             <div class="statistic-item">
                                 <div class="statistic-icon">
-                                    <i class="fas fa-times-circle"></i>
+                                    <i class="fas fa-times-circle badStat"></i>
                                 </div>
                                 <div class="statistic-info">
                                     <h3>Declined Transfers</h3>
-                                    {% if declined_transfers %}
+                                    {% if declined_transfers is not None %}
                                         <p class="statsVal">{{ declined_transfers.count|intcomma }}</p>
                                     {% else %}
-                                        <p class="statsVal" style="color: red;">N/A</p>
+                                         <p class="statsVal" style="color: red;">N/A</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -2308,10 +2445,36 @@
                                 </div>
                                 <div class="statistic-info">
                                     <h3>Total Employees</h3>
-                                    {% if employees %}
+                                    {% if employees is not None %}
                                         <p class="statsVal">{{ employees.count|intcomma }}</p>
                                     {% else %}
-                                        <p class="statsVal" style="color: red;">N/A</p>
+                                         <p class="statsVal" style="color: red;">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="statistic-item">
+                                <div class="statistic-icon">
+                                    <i class="fas fa-arrow-alt-circle-down goodStat"></i>
+                                </div>
+                                <div class="statistic-info">
+                                    <h3>Incoming Transfers</h3>
+                                    {% if incoming_transfers_count is not None %}
+                                    <p class="statsVal">{{ incoming_transfers_count }}</p>
+                                    {% else %}
+                                     <p class="statsVal" style="color: red;">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="statistic-item">
+                                <div class="statistic-icon">
+                                    <i class="fas fa-arrow-alt-circle-up"></i>
+                                </div>
+                                <div class="statistic-info">
+                                    <h3>Outgoing Transfers</h3>
+                                    {% if outgoing_transfers_count is not None %}
+                                    <p class="statsVal">{{ outgoing_transfers_count }}</p>
+                                    {% else %}
+                                     <p class="statsVal" style="color: red;">N/A</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -2324,23 +2487,22 @@
             {% comment %} Account Settings {% endcomment %}
             <div class="settings mgt">
                 <div class="menuToggle">
-                    <h2>Account Settings</h2> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
+                    <h3>Account Settings</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i> Menu </span>
                 </div>
-            
                 <div class="settings-navigation actions">
-                    <button class="tab5 nav-tab active" data-tab5="update-profile">Update Profile</button>
-                    <button class="tab5 nav-tab" data-tab5="change-passwd">Change Password</button>
-                    <button class="tab5 nav-tab" data-tab5="upload-docs">Upload Docs</button>
+                    <button class="tab5 nav-tab active" data-tab5="update-profile"><i class="fas fa-user"></i> Profile</button>
+                    <button class="tab5 nav-tab" data-tab5="change-passwd"><i class="fas fa-lock"></i> Password</button>
+                    <button class="tab5 nav-tab" data-tab5="upload-docs"><i class="fas fa-upload"></i> Uploads</button>
                 </div>
-
+                
                 {% comment %} Email and Picture update {% endcomment %}
                 <div class="tab-contents5" id="update-profile">
-                    <h3>User Profile</h3>
+                    <h4>User Profile</h4>
                     <div class="profile-picture">
                         <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
                     </div>
                     <center>
-                        <h3 style="font-family: 'rowdies' ;">Hello {{user.first_name}}</h3>
+                        <h4 style="font-family: 'rowdies' ;">Hello {{user.first_name}}</h4>
                         <h5>Update your email or profile picture</h5>
                     </center>
                     {% if profile_form %}
@@ -2350,32 +2512,32 @@
                         </form>
                     {% else %}
                     <center>
-                        <h3>Hello {{ user.username }}</h3>
+                        <h4>Hello {{ user.username }}</h4>
                     </center>
                     {% endif %}                        
                 </div>
                 
                 {% comment %} Password update {% endcomment %}
                 <div class="tab-contents5" id="change-passwd">
-                    <h3>Update Your Password</h3>
+                    <h4>Update Your Password</h4>
                     <div class="profile-picture">
                         <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
                     </div>
                     {% if change_password_form %}
-                        <form class="container" method="post" action="{% url 'change_delegate_password'%}">
+                        <form class="container" method="post" action="{% url 'change_password'%}">
                             {% csrf_token %}
                             {% crispy change_password_form %}
                         </form>
                     {% else %}
                     <center>
-                        <h3>Hello {{ user.username }}</h3>
+                        <h4>Hello {{ user.username }}</h4>
                     </center>
                     {% endif %}                        
                 </div>
 
                 {% comment %} Password update {% endcomment %}
                 <div class="tab-contents5" id="upload-docs">
-                    <h3>Upload docs</h3>
+                    <h4>Upload docs</h4>
                     <div class="profile-picture">
                         <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
                     </div>
@@ -2386,7 +2548,7 @@
                         </form>
                     {% else %}
                     <center>
-                        <h3>Hello {{ user.username }}</h3>
+                        <h4>Hello {{ user.username }}</h4>
                     </center>
                     {% endif %}                        
                 </div>

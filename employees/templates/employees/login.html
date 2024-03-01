@@ -15,7 +15,7 @@
 <div class="login_container">
     <div class="login_container_inputs">
         <div class="logo">
-            <img src="{% static 'emps/images/logo/logo_icon.png' %}" alt="">
+            <img src="{% static 'base/images/logo.png' %}" alt="">
         </div>
         <h3 class="login_header">Login</h3>
         <hr class="wide_hr">
@@ -39,62 +39,28 @@
             <div class="forgot_password_container modal-content">
                 <span class="closeModal" style="color: red;">×</span>
                     <h3 class="login_header">Reset Password</h3>
-                    <form id="forgotPasswordForm">
+                    <form id="forgotPasswordForm" method="post" action="{% url 'forgot_password'%}">
                         {% csrf_token %}
-                        <label for="username_or_email" title="Enter your registered email address to receive reset token" >Enter Email</label><br>
+                        <label for="email" title="Enter your registered email address to receive reset token" >Enter Email</label><br>
                         <input type="email" name="email" placeholder="Enter your email" required><br><br><br>
                         <input class="resetLink" type="submit" value="Send Reset Link">
                     </form>
             </div>
         </div>
-                    {% comment %} Email sent modal {% endcomment %}
-                    <div id="emailSentModal" class="modal">
-                        <div class="modal-content">
-                            <span class="closeModal" style="color: red;">×</span>
-                            <h1>Email Sent Successfully!</h1>
-                            <center><p class="success-message">Your email has been sent successfully. Enter Reset Code to proceed.</p></center>
-                            <center><p class="error-message">If you don't see the email, check your junk, spam, or social</p></center> <br>
-                            <form id="emailSentModalForm">
-                                {% csrf_token %}
-                                <label for="resetCode" style="color: darkblue;">Reset Code</label><br>
-                                <input type="hidden" name="email" value="">
-                                <input type="text" name="token" placeholder="Enter reset code" id="resetCode"><br><br><br>
-                                <button type="submit" class="continue">Continue</button>
-                            </form>
-                        </div>
-                    </div>
-                    {% comment %} Sending Email Spinner {% endcomment %}
-                    <div id="loadingMessage" class="modal" style="display: none; z-index: 10;">
-                        <div class="sendingEmail"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                    </div>
-                    {% comment %} Reset Password form {% endcomment %}
-                    <div class="reset_password modal" style="display: none;">
-                        <div class="reset_password_container modal-content">
-                            <span class="closeModal" style="color: red;">×</span>
-                            <h3 class="login_header">Reset Password</h3>
-                            <form id="resetPasswordForm" action="{% url 'reset_password' %}" method="POST">
-                                {% csrf_token %}
-                                <label for="newPassword">New Password</label><br>
-                                <input type="password" name="newPassword" placeholder="Enter new password" id="newPassword" autocomplete="on">
-                                <span toggle="#newPassword" class="password-toggle"></span><br><br><br>
-                                <label for="confirmPassword">Confirm Password</label><br>
-                                <input type="password" name="confirmPassword" placeholder="Confirm password" id="confirmPassword" autocomplete="on">
-                                <span toggle="#confirmPassword" class="password-toggle"></span><br><br><br>
-                                <input type="hidden" name="email" value="">
-                                <button type="submit" class="continue">Continue</button>
-                            </form>
-                        </div>
-                    </div>
-    
-                    <!-- email_error_modal -->
-                    <div id="emailErrorModal" class="modal">
-                        <div class="modal-content">
-                            <span class="closeModal">&times;</span>
-                            <h1 class="error-message">Error Sending Email</h1>
-                            <p >There was an issue sending the email. Please try again later.</p>
-                            {% comment %} <a href="#" class="back-link">Go back</a> {% endcomment %}
-                        </div>
-                    </div>    
+
+        {% comment %} Sending Email Spinner {% endcomment %}
+        <div id="loadingMessage" class="modal" style="display: none; z-index: 10;">
+            <div class="sendingEmail"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div>
+        <!-- email_error_modal -->
+        <div id="emailErrorModal" class="modal">
+            <div class="modal-content">
+                <span class="closeModal">&times;</span>
+                <h1 class="error-message">Error Sending Email</h1>
+                <p >There was an issue sending the email. Please try again later.</p>
+                {% comment %} <a href="#" class="back-link">Go back</a> {% endcomment %}
+            </div>
+        </div>    
     
         <br>
         <p><center class="change_color">or continue with</center></p>
@@ -148,123 +114,9 @@ $(document).ready(function () {
         });
     });
 
-    // Handle "Forgot Password" form submission
-    $('#forgotPasswordForm').submit(function (e) {
-        e.preventDefault();
-        let form = $(this);
+    // show loading message when resetLink is clicked
+    $('.resetLink').click(function () {
         $('#loadingMessage').show();
-        let user_email = $('#forgotPasswordForm input[name="email"]').val();
-        let formData = $(this).serialize();
-
-        $.ajax({
-            type: 'POST',
-            url: '{% url "forgot_password" %}',
-            data: formData,
-            success: function (response) {
-                    if (response.success) {
-                        $('#loadingMessage').hide();
-                        $('#emailSentModalForm input[name="email"]').val(user_email);
-                        $('#resetPasswordForm input[name="email"]').val(user_email);
-                        $('#emailSentModal').show();
-                        $('.closeModal, .continue').click(function () {
-                            $('#emailSentModal, #emailErrorModal').hide();
-                        });
-                        form.trigger('reset');
-                    }
-                    else {
-                        $('#emailErrorModal').show();
-                        // Close modal when elements are clicked
-                        $('#loadingMessage').hide();
-                        $('.closeModal').click(function () {
-                            $('#emailSentModal, #emailErrorModal').hide();
-                            form.prop('disabled', false);
-                        });
-                    }
-                },
-            error: function () {
-                $('#loadingMessage').hide();
-                form.prop('disabled', false);
-            },
-            complete: function () {
-                // Re-enable the form after the request is complete
-                form.prop('disabled', false);
-            },
-        });
-    });
-
-    // Handle "Continue" button in "Email Sent Modal"
-    $('#emailSentModalForm').submit(function (e) {
-        e.preventDefault();
-        let form = $(this);
-        let formData = $(this).serialize();
-        $.ajax({
-            type: 'POST',
-            url: '{% url "reset_token" %}',
-            data: formData,
-            success: function (response) {
-                if (response.success) {
-                    // If token is confirmed, show the reset password form
-                    form.trigger('reset');
-                    $('.reset_password').show();
-                } else {
-                    // Handle error case (you can customize this part)
-                    $('#emailErrorModal').show();
-                    // Close modal when elements are clicked
-                    $('#loadingMessage').hide();
-                    $('.closeModal').click(function () {
-                        $('#emailSentModal, #emailErrorModal').hide();
-                    });
-            }
-            },
-            error: function () {
-                // Handle AJAX error (you can customize this part)
-                $('#emailErrorModal').show();
-                // Close modal when elements are clicked
-                $('#loadingMessage').hide();
-                $('.closeModal').click(function () {
-                    $('#emailSentModal, #emailErrorModal').hide();
-                });
-            }
-        });
-    });
-
-    // Handle "Reset Password" form submission
-    $('#resetPasswordForm').submit(function (e) {
-        e.preventDefault();
-        let formData = $(this).serialize();
-        let form = $(this);
-
-        $.ajax({
-            type: 'POST',
-            url: '{% url "reset_password" %}',
-            data: formData,
-            success: function (response) {
-                if (response.success) {
-                    form.trigger('reset');
-                    // If password is reset successfully, redirect to login
-                    window.location.href = '{% url "login" %}';
-                } else {
-                    // Handle error case (you can customize this part)
-                    $('#emailErrorModal').show();
-                    // Close modal when elements are clicked
-                    $('#loadingMessage').hide();
-                    $('.closeModal').click(function () {
-                        $('#emailSentModal, #emailErrorModal').hide();
-                        form.prop('disabled', false);
-                    });
-            }
-            },
-            error: function () {
-                // Handle AJAX error (you can customize this part)
-                $('#emailErrorModal').show();
-                // Close modal when elements are clicked
-                $('#loadingMessage').hide();
-                $('.closeModal').click(function () {
-                    $('#emailSentModal, #emailErrorModal').hide();
-                    form.prop('disabled', false);
-                });
-            }
-        });
     });
 });
     $(document).on('click', '.password-toggle', function() {

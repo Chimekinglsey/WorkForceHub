@@ -11,7 +11,7 @@ body {
     display: flex;
     margin: auto;
     background-color: #fff;
-    min-height: 90vh;
+    min-height: 100vh;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     overflow-y: auto;
@@ -24,6 +24,8 @@ body {
     background-color: #232f3e;
     color: #fff;
     padding: 20px;
+    line-height: 1.2 !important;
+    text-align: left;
 }
 .left-pane h2 {
     margin-top: 0;
@@ -35,7 +37,7 @@ body {
 }
 
 .left-pane li {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .left-pane li a {
@@ -45,34 +47,33 @@ body {
     padding: 10px;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .left-pane li a:hover {
     background-color: #0056b3;
 }
 
+
 .featuresToggleContainer {
     display: flex;
     justify-content: space-between;
-    padding: 0 5px;
-    border-radius: 5px;
+    padding: 5px;
+    background: rgb(214, 240, 238);
+    color: #223;
 }
-
 
 .featuresToggleContainer:hover .fa-angle-down {
     transform: rotate(180deg);
 }
-/* 
-.featuresToggleContainer:active .fa-angle-down {
-    transform: rotate(180deg);
-} */
+
 .rotate180 {
     display: none;
     margin: 10px;
 }
 
 .right-pane {
-    flex: 3;
+    flex: 3.5;
     padding: 20px;
     padding-top: 5px;
     overflow: hidden;
@@ -120,7 +121,7 @@ body {
 }
 
 /* Adjust tab width for mgt sections */
-.nav-tab, .actions .tab.active,
+.nav-tab.active,.nav-tab:hover, .actions .tab.active,
 .actions .tab2.active,
 .actions .tab3.active, 
 .actions .tab4.active, 
@@ -142,7 +143,7 @@ body {
 }
 /* default tab to display */
 .employee-management {
-    display: block;
+    display: none;
 }
 
 .leave-requests, .apply-leave {
@@ -155,7 +156,7 @@ table {
 }
 
 th, td {
-    padding: 5px;
+    padding: 0 5px;
     border: 1px solid #ddd;
     text-align: left;
     vertical-align: baseline;
@@ -343,14 +344,14 @@ tbody tr:nth-child(even) {
    text-align: center;
 }
 
-/* search bar for leave */
+/* search bar replaced  */
 .searchFlex {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-/* leave_request.css */
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -399,6 +400,8 @@ tbody tr:nth-child(even) {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
 }
 
+/* Search bar ends here used on base.html */
+
 
 
 /* Employee Management.html */
@@ -439,7 +442,7 @@ tr:hover {
 .dropdown-menu {
     display: none;
     position: absolute;
-    z-index: 1;
+    z-index: 1000;
     background-color: #fff;
     border: 1px solid #ddd;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -448,6 +451,7 @@ tr:hover {
     margin: 0;
     min-width: 0;
     transform: translateX(-10%);
+    font-size: 0.8rem;
 }
 .dropdown-menu ul {
     padding: 0;
@@ -459,11 +463,10 @@ tr:hover {
     list-style: none;
     padding: 5px;
     /* margin-bottom: 3px; */
-    width: min-content;
 }
 
 .dropdown-menu li:hover {
-    background-color: #f8f9fa;
+    background-color: #edf2fa;
 }
 
 .dropdown-menu a {
@@ -519,6 +522,8 @@ tr:hover {
     color: red;
     opacity: 0.5;
     cursor: pointer;
+    position: absolute;
+    right: 5px;
 }
 .close:hover {
     color: red;
@@ -569,7 +574,7 @@ tr:hover {
     width: 24%;
 }
 .performance-navigation .tab4{
-    width: 24%;
+    width: 19%;
 }
 .transfers .tab6 {
     width: 19%;
@@ -584,14 +589,21 @@ tr:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #fefff9;
 }
-.pf-btn {
-    margin: 2px;
-    opacity: 0.7;
+table .btn {
+    padding-top: 0%;
+    padding-bottom: 0%;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-.pf-btn:hover {
+.pf-btn, .del-pf-btn {
+    opacity: 0.7;
+    padding:5px 10px;
+}
+
+.pf-btn:hover, .del-pf-btn:hover {
     opacity: 1;
-    color: #111;
+    text-decoration: none;
 }
 
 .settings {
@@ -612,11 +624,6 @@ tr:hover {
 .transfers #transfer-request,
 .performance #performance-list {
     display: block;
-}
-
-
-.featuresToggle{
-    user-select: none;
 }
 .featuresList .fas {
     margin-right: 8px;
@@ -640,6 +647,59 @@ tr:hover {
 #change-passwd #hint_id_new_password1 {
     text-align: left;
 }
+
+ .controlButton2 {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+    margin: auto auto;
+}
+/*
+.controlButton2:hover {
+    color: #222;
+}
+
+.controlButton2 a {
+    margin: 2px;
+    padding: 2px;
+    font-weight: 500;
+} */
+
+.controlButton .del-pf-btn {
+    background: #a20c0c;
+    color: white;
+    border: none;
+}
+
+
+.badStat { 
+    color: red;
+}
+
+.goodStat {
+    color: #5cb85c;
+}
+.featuresToggle {
+    font-family: 'sora','Quintessential', sans-serif;
+    color: #223;
+    user-select: none;
+    margin: 5px;
+}
+
+.featuresItem, .featuresItem2 {
+    font-family: 'EB Garamond', "Libre Baskerville", serif;
+}
+
+.tabTitle {
+    display: none;
+}
+
+.expand-width {
+    min-width: 130px;
+}
+
+
   /* Optional: Make modal smaller on smaller screens */
   @media (max-width: 768px) {
     .modal-lg {
@@ -661,9 +721,6 @@ tr:hover {
     .leave-management {
         padding: 10px;
     }
-    .approve, .reject {
-        width: 90%;
-    }
 .tab-contents,
 .tab-contents2, 
 .tab-contents3, 
@@ -671,6 +728,10 @@ tr:hover {
 .tab-contents5,
 .tab-contents6 {
     overflow: auto;
+    }
+    .approve, .reject {
+        font-size: 0.9em;
+        padding: 5px;
     }
 }
    @media screen and (max-width: 1000px){
@@ -681,12 +742,23 @@ tr:hover {
         padding: 10px;
     }
    }
+@media screen and (max-width:935px) {
+    .approve, .reject {
+        width: 90%;
+}
+
 @media screen and (max-width: 900px) {
     /* Adjust tab width for mgt sections */
     .featuresToggleContainer:hover {
         cursor: pointer;
-        background-color: #0056b3;
+        background-color: #a4c6d0;
     }
+
+    .tabTitle {
+        display: block;
+    }
+    }
+
     .employee-nav .tab, 
     .leave-navigation .tab2, 
     .payroll-navigation .tab3, 
@@ -785,4 +857,19 @@ tr:hover {
 }
 }
 
+@media screen and (max-width: 645px) {
+    .justify-content-between {
+        font-size: 0.9rem;
+    }
+    .justify-content-between div {
+       width: auto !important;
+    }
+    
+}
+@media  screen and (max-width:550px) {
+    .justify-content-between div {
+        width: 100%;
+     }
+ 
+}
 /* media query */

@@ -1,0 +1,268 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Finance - {{branch.name}}{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'emps/styles/performance.css' %}">
+    <link rel="stylesheet" href="{% static 'emps/styles/finances.css' %}">
+    <link rel="stylesheet" href="{% static 'emps/styles/org_dashboard.css'%}">
+    <script src="{% static 'emps/scripts/performance.js'%}"></script>
+    <script src="{% static 'emps/scripts/finances.js'%}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .container {
+            font-family: 'Montserrat', sans-serif;
+        }
+        strong {
+          font-size: 0.9rem;
+        }
+        h4 {
+          color: #009dff;
+        }
+    </style>
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<div class="performance-dashboard custom-dashboard">
+    <div class="financeContainer statistics">
+        <center><h2 class="db-title">Finance Dashboard</h2></center>
+        <div class="employee-profile">
+            <div class="profile-picture">
+                <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+            </div>
+
+            <div class="employee-info">
+                <h2>{{user.first_name}} {{user.last_name}}</h2>
+                <p>Job Role: {{user.job_role}}</p>
+                <p class="db-title">{{ branch.name }}</p>
+            </div>
+
+            <div class="finance-actions action-tabs">
+                <button class="action-button" id="basicReport-btn"> Create Basic Report</button>
+                <button class="action-button" id="detailedReport-btn">Create Detailed Report</button>
+                <button class="action-button" id="reportHistory-btn">View Reports</button>
+                <button class="action-button" id="financeStats-btn">Statistics</button>
+            </div>
+        
+        
+            <!-- Modals for forms -->
+            <div id="basicReport-modal" class="archive-modal">
+                <!-- Review form content -->
+                <form class="container" action="{% url 'finance_report' type='basic'%}" method="post" enctype="multipart/form-data">
+                    <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
+                        <span class="close openFlashMsg" aria-hidden="true" onclick="getElementById('basicReport-modal').style.display='none'">&times;</span>
+                    </button>
+
+                    {% csrf_token %}
+                    {% crispy basic_form %}                    
+                </form>
+            </div>
+
+            <div id="detailedReport-modal" class="archive-modal">
+            <form class="container" action="{% url 'finance_report' type='detailed' %}" method="post" enctype="multipart/form-data">
+                <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
+                <span class="close openFlashMsg" aria-hidden="true" onclick="getElementById('detailedReport-modal').style.display='none'">&times;</span>
+                </button>
+
+                {% csrf_token %}
+                {% crispy detailed_form %}                    
+            </form>
+            </div>
+            <!-- Add more modals for other forms -->
+            
+            <div id="reportHistory-modal" class="archive-modal history-modal">
+                <div class="history-container archive-modal-content">
+                        <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
+                            <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('reportHistory-modal').style.display='none'">&times;</span>
+                        </button>
+                        <center><h4>Financial Reports</h4></center>
+                    {% if reports %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Branch</th>
+                                    <th>Date</th>
+                                    <th>Total Rv.</th>
+                                    <th>Total Exp.</th>
+                                    <th>Created By</th>
+                                    <th>Status</th>
+                                    <th>Desc.</th>
+                                    <th>Total P/L</th>
+                                    <th>Net Prof.</th>
+                                    <th>Gross Prof.</th>
+                                    <th>Op. Prof.</th>
+                                    <th>EBITDA</th>
+                                    <th>Op. Exp</th>
+                                    <th>Tax</th>
+                                    <th>Int. Exp</th>
+                                    <th>P. Margin (%)</th>
+                                    <th>ROA (%)</th>
+                                    <th>ROE (%)</th>
+                                    <th>Curr. R.</th>
+                                    <th>Quick R.</th>
+                                    <th>DTE R.</th>
+                                    <th>Int. Cov. R.</th>
+                                    <th>Asset T.R</th>
+                                    <th>Inv. T.R</th>
+                                    <th>Bud. Rv</th>
+                                    <th>Bud. Exp</th>
+                                    <th>Bud. Var.</th>
+                                    <th>Fcast Rv</th>
+                                    <th>Fcast Exp</th>
+                                    <th>Attachs</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in reports %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ report.branch }}</td>
+                                    <td>{{ report.report_date }}</td>
+                                    <td>{{ report.total_revenue|intcomma }}</td>
+                                    <td>{{ report.total_expenses|intcomma }}</td>
+                                    <td>{{ report.created_by }}</td>
+                                    <td>{{ report.status }}</td>
+                                    <td title="{{report.description}}">{{ report.description|default:'N/A'|truncatechars:'40' }}</td>
+                                    <td>{{ report.total_profit_loss|intcomma }}</td>
+                                    <td>{{ report.net_profit|intcomma }}</td>
+                                    <td>{{ report.gross_profit|intcomma }}</td>
+                                    <td>{{ report.operating_profit|intcomma }}</td>
+                                    <td>{{ report.ebitda|intcomma }}</td>
+                                    <td>{{ report.operating_expenses|intcomma }}</td>
+                                    <td>{{ report.taxes|intcomma }}</td>
+                                    <td>{{ report.interest_expenses|intcomma }}</td>
+                                    <td>{{ report.profit_margin|default:'N/A' }}</td>
+                                    <td>{{ report.return_on_assets|default:'N/A' }}</td>
+                                    <td>{{ report.return_on_equity|default:'N/A' }}</td>
+                                    <td>{{ report.current_ratio|default:'N/A' }}</td>
+                                    <td>{{ report.quick_ratio|default:'N/A' }}</td>
+                                    <td>{{ report.debt_to_equity_ratio|default:'N/A' }}</td>
+                                    <td>{{ report.interest_coverage_ratio|default:'N/A' }}</td>
+                                    <td>{{ report.asset_turnover_ratio|default:'N/A' }}</td>
+                                    <td>{{ report.inventory_turnover_ratio|default:'N/A' }}</td>
+                                    <td>{{ report.budgeted_revenue|intcomma }}</td>
+                                    <td>{{ report.budgeted_expenses|intcomma }}</td>
+                                    <td>{{ report.budget_variance|intcomma }}</td>
+                                    <td>{{ report.forecasted_revenue|intcomma }}</td>
+                                    <td>{{ report.forecasted_expenses|intcomma }}</td>
+                                    {% if report.attachments %}
+                                        <td><a href="{{ report.attachments.url }}" target="_blank">View</a></td>
+                                        {% else %}
+                                            <td>N/A</td>
+                                        {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <center>
+                            <h3>No Report History </h3>
+                            <p>Report history will be displayed here</p>
+                        </center>
+                    {% endif %}       
+                </div>
+            </div>
+        </div>
+    </div>
+       
+    {% comment %} Employee transfers {% endcomment %}
+    <div class="tab-contents6 statistics container" id="financeStats-modal">
+        <button id="close" type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
+            <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('financeStats-modal').style.display='none'">&times;</span>
+        </button>
+
+        <div>
+            <h2>Financial Statistics</h2>
+            <div class="statistics-grid">
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Employees</h3>
+                        {% if total_employees is not None %}
+                            <p class="statsVal">{{ total_employees|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-hand-holding-dollar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Revenue</h3>
+                        {% if total_revenue is not None %}
+                            <p class="statsVal">{{ total_revenue|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-dollar-sign goodStat"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Profit</h3>
+                        {% if total_profit is not None %}
+                            <p class="statsVal">{{ total_profit|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-money-check-dollar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Expenses</h3>
+                        {% if total_expenses %}
+                            <p class="statsVal">{{ total_expenses|intcomma }}</p>
+                        {% else %}
+                            <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Employees Salary</h3>
+                        {% if total_employees_salary is not None %}
+                        <p class="statsVal">{{ total_employees_salary }}</p>
+                        {% else %}
+                        <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="statistic-item">
+                    <div class="statistic-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="statistic-info">
+                        <h3>Total Reports</h3>
+                        {% if total_reports is not None %}
+                        <p class="statsVal">{{ total_reports }}</p>
+                        {% else %}
+                        <p class="statsVal badStat">N/A</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

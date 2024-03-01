@@ -3,17 +3,26 @@ $(document).ready(function() {
       $('#review-modal').show(10);
     });
   
-    $('#project-btn').click(function() {
-      $('#project-modal').slideToggle();
+    $('#update-rev-btn').click(function() {
+      $('#update-rev-modal').slideToggle();
     });
   
-    $('#otherPerf-btn').click(function() {
-      $('#otherPerf-modal').slideToggle();
-    });
-
     $('#performanceHistory-btn').click(function() {
       $('#performanceHistory-modal').slideToggle();
     });
-    // Add event listeners for other buttons and modals
+
+
+    // For Organization Reports
+    $('#create-report-btn').click(function() {
+      $('#create-report-modal').show(10);
+    });
+  
+    $('#update-report-btn').click(function() {
+      $('#update-report-modal').slideToggle();
+    });
+  
+    $('#report-history-btn').click(function() {
+      $('#report-history-modal').slideToggle();
+    });
   });
   

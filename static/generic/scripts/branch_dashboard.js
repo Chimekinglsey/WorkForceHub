@@ -643,4 +643,44 @@ function flashMessage(response) {
     });
 
 
+    // SEARCH FUNCTIONALITY
+    // $('.search-bar input').on('keyup', function() {
+    //     let searchQuery = $(this).val().trim().toLowerCase();
+    //     $('.s-card').each(function() {
+    //         let field1 = $(this).find('.sf1').text().toLowerCase();
+    //         let field2 = $(this).find('.sf2').text().toLowerCase();
+    //         let field3 = $(this).find('.sf3').text().toLowerCase();
+    //         let field4 = $(this).find('.sf4').text().toLowerCase();
+    //         let field5 = $(this).find('.sf5').text().toLowerCase();
+    //         if (field1.includes(searchQuery) || field2.includes(searchQuery)
+    //          || field3.includes(searchQuery) || field4.includes(searchQuery) || field5.includes(searchQuery)) {
+    //         $(this).show();
+    //         } else {
+    //             $(this).hide();
+    //         }
+    //     });
+    // });
+
+    $('input[type="search"]').attr('placeholder', 'Enter search text');
+
+});
+
+$(document).ready(function() {
+    var features = $('.feature'); // Select all features
+    var index = 0; // Initialize index for tracking active feature
+
+    function slideFeatures() {
+        // Hide current feature
+        features.eq(index).removeClass('active');
+        // Increment index and loop back to the start if necessary
+        index = (index + 1) % features.length;
+        // Show next feature
+        features.eq(index).addClass('active');
+    }
+
+    // Display the first feature initially
+    features.eq(index).addClass('active');
+
+    // Slide features every 3 seconds
+    setInterval(slideFeatures, 3000);
 });

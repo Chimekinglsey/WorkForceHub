@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}FAQ{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'base/styles/privacy.css' %}">
+
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<center>
+    <h2>Frequently Asked Questions</h2>
+</center>
+<section id="faq">
+    <div class="faq-item">
+        <h4><a href="#faq-started">How do I get started with WorkforceHub?</a></h4>
+        <p>Getting started with WorkforceHub is easy! Simply sign up for an account and follow the on-screen instructions to create your organization and start managing your workforce.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-signup">How do I sign up for a WorkforceHub account?</a></h4>
+        <p>To sign up for a WorkforceHub account, visit our website and click on the "Sign Up" button. Follow the prompts to complete the registration process and create your account.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-create-org">How do I create an organization on WorkforceHub?</a></h4>
+        <p>Once you've signed up for an account, log in to WorkforceHub and navigate to the dashboard. Click on the "Create Organization" button and follow the instructions to set up your organization.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-create-branch">How do I create a branch on WorkforceHub?</a></h4>
+        <p>To create a branch on WorkforceHub, go to your organization dashboard, and click on the "Create Branch" button. Fill in the required information and save your changes.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-create-delegate">How do I create a delegate admin for my branch?</a></h4>
+        <p>As the organization account owner, you can create delegate admins to manage specific branches within your organization. Navigate to your organization dashboard, on the left pane, click on "Add Delegate," and follow the prompts to assign admin privileges to the delegate for a particular branch.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-change-password">How do I change my password as a root user?</a></h4>
+        <p>Root users can change their passwords from the organization dashboard. Simply navigate to the "Account Settings" section and select the "Change Password" option.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-reset-password">How do I reset my password if I forget it?</a></h4>
+        <p>If you forget your password, click on the "Forgot Password" link on the login page. You will receive instructions via email to reset your password. Delegates who are not allowed to change passwords will need the root user to reset their passwords for them.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-reports">What does the Reports section in the organization dashboard show?</a></h4>
+        <p>The Reports section in the organization dashboard displays reports from all branches, including finance, sales, and other report types generated from branches.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-statistics">What information does the Statistics section provide?</a></h4>
+        <p>The Statistics section gives a general overview of all branch performances, including employees, leaves, payroll, finance, transfers, and performance metrics.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-approve-transfer">How do I approve transfer requests as a root user?</a></h4>
+        <p>Root users can approve transfer requests from the Transfers section of the organization's tab in the dashboard.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-security">How secure is the data on WorkForceHub?</a></h4>
+        <p>WorkForceHub prioritizes the security and privacy of your data. We utilize advanced encryption protocols and industry-standard security practices to safeguard your information.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4><a href="#faq-root-multiple-branches">Can I manage multiple branches from a single account as a root user?</a></h4>
+        <p>Yes, WorkForceHub allows root users to manage multiple branches from a single organization dashboard. Root users have access to all accounts but are advised not to perform management operations within branches directly. Instead, they can view details in each branch to provide more insight into overall operations.</p>
+    </div>
+        
+    <div class="faq-item">
+        <h4><a href="#faq-delegate-admin">What is the role of a delegate admin in WorkForceHub?</a></h4>
+        <p>A delegate admin is an authorized user who has control over specific branches within an organization. They can manage employee data, approve leave requests, process payroll, and perform other administrative tasks within their assigned branch.</p>
+    </div>
+    <div class="faq-item">
+        <h4><a href="#faq-delegate-multiple-branches">Can I manage multiple branches from a single account as a delegate admin?</a></h4>
+        <p>No, WorkForceHub restricts delegate admins to oversee only one branch per account. A single delegate admin cannot manage multiple branches. Delegate admins have control over specific branches within an organization but do not have access to accounts outside their assigned branch. They are responsible for managing employee data, leave requests, payroll, and other administrative tasks within their assigned branch.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4><a href="#faq-compliance">How does WorkForceHub handle compliance with labor laws and regulations?</a></h4>
+        <p>WorkForceHub is designed to help organizations comply with labor laws and regulations by providing features such as automated time tracking, leave management, and payroll processing. Our platform can adapt to various legal requirements based on your location and industry.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4><a href="#faq-web-app-compatibility">Is the web application compatible with mobile devices?</a></h4>
+        <p>Yes, the current version of WorkForceHub's web application is designed to be compatible with various mobile screen sizes. Users can access the web application from their mobile devices and perform essential operations seamlessly. While the mobile app is still under development, the web application ensures that users can conveniently access WorkForceHub's features on the go.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4><a href="#faq-mobile-app-dev">Is a mobile app available for WorkForceHub?</a></h4>
+        <p>Currently, the mobile app for WorkForceHub is under development and is not yet available. However, our team is actively working on creating a mobile application for both Android and iOS devices. Once the mobile app is ready, users will be able to perform various operations conveniently from their mobile devices.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4><a href="#faq-updates">How frequently is WorkForceHub updated with new features and improvements?</a></h4>
+        <p>WorkForceHub is continuously evolving to meet the needs of our users. We regularly release updates and enhancements to improve functionality, add new features, and address user feedback. Our goal is to provide you with the best possible experience and support your organization's growth and success.</p>
+    </div>
+    
+
+</section>
+
+
+{% endblock %}
+

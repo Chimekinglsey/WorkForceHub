@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Terms{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'base/styles/privacy.css' %}">
+
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<center>
+    <h2>Terms of Service</h2>
+</center>
+<section>
+    <h4>1. Introduction</h4>
+    <p>Welcome to WorkforceHub! These Terms and Conditions govern your use of our platform. By accessing or using WorkforceHub, you agree to comply with these terms.</p>
+
+    <h4>2. Account Registration</h4>
+    <p>When you register for an account on WorkforceHub, you agree to provide accurate and complete information. You are responsible for maintaining the confidentiality of your account credentials.</p>
+
+    <h4>3. Data Security</h4>
+    <p>We prioritize the security of data uploaded to WorkforceHub. We do not share or access any user data without explicit consent. All contents uploaded to the platform are strictly private and accessible only to the user who uploaded them.</p>
+
+    <h4>4. User Responsibilities</h4>
+    <p>Users are responsible for maintaining the security of their access credentials. Any activity performed under a user's account is their responsibility, and they should notify us immediately of any unauthorized use or security breach.</p>
+
+    <h4>5. Intellectual Property</h4>
+    <p>All content, trademarks, logos, and intellectual property on WorkforceHub are owned or licensed by us. You may not use, copy, modify, or distribute any content from WorkforceHub without our prior written consent.</p>
+
+    <h4>6. Payment and Billing</h4>
+    <p>If you purchase any services or products on WorkforceHub, you agree to pay all applicable fees and charges. Payments are processed securely through our designated payment gateways.</p>
+
+    <h4>7. Termination</h4>
+    <p>We reserve the right to suspend or terminate your access to WorkforceHub at any time, without prior notice or liability, for any reason, including but not limited to violation of these Terms and Conditions.</p>
+
+    <h4>8. Limitation of Liability</h4>
+    <p>We are not liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of WorkforceHub, even if we have been advised of the possibility of such damages.</p>
+
+    <h4>9. Governing Law</h4>
+    <p>These Terms and Conditions shall be governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.</p>
+
+    <h4>10. Changes to Terms</h4>
+    <p>We reserve the right to modify or replace these Terms and Conditions at any time. Your continued use of WorkforceHub after any changes to these terms constitutes acceptance of those changes.</p>
+
+    <h4>11. Contact Us</h4>
+    <p>If you have any questions or concerns about these Terms and Conditions, please contact us at <a href="mailto:developers.workforcehub@gmail.com">developers.workforcehub@gmail.com</a>.</p>
+
+    <p><strong>Last Updated:</strong> 29 February, 2024</p>
+</section>
+{% endblock %}
+

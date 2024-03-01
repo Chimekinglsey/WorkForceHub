@@ -43,6 +43,7 @@
 .employee_view_form {
     width: 100%;
     padding: 20px;
+    font-size: 0.85rem;
 }
 .employee_view_form fieldset {
     border: 1px solid#1a295e5e;

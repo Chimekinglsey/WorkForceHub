@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Reset Token{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'emps/styles/login.css' %}">
+    <link rel="stylesheet" href="{% static 'emps/styles/password.css' %}">
+{% endblock %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+    {% comment %} Email sent modal {% endcomment %}
+    <div class="modalContainer">
+        <div class="modal-content">
+            <center>
+                <h2>Email Sent Successfully!</h2>
+                <p class="success-message">Your email has been sent successfully. Enter Reset Code to proceed.</p>
+                <p class="error-message">If you don't see the email, check your junk, spam, or social</p>
+                <form id="emailSentModalForm" method="post" action="{% url 'reset_token' email=user_email %}">
+                    {% csrf_token %}
+                    <label for="resetCode" style="color: darkblue;">Reset Code</label><br>
+                    <input type="text" title="Enter reset token sent to  your email" name="token" placeholder="Enter reset code" id="resetCode" required><br><br>
+                    <div class="btnHandle2">
+                        <button type="button" onclick="window.location.href = '{% url 'landing_page'%}'" class="continue" style="background-color: red; color: white;">Back</button>
+                        <button type="submit" class="continue">Continue</button>
+                    </div>
+                </form>
+            </center>
+        </div>
+    </div>
+{% endblock %}
+
