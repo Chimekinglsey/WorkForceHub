@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css'%}">
     <script src="{% static 'generic/scripts/branch_dashboard.js'%}"></script>
     <link rel="stylesheet" href="{% static 'emps/styles/org_dashboard.css'%}">
+    <link rel="stylesheet" href="{% static 'emps/styles/confirmationModal.css'%}">
     <script src="{% static 'emps/scripts/org_dashboard.js'%}"></script>
 {% endblock head %}
 
@@ -24,9 +25,182 @@
 {% block content %}
 <div class="host-container">
     <div class="backdrop"></div>
+
+{% comment %} modal to delete delegate {% endcomment %}
+    <div id="deleteDelegateModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Confirm Deletion</h2>
+          <p>Are you sure you want to delete this delegate?</p>
+          <div class="modal-buttons">
+            <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+            <button id="confirmDeleteBtn" class="proceedDeleteBtn">Delete</button>
+          </div>
+        </div>
+    </div>
+
+      {% comment %} modal to delete branch {% endcomment %}
+    <div id="deleteBranchModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Confirm Deletion</h2>
+          <p>Are you sure you want to delete this Branch?</p>
+          <div class="modal-buttons">
+            <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+            <button id="confirmDeleteBtn" class="proceedDeleteBtn">Delete</button>
+          </div>
+        </div>
+    </div>
+
+      {% comment %} Suspend Delegate {% endcomment %}
+    <div id="suspendDelegateModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Suspension</h2>
+            <p>Are you sure you want to suspend this delegate?</p>
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+                <button id="confirmSuspendBtn" class="proceedDeleteBtn">Suspend</button>
+            </div>
+        </div>
+    </div>
+
+        {% comment %} Activate delegate modal {% endcomment %}
+    <div id="activateDelegateModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Activation</h2>
+            <p>Are you sure you want to activate this delegate?</p>
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+                <button id="confirmActivateBtn" class="proceedDeleteBtn">Activate</button>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} Promote Delegate Modal {% endcomment %}
+    <div id="promoteDelegateModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Promotion</h2>
+            <p>Are you sure you want to promote this delegate to an organization admin?</p>
+            <p>Once promoted, the delegate will have full access to the organization's data and operations.</p>
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+                <button id="confirmPromoteBtn" class="proceedDeleteBtn">Promote</button>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} Demote Delegate Modal {% endcomment %}
+    <div id="demoteAdminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Demotion</h2>
+            <p>Are you sure you want to demote this delegate to a branch admin?</p>
+            <p>Once demoted, the delegate will only have access to the assigned branch's data and operations.</p>
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+                <button id="confirmDemoteBtn" class="proceedDeleteBtn">Demote</button>
+            </div>
+        </div>
+    </div>
+
+
+    {% comment %} Suspend superuser modal {% endcomment %}
+    <div id="suspendAdminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Suspension</h2>
+            <p>Are you sure you want to suspend this superuser?</p>
+            <p>Once suspended, the superuser will not be able to access the organization's data and operations.</p>
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+                <button id="confirmSuspendBtn" class="proceedDeleteBtn">Suspend</button>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} Activate superuser modal {% endcomment %}
+    <div id="activateAdminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Activation</h2>
+            <p>Are you sure you want to activate this superuser?</p>
+            <p>Once activated, the superuser will have full access to the organization's data and operations.</p>
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn">Cancel</button>
+                <button id="confirmActivateBtn" class="proceedDeleteBtn">Activate</button>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} Delete Organization {% endcomment %}
+
+    <div id="deleteOrgModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Deletion</h2>
+            <center>
+                <p>Are you sure you want to delete this organization?</p>
+                <p>Once deleted, all data associated with this organization will be lost.
+                    This includes all branches, employees, delegate admins, and your own account.
+                </p>
+            </center>
+            {% comment %} Reason for Deleting the Organization {% endcomment %}
+
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="deleteOrgReason">Reason for Deleting:</label>
+                        <select class="form-control" id="deleteOrgReason">
+                            <option value="">Select Reason</option>
+                            <option value="not_needed">No longer needed</option>
+                            <option value="restructuring">Restructuring</option>
+                            <option value="merger">Merger with another organization</option>
+                            <option value="bankruptcy">Bankruptcy</option>
+                            <option value="management_decision">Management decision</option>
+                            <option value="legal_issues">Legal issues</option>
+                            <option value="performance">Poor performance</option>
+                            <option value="cost_cutting">Cost-cutting measures</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+        
+                    <div class="form-group col-md-6">
+                        <label for="deleteOrgDetails">Additional Details (Optional):</label>
+                        <textarea class="form-control" id="deleteOrgDetails" rows="2" placeholder="Enter additional details..."></textarea>
+                    </div>
+                </div>
+
+                <p>Enter <b style="user-select: none;">"Permanently Delete Organization"</b> to proceed</p>
+                <input type="text" id="deleteOrgInput" class="form-control" placeholder="Permanently Delete Organization">
+            </form>
+
+            <div class="modal-buttons">
+                <button id="cancelConfirmBtn" class="cancelConfirmBtn btn btn-secondary">Cancel</button>
+                <button id="confirmOrgDeleteBtn" class="proceedDeleteBtn btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
-    {% comment %} Create Organization Form {% endcomment %}
-    <form id="organization-form" method="post" class="container mt-5">
+      {% comment %} Create Organization Form {% endcomment %}
+    <form id="organization-form" method="post" class="container mt-5 tab-contents2">
         <div class="close-btn">
             <span class="close">&times;</span>
         </div>
@@ -36,20 +210,20 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="name">Name<span class="asteriskField">*</span></label>
-                <input type="text" id="name" name="name" class="form-control" required placeholder="Organization/Business name" title="">
+                <input type="text" id="name" name="name" class="form-control" required placeholder="Organization/Business name" value="{{org.name|default:''}}">
             </div>
             <div class="form-group col-md-6">
                 <label for="industry">Industry<span class="asteriskField">*</span></label>
                 <select id="industry" name="industry" class="form-control" required>
                     <option value="">--Select--</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Education">Education</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Hospitality">Hospitality</option>
-                    <option value="Other">Other</option>
+                    <option value="Technology" {% if org.industry == "Technology" %} selected {% endif %}>Technology</option>
+                    <option value="Healthcare" {% if org.industry == "Healthcare" %} selected {% endif %}>Healthcare</option>
+                    <option value="Finance" {% if org.industry == "Finance" %} selected {% endif %}>Finance</option>
+                    <option value="Manufacturing" {% if org.industry == "Manufacturing" %} selected {% endif %}>Manufacturing</option>
+                    <option value="Education" {% if org.industry == "Education" %} selected {% endif %}>Education</option>
+                    <option value="Retail" {% if org.industry == "Retail" %} selected {% endif %}>Retail</option>
+                    <option value="Hospitality" {% if org.industry == "Hospitality" %} selected {% endif %}>Hospitality</option>
+                    <option value="Other" {% if org.industry == "Other" %} selected {% endif %}>Other</option>
                 </select>
             </div>
         </div>
@@ -57,19 +231,19 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="sector">Sector<span class="asteriskField">*</span></label>
-                <input type="text" id="sector" name="sector" class="form-control" required placeholder="Enter Industry sector">
+                <input type="text" id="sector" name="sector" class="form-control" value="{{org.sector|default:''}}" required placeholder="Enter Industry sector">
             </div>
             <div class="form-group col-md-6">
                 <label for="size">Size<span class="asteriskField">*</span></label>
                 <select id="size" name="size" class="form-control" required>
                     <option value="">--Select--</option>
-                    <option value="1 - 20">1 - 20</option>
-                    <option value="21 - 100">21 - 100</option>
-                    <option value="101 - 500">101 - 500</option>
-                    <option value="501 - 1000">501 - 1000</option>
-                    <option value="Above 1000">Above 1000</option>
+                    <option value="1 - 20" {% if org.size == "1 - 20" %} selected {% endif %}>1 - 20</option>
+                    <option value="21 - 100" {% if org.size == "21 - 100" %} selected {% endif %}>21 - 100</option>
+                    <option value="101 - 500" {% if org.size == "101 - 500" %} selected {% endif %}>101 - 500</option>
+                    <option value="501 - 1000" {% if org.size == "501 - 1000" %} selected {% endif %}>501 - 1000</option>
+                    <option value="Above 1000" {% if org.size == "Above 1000" %} selected {% endif %}>Above 1000</option>
                 </select>
-            </div>
+            </div>            
         </div>
 
         <div class="form-row">
@@ -77,78 +251,80 @@
                 <label for="branches">Branches<span class="asteriskField">*</span></label>
                 <select id="branches" name="branches" class="form-control" required>
                     <option value="">--Select--</option>
-                    <option value="1 - 10">1 - 10</option>
-                    <option value="10 - 50">10 - 50</option>
-                    <option value="51 - 100">51 - 100</option>
-                    <option value="101 - 500">101 - 500</option>
-                    <option value="Above 500">Above 500</option>
+                    <option value="1 - 10" {% if org.branches == "1 - 10" %} selected {% endif %}>1 - 10</option>
+                    <option value="10 - 50" {% if org.branches == "10 - 50" %} selected {% endif %}>10 - 50</option>
+                    <option value="51 - 100" {% if org.branches == "51 - 100" %} selected {% endif %}>51 - 100</option>
+                    <option value="101 - 500" {% if org.branches == "101 - 500" %} selected {% endif %}>101 - 500</option>
+                    <option value="Above 500" {% if org.branches == "Above 500" %} selected {% endif %}>Above 500</option>
                 </select>
             </div>
             <div class="form-group col-md-6">
                 <label for="headquarter">Headquarter<span class="asteriskField">*</span></label>
-                <input type="text" id="headquarter" name="headquarter" class="form-control" required placeholder="Location of head office">
+                <input type="text" id="headquarter" name="headquarter" value="{{org.headquarter|default:''}}" class="form-control" required placeholder="Location of head office">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="website">Website<span class="asteriskField">*</span></label>
-                <input type="url" id="website" name="website" class="form-control" required placeholder="e.g https://example.org">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="description">Description</label>
-                <textarea id="description" name="description" class="form-control" placeholder="Optional, describe your organization or business"></textarea>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
                 <label for="contact_phone">Contact Phone<span class="asteriskField">*</span></label>
-                <input type="tel" id="contact_phone" name="contact_phone" class="form-control" required placeholder="Enter your business contact phone number">
+                <input type="tel" id="contact_phone" name="contact_phone" value="{{org.contact_phone|default:''}}" class="form-control" required placeholder="Enter your business contact phone number">
             </div>
             <div class="form-group col-md-6">
                 <label for="contact_email">Contact Email<span class="asteriskField">*</span></label>
-                <input type="email" id="contact_email" name="contact_email" class="form-control" required placeholder="Enter your business contact email address">
+                <input type="email" id="contact_email" name="contact_email" value="{{org.contact_email|default:''}}" class="form-control" required placeholder="Enter your business contact email address">
             </div>
         </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="website">Website</label>
+                <input type="url" id="website" name="website" value="{{org.website|default:''}}" class="form-control" placeholder="e.g https://example.org">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" value="{{org.description|default:''}}" class="form-control" placeholder="Optional, describe your organization or business"></textarea>
+            </div>
+        </div>
+
 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="mailing_address">Mailing Address</label>
-                <input type="text" id="mailing_address" name="mailing_address" class="form-control" placeholder="Optional, enter mailing address">
+                <input type="text" id="mailing_address" name="mailing_address" value="{{org.mailing_address|default:''}}" class="form-control" placeholder="Optional, enter mailing address">
             </div>
 
             <div class="form-group col-md-6">
                 <label for="employee_benefits">Employee Benefits</label>
-                <textarea id="employee_benefits" name="employee_benefits" class="form-control" placeholder="Enter Employee Benefits"></textarea>
+                <textarea id="employee_benefits" name="employee_benefits" class="form-control" placeholder="Enter Employee Benefits">{{ org.employee_benefits|default:'' }}</textarea>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="facebook">Facebook</label>
-                <input type="url" id="facebook" name="facebook" class="form-control"  placeholder="Facebook Page">
+                <input type="url" id="facebook" name="facebook" value="{{org.facebook|default:'https://facebook.com/yourpage'}}" class="form-control"  placeholder="Facebook Page">
             </div>
             <div class="form-group col-md-6">
                 <label for="twitter">Twitter</label>
-                <input type="url" id="twitter" name="twitter" class="form-control"  placeholder="X (Twitter) handle">
+                <input type="url" id="twitter" name="twitter" value="{{org.twitter|default:'https://x.com/yourpage'}}" class="form-control"  placeholder="X (Twitter) handle">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="linkedin">Linkedin</label>
-                <input type="url" id="linkedin" name="linkedin" class="form-control"  placeholder="LinkedIn Page">
+                <input type="url" id="linkedin" name="linkedin" value="{{org.linkedin|default:'https://linkedin.com/in/yourpage'}}" class="form-control"  placeholder="LinkedIn Page">
             </div>
             <div class="form-group col-md-6">
                 <label for="certifications">Certifications</label>
-                <textarea id="certifications" name="certifications" class="form-control" placeholder="Enter acquired certifications e.g ISO, SON"></textarea>
+                <textarea id="certifications" name="certifications" value="{{org.certifications|default:''}}" class="form-control" placeholder="Enter acquired certifications e.g ISO, SON"></textarea>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
             </div>
             <div class="form-group col-md-6 btnHandle">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button id="orgSubmitBtn" type="submit" class="btn btn-primary">Create</button>
             </div>
         </div>
     </form>
@@ -165,6 +341,7 @@
     </form>
 
     <form id="delegate-admin-form" class="container mt-5" method="post" enctype="multipart/form-data">
+        {% if org %}
         <div class="close-btn">
             <span class="close">&times;</span>
         </div>
@@ -175,6 +352,7 @@
             <hr>
         {% csrf_token %}
         {% crispy delegate_admin_form %}
+        {% endif %}
     </form>
 
     <form id="change_admin_password_form" method="post" action="{% url 'change_password' %}" class="container mt-5">
@@ -191,51 +369,54 @@
 
 
     {% comment %} Reset Delegate Form {% endcomment %}
-    <form id="reset_delegate_password" class="container mt-5" action="{% url 'reset_delegate_password' %}" method="post">
-        {% csrf_token %}
-        <div class="close-btn">
-            <span class="close">&times;</span>
-        </div>
-        <center>
-            <h3>Reset Delegate Password</h3>
-            <p>Use this form to change or reset a delegate admin's password.</p>
-        </center>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="delegate_id">Delegate Admin</label>
-                <select name="delegate_id" id="delegate_id" class="form-control" required>
-                    <option value="" disabled>--Select--</option>
-                    {% for delegate in delegate_admins %}
-                    <option value="{{ delegate.pk }}">{{ delegate.first_name }} {{ delegate.last_name }} - {{ delegate.branch.name }}</option>
-                    {% endfor %}
-                </select>
+    {% if delegate_admins%}
+        <form id="reset_delegate_password" class="container mt-5" action="{% url 'reset_delegate_password' %}" method="post">
+            {% csrf_token %}
+            <div class="close-btn">
+                <span class="close">&times;</span>
             </div>
-            <div class="form-group col-md-6">
-                <label for="password">New Password</label>
-                <input type="password" name="password" id="password" class="form-control" required>
+            <center>
+                <h3>Reset Delegate Password</h3>
+                <p>Use this form to change or reset a delegate admin's password.</p>
+            </center>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="delegate_id">Delegate Admin</label>
+                    <select name="delegate_id" id="delegate_id" class="form-control" required>
+                        <option value="" disabled>--Select--</option>
+                        {% for delegate in delegate_admins %}
+                        <option value="{{ delegate.pk }}">{{ delegate.first_name }} {{ delegate.last_name }} - {{ delegate.branch.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="password">New Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="can_change_password">Can Change Password?</label>
-                <select name="can_change_password" id="can_change_password" class="form-control" required>
-                    <option value="" disabled>--Select--</option>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
-        </div>         
-        <div class="form-row">
-            <div class="form-group btnHandle">
-                <button id="resetDelegateBtn" type="submit" class="btn btn-primary">Reset Password</button>
-            </div>
-        </div>           
-    </form>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="can_change_password">Can Change Password?</label>
+                    <select name="can_change_password" id="can_change_password" class="form-control" required>
+                        <option value="" disabled>--Select--</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </div>         
+            <div class="form-row">
+                <div class="form-group btnHandle">
+                    <button id="resetDelegateBtn" type="submit" class="btn btn-primary">Reset Password</button>
+                </div>
+            </div>           
+        </form>
+    {% endif %}
 
+    {% comment %} Create Superuser Form {% endcomment %}
     <div class="spinner-container">
         <div class="spinner"></div>
     </div>
@@ -272,10 +453,18 @@
                         <center><p class="user_name">{{ user.username }}</p></center>
                     </section>
                     {% if org %}
-                    {% if org.name|length > 12 %}
-                        <center><p> Welcome Back,  <span><b class="org_name">{{ org.name|slice:':10' }}...</b></span> </p></center>
+                    {% if org.name|length > 15 %}
+                    <center class="no-bottom">
+                        <p> Welcome Back,</p>
+                        <p><b class="org_name">{{ org.name|slice:':15' }}</b>
+                        </p>
+                    </center> 
                     {% else %}
-                        <center><p> Welcome Back,  <span><b class="org_name">{{ org.name }}</b></span> </p></center> 
+                        <center class="no-bottom">
+                            <p> Welcome Back,</p>
+                            <p><b class="org_name">{{ org.name }}</b>
+                            </p>
+                        </center> 
                     {% endif %}
                     {% endif %}
                 </div>
@@ -290,13 +479,13 @@
                             {% endif %}
                         </ul>
                         {% else %}
-                        <h4>Organization Dashboard</h4>
+                        <h5>Organization Dashboard</h5>
                         <ul>
                             <li><button class="createOrgBtn">Create Organization</button></li>
                         </ul>
                         {% endif %}
                         <ul>
-                            <li><a class="listBranches"><i class="fas fa-code-branch"></i>&nbsp;Branches</a></li>
+                            <li><a class="listBranches"><i class="fas fa-fw fa-code-branch"></i>Visit Branch</a></li>
                             <div class="showBranches">
                                 {% if branches %}
                                     <ul>
@@ -310,37 +499,36 @@
                                     </ul>
                                 {% endif %}
                             </div>
-                            <li><a class="listDelegates"><i class="fas fa-user-friends"></i>Delegates</a></li>
-                            <div class="showDelegates">
-                                {% if delegate_admins.count > 0 %}
-                                    <ul>
-                                        {% for delegate in delegate_admins %}
-                                        <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' delegate.branch.branch_id %}">{{ delegate.first_name }} - {{ delegate.branch.name|slice:':10'}}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <ul>
-                                        <li class="list-group-item list-color"><a>No Account Delegate</a></li>
-                                    </ul>
-                                {% endif %}
-                            </div>
-                            <li><a id="reports" data-content="reports" class=""><i class="fas fa-file-alt"></i> Reports</a></li>
-                            <li><a id="transfers" data-content="transfers" class=""><i class="fas fa-exchange-alt"></i>Transfers</a></li>
+                            <li><a id="reports" data-content="reports" class=""><i class="fas fa-file-alt fa-fw"></i>Reports</a></li>
+                            <li><a id="transfers" data-content="transfers" class=""><i class="fas fa-exchange-alt fa-fw"></i>Transfers</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="password">
-                    <p>
-                        <a class="change-password-superuser" title="Change Superuser Password" id="adminResetPwd">
-                            <i class="fas fa-lock"></i> Admin 
+                    <p class="space-top">
+                        <a class="manageBranch" data-content="branches" title="Manage branches">
+                            <i class="fas fa-fw fa-sitemap"></i>Branches
                         </a>
                     </p>
                     <p>
-                        <a class="change-password-delegate" title="Reset Delegate Password" id="delegateResetPwd">
-                            <i class="fas fa-user-lock"></i>Delegate
+                        <a class="delegateBtn" data-content="delegates" title="Manage delegates">
+                            <i class="fas fa-fw fa-users"></i>Delegates
                         </a>
                     </p>
-                                    </div>
+                    <p class="space-top">
+                        <a class="superuserBtn" data-content="superusers" title="Manage superusers">
+                            <i class="fas fa-fw fa-user-cog"></i>Superusers
+                        </a>
+                    </p>
+                    
+                </div>
+                <div class="password">
+                    <p>
+                        <a class="adminSettings" id="adminSettingsBtn" data-content="settings">
+                            <i class="fas fa-fw fa-gears"></i>Settings 
+                        </a>
+                    </p>
+                </div>
                 <div class="logout">
                     <p class="logoutBtn"> <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></p>
                 </div>
@@ -432,12 +620,9 @@
                     <div class="tab-contents6" id="pending-transfers">
                         <div class="searchFlex">
                             <h3>Pending Requests</h3>
-                            <div class="search-bar">
-                                <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
-                            </div>
                         </div>
                         {% if pending_transfers %}
-                        <table>
+                        <table class="dataTable">
                             <thead>
                                 <tr>
                                     <th>SN</th>
@@ -488,12 +673,9 @@
                     <div class="tab-contents6" id="declined-transfers">
                         <div class="searchFlex">
                             <h3>Declined Transfers</h3>
-                            <div class="search-bar">
-                                <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
-                            </div>
                         </div>
                         {% if declined_transfers %}
-                            <table>
+                        <table class="dataTable">
                                 <thead>
                                     <tr>
                                         <th>SN</th>
@@ -541,12 +723,9 @@
                     <div class="tab-contents6" id="approved-transfers">
                         <div class="searchFlex">
                             <h3>Approved Transfers</h3>
-                            <div class="search-bar">
-                                <input type="text" placeholder="Search requests..."><button><i class="fas fa-search"></i></button>
-                            </div>
                         </div>
                         {% if approved_transfers %}
-                            <table>
+                        <table class="dataTable">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -689,7 +868,7 @@
                             </button>
                         </div >
                     {% if reports %}
-                    <table>
+                        <table class="dataTable">
                         <thead>
                             <tr>
                                 <th>SN</th>
@@ -727,10 +906,231 @@
                     </table>
                     {% else %}
                     <center class="space-top">
-                        <h3>No Reports </h3>
-                        <p>Reports will be displayed here</p>
+                        <h3>No  Branch Reports </h3>
+                        <p> Branch Reports will be displayed here</p>
                     </center>
                     {% endif %} 
+                    </div>
+                </div>
+
+                {% comment %} Branch and Delegate detail {% endcomment %}
+                <div id="branches-modal" class="branches mgt2">
+                    <div class="branches-container archive-modal-content">
+                        <div class="delegatesView">
+                            <h3>Branches</h3> 
+                        </div >
+                    {% if branches %}
+                        <table class="dataTable">
+                      <thead>
+                        <tr>
+                          <th class="no-space">SN</th>
+                          <th>Branch Name</th>
+                          <th>Location</th>
+                          <th>Admin</th>
+                          <th class="no-space">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for branch in branches %}
+                        <tr>
+                            <td>{{ forloop.counter }}.</td>
+                          <td>{{ branch.name }}</td>
+                          <td>{{ branch.location }}</td>
+                            {% if delegate_admins %}
+                                <td>
+                                    {% for del in delegate_admins %}
+                                        {% if del.branch == branch %}
+                                            {{ del.get_full_name }}
+                                            {% if not forloop.last %}, {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% else %}
+                            <td>None</td>
+                            {% endif %}
+                            <td class="">
+                                <div class="dropdown">
+                                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                    <div class="dropdown-menu">
+                                        <center>
+                                        <ul>
+                                            <li><a class="moreEmpDetail updateBranchBtn" href="{% url 'update_branch' branch.branch_id %}" class="btn btn-primary btn-sm">Update</a></li>
+                                            <li><a class="moreEmpDetail deleteBranchBtn" data-branchid="{{branch.branch_id}}" class="btn btn-primary btn-sm">Delete</a></li>
+                                        </ul>
+                                    </center>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% else %}
+                    <center class="space-top">
+                        <h3>No Branches Yet </h3>
+                        <p>Branches  will be displayed here</p>
+                    </center>
+                    {% endif %} 
+                    </div>
+                </div>
+
+                {% comment %}Delegates detail {% endcomment %}
+                <div id="delegates-modal" class="delegates mgt2">
+                    <div class="delegates-container archive-modal-content">
+                        <div class="delegatesView">
+                            <h3>Delegates</h3> 
+                        </div >
+                        {% if delegate_admins %}
+                            <div class="tableContainer">
+                                <table class="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>SN</th>
+                                            <th>Name</th>
+                                            <th>Branch</th>
+                                            <th>Last Login</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="columnAction">
+                                        {% for del in delegate_admins %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}.</td>
+                                                <td>{{ del.get_full_name }}</td>
+                                                <td>{{ del.branch.name }}</td>
+                                                <td>{{ del.last_login|naturaltime }}</td>
+                                                <td>{{ del.employment_status }}</td>
+                                                <td class="">
+                                                    <div class="dropdown">
+                                                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                                        <div class="dropdown-menu">
+                                                            <center>
+                                                            <ul>
+                                                                <li><a class="moreEmpDetail updateDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Update</a></li>
+                                                                <li><a class="moreEmpDetail deleteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Delete</a></li>
+                                                                <li><a class="moreEmpDetail suspendDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Suspend</a></li>
+                                                                <li><a class="resetDelegatePwdBtn" class="btn btn-primary btn-sm">Password</a></li>
+                                                                {% if del.employment_status == 'Suspended' %}
+                                                                    <li><a class="moreEmpDetail activateDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Activate</a></li>
+                                                                {% endif %}
+                                                                <li><a class="moreEmpDetail promoteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Promote</a></li>
+                                                                {% if user and user == master_admin and del.is_superuser %}
+                                                                    <li><a class="moreEmpDetail demoteAdminBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Demote</a></li>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </center>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                                <center class="space-top">
+                                    <h3>No Delegates Yet </h3>
+                                    <p>Delegates  will be displayed here</p>
+                                </center>
+                        {% endif %} 
+                    </div>
+                </div>
+
+                {% comment %}Superusers detail {% endcomment %}
+                <div id="superusers-modal" class="superusers mgt2">
+                <div class="archive-modal-content">
+                    <div class="">
+                        <h3>Organization Admins</h3> 
+                    </div >
+                    {% if superusers %}
+                        <div class="tableContainer">
+                            <table class="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>Name</th>
+                                        <th>Last Login</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="columnAction">
+                                    {% for admin in superusers %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}.</td>
+                                            <td>{{ admin.get_full_name }}</td>
+                                            <td>{{ admin.last_login|naturaltime }}</td>
+                                            <td>{{ admin.employment_status }}</td>
+                                            <td class="">
+                                                {% if user == master_admin %}
+                                                    <div class="dropdown">
+                                                        <center>
+                                                            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                                        </center>
+                                                        <div class="dropdown-menu centered above">
+                                                            <center>
+                                                                <ul>
+                                                                    <li><a class="moreEmpDetail suspendAdminBtn" data-delegateid="{{ admin.pk }}" class="btn btn-primary btn-sm">Suspend</a></li>
+                                                                    <li><a class="moreEmpDetail demoteAdminBtn" data-delegateid="{{ admin.pk }}" class="btn btn-primary btn-sm">Demote</a></li>
+                                                                    {% if admin.employment_status == 'Suspended' %}
+                                                                        <li><a class="moreEmpDetail activateAdminBtn" data-delegateid="{{ admin.pk }}" class="btn btn-primary btn-sm">Restore</a></li>
+                                                                    {% endif %}
+                                                                </ul>
+                                                            </center>
+                                                        </div>
+                                                    </div>
+                                                    {% else %}
+                                                   <p>Nothing</p> 
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                            <center class="space-top">
+                                <h3>No Superusers Yet </h3>
+                                <p>Organization Admins  will be displayed here</p>
+                            </center>
+                    {% endif %} 
+                </div>
+                </div>
+
+
+                {% comment %} Settings Dashboard {% endcomment %}
+                <div id="adminSettingsModal" class="container text-center mgt2 settings">
+                    <!-- Profile Picture -->
+                    <section class="user_details profile-picture">
+                        {% if user.profile_picture and user.profile_picture.url %}
+                        <img class="" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                        {% else %}
+                        <img class="" src="{% static 'emps/images/default_profile.png' %}" alt="{{user.first_name}}">
+                        {% endif %}
+                    </section>        
+                    <!-- Dashboard Buttons -->
+                    <div class="dashboard-buttons">
+                    <button id="changeAdminPasswordBtn" class="btn btn-primary tab2" data-tab2="update_admin_password">Change Password</button>
+                    {% if org %}
+                        <button id="updateOrgBtn" class="btn btn-secondary tab2" data-tab2="organization-form">Update Organization</button>
+                        <button id="deleteOrgBtn" class="btn btn-danger" data-orgid="{{org.org_id}}">Delete Organization</button>
+                    {% endif %}
+                    </div>
+
+
+                    <div class="update_admin_password">
+                        <form id="update_admin_password_form" method="post" action="{% url 'change_password' %}" class="container mt-5">
+                            <div class="close-btn">
+                                <span class="close">&times;</span>
+                            </div>
+                            <center>
+                                <h3>Update Your Password</h3>
+                            </center>
+                                <hr>
+                            {% csrf_token %}
+                            {% crispy admin_password_form %}
+                        </form>
                     </div>
                 </div>
             </div>

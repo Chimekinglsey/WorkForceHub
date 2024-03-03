@@ -110,6 +110,7 @@ class Branch(models.Model):
 
     def __str__(self):
         return self.name
+
 class OrgDocuments(models.Model):
     """Model for organization documents"""
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='documents')

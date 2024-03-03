@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // Function to update the left pane's position
+    // TODO: Write a single function that performs ajax for all the modals (take all variables as arguments)
 
     // close modal button
     $('.closeModal').click(function() {
@@ -154,11 +154,23 @@ $(document).ready(function() {
             $('.backdrop').show();
             $('#reset_delegate_password').show();
         }
-        function showAdminPasswordModal() {
-            $('.create-org').hide();
+        function showDeleteOrg() {
             $('.backdrop').show();
-            $('#change_admin_password_form').show();
+            $('#deleteOrgModal').show();
         }
+        // function to show change_admin_password_form when changeAdminPasswordBtn is clicked
+        // function showChangeAdminPasswordModal() {
+        //     $('.backdrop').show();
+        //     $('#update_admin_password_form').show();
+        // }
+
+        // // hide update_admin_password_form
+        // function hideChangeAdminPasswordModal() {
+        //     $('.backdrop').hide();
+        //     $('#update_admin_password_form').hide();
+        // }
+
+
 
         // Function to hide the form and backdrop
         function hideOrgModal() {
@@ -182,10 +194,9 @@ $(document).ready(function() {
             $('#reset_delegate_password').hide();
             $('.create-org').show();
         }
-        function hideAdminPasswordModal() {
+        function hideDeleteOrg() {
             $('.backdrop').hide();
-            $('#change_admin_password_form').hide();
-            $('.create-org').show();
+            $('#deleteOrgModal').hide();
         }
 
 
@@ -204,6 +215,26 @@ $(document).ready(function() {
         });
 
 
+        $('#id_password1, #id_password2').on('keyup', function () {
+            let password = $('#id_password1').val();
+            let confirmPassword = $(' #id_password2').val();
+    
+            // Check if password and confirm password match
+            if (password == confirmPassword) {
+                $('.validateSmt').addClass('valid');
+            } else {
+                $('.validateSmt').removeClass('valid');
+            }
+        });
+
+        // validate email for delegate creation form:
+        $('input#id_email').on('blur', function() {
+            let email = $(this).val();
+            if (email.length < 8 || !email.includes('@') || !email.includes('.')){
+               alert('Please enter a valid email')
+            }
+        });
+
 
         // Show modal when createOrgBtn is clicked
         $('.createOrgBtn').click(function() {
@@ -215,23 +246,23 @@ $(document).ready(function() {
         $('.createDelegateBtn').click(function() {
             showDelegateModal();
         });
-        $('#delegateResetPwd').click(function() {
+        $('.resetDelegatePwdBtn').click(function() {
             showDelegatePasswordModal();
         });
-        $('#adminResetPwd').click(function() {
-            showAdminPasswordModal();
-        });
+
 
 
 
 
         // Hide modal when close button is clicked
         $('.close').click(function() {
+            $('.modal').hide(); 
+            $('.backdrop').show();
             hideBranchModal();
             hideOrgModal();
             hideDelegateModal();
             hideDelegatePasswordModal();
-            hideAdminPasswordModal();
+            hideDeleteOrg();
         });
     
         $('.listBranches').click(function(event){
@@ -243,29 +274,15 @@ $(document).ready(function() {
                 $('.showBranches').show();
             }
         });
-        // listDelegates
-        $('.listDelegates').click(function(event){
-            // Prevent the click event from propagating to the document
-            event.stopPropagation();
-            if ($('.showDelegates').is(':visible')) {
-                $('.showDelegates').hide();
-            } else {
-                $('.showDelegates').show();
-            }
-        });
-
-
 
         $(window).click(function(event) {
             // Check if .showBranches is currently displayed
             if ($('.showBranches').is(':visible')) {
                 $('.showBranches').hide();
             }
-            if ($('.showDelegates').is(':visible')) {
-                $('.showDelegates').hide();
-            }
         });
-        // display leave when transfers is clicked
+
+        // display toggles for the different management options
         $('#transfers').click(function() {
             $('.mgt2').removeClass('active');
             let content = $(this).data('content');
@@ -277,8 +294,29 @@ $(document).ready(function() {
             $(`.${content}`).addClass('active');
         });
 
+        $('.manageBranch').click(function() {
+            let content = $(this).data('content');
+            $('.mgt2').removeClass('active');
+            $(`.${content}`).addClass('active');
+        });
 
+        $('.delegateBtn').click(function() {
+            let content = $(this).data('content');
+            $('.mgt2').removeClass('active');
+            $(`.${content}`).addClass('active');
+        });
 
+        $('.superuserBtn').click(function() {
+            let content = $(this).data('content');
+            $('.mgt2').removeClass('active');
+            $(`.${content}`).addClass('active');
+        });
+
+        $('.adminSettings').click(function() {
+            let content = $(this).data('content');
+            $('.mgt2').removeClass('active');
+            $(`.${content}`).addClass('active');
+        });
 
         // Accept or decline  transfers
         $('.approve-transfer-btn').click(function() {
@@ -305,8 +343,226 @@ $(document).ready(function() {
              });
         });
         
-        // Change or reset delegate admin password
-    
+        // Open the modal
+        function openModal(modalId) {
+            $(`#${modalId}`).css("display", "block");
+        }
+        
+        // Close the modal
+        function closeModal() {
+            $('.backdrop').hide();
+            $(".modal").css("display", "none");
+        }
+        
+        // When the user clicks on the close button or cancel button, close the modal
+        $(".cancelConfirmBtn").click(function() {
+            $('.backdrop').show();
+            closeModal();
+        });
+
+
+        /* Functions for branch, delegate and admin management/operations
+            (Remember to make this a single function that takes parameters instead of duplications)
+        */
+
+        // delete delegate
+        $('.deleteDelegateBtn').click(function(){
+            let admin_id = $(this).data('delegateid')
+            openModal('deleteDelegateModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/deleteDelegate/${delegate_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // delete branch
+        $('.deleteBranchBtn').click(function(){
+            let branch_id = $(this).data('branchid')
+            openModal('deleteBranchModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/deleteBranch/${branch_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // delete organization
+        $('#deleteOrgBtn').click(function(){
+            let org_id = $(this).data('orgid');
+            openModal('deleteOrgModal');
+            
+            // listen for input events on the deleteOrgInput field
+            $('#deleteOrgInput').on('input', function(){
+                // check if the input value is exactly equal to 'Permanent Delete Organization'
+                let input = $(this).val(); 
+                if (input === 'Permanently Delete Organization') {
+                    $('#confirmOrgDeleteBtn').addClass('valid'); 
+                } else {
+                    $('#confirmOrgDeleteBtn').removeClass('valid'); 
+                }
+            });
+
+            $('#confirmOrgDeleteBtn').click(function(){
+                $.post(`/org/deleteOrg/${org_id}/`, function(data) {
+                    window.location.reload();
+                });
+            });
+
+            // handle click event on the cancel delete button
+            $('.cancelDeleteBtn').click(function(){
+                closeModal();
+            });
+        });
+
+
+        // suspend delegate
+        $('.suspendDelegateBtn').click(function(){
+            let delegate_id = $(this).data('delegateid')
+            openModal('suspendDelegateModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/suspendDelegate/${delegate_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+        
+        // Activate suspended delegate
+        $('.activateDelegateBtn').click(function(){
+            let delegate_id = $(this).data('delegateid')
+            openModal('activateDelegateModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/activateDelegate/${delegate_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // promote delegate to organization admin
+        $('.promoteDelegateBtn').click(function(){
+            let delegate_id = $(this).data('delegateid')
+            openModal('promoteDelegateModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/promoteDelegate/${delegate_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // demote admin to delegate
+        $('.demoteAdminBtn').click(function(){
+            let delegate_id = $(this).data('delegateid')
+            openModal('demoteAdminModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/demoteAdmin/${delegate_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // suspend admin
+        $('.suspendAdminBtn').click(function(){
+            let admin_id = $(this).data('delegateid')
+            openModal('suspendAdminModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/suspendAdmin/${admin_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // Activate suspended admin
+        $('.activateAdminBtn').click(function(){
+            let admin_id = $(this).data('delegateid')
+            openModal('activateAdminModal')
+            $('.proceedDeleteBtn').click(function(){
+                $.post(`/org/activateAdmin/${admin_id}/`,function(data) {
+                    // Handle success or error response from the server
+                    if (data.error) {
+                        flashMessage(data.error);
+                    }
+                    window.location.reload()
+                    message = "Success"
+                    flashMessage(message);
+                 });
+            });
+            $('.cancelDeleteBtn').click(function(){
+                closeModal()
+            })
+        })
+
+        // show filter when updateOrgBtn is clicked and close when close is clicked
+        $('#updateOrgBtn').click(function(){
+            $('#orgSubmitBtn').text('Update')
+            $('.backdrop').show();
+            $('.create-org').hide();
+        });
+
+//   modify dropdown
+
     });
     
     //   updateLeftPanePosition();
@@ -337,4 +593,3 @@ $(document).ready(function() {
         // Initial position update
         updateLeftPanePosition();
     });
-    

@@ -20,3 +20,7 @@ def month_name(month_number):
         12: 'Dec.',
     }
     return months.get(month_number, '')
+
+@register.filter
+def dict_lookup(d, key):
+    return d.get(key, None)

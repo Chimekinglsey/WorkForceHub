@@ -31,16 +31,17 @@
 
 <div class="dashboard-container">
     <div class="left-pane">
-        <div class="featuresToggleContainer">   <h4 class="featuresToggle">{{branch.name}}</h4> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
+        <div class="org"><center><h5>{{ organization.name|truncatechars:'20' }}</h5></center></div>
+        <div class="featuresToggleContainer">   <h4 class="featuresToggle">{{branch.name|truncatechars:'15'}}</h4> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
         <ul class="featuresList">
-            <li><a class="featuresItem" id="employeeManagement" data-content="employee-management"><i class="fas fa-user-tie"></i>Employees</a></li>
-            <li><a class="featuresItem" id="leaveManagement" data-content="leave-management"><i class="fas fa-calendar-alt"></i>Leaves</a></li>
-            <li><a class="featuresItem" id="payrollManagement" data-content="payroll-management"><i class="fas fa-file-invoice-dollar"></i>Payrolls</a></li>
-            <li><a class="featuresItem" id="performanceReporting"data-content="performance"><i class="fas fa-chart-line"></i>Performances</a></li>
-            <li><a class="featuresItem" id="transfers" data-content="transfers"><i class="fas fa-exchange-alt"></i>Transfers</a></li>
-            <li><a class="featuresItem2" href="{% url 'finance_dashboard' %}" id="finance"><i class="fas fa-sack-dollar"></i>Finances</a></li>
-            <li><a class="featuresItem2" href="{% url 'create_report' %}" id="reports"><i class="fas fa-file-circle-plus"></i>Reports</a></li>
-            <li><a class="featuresItem" id="accountSettings" data-content="settings"><i class="fas fa-cog"></i>Account Settings</a></li>
+            <li><a class="featuresItem" id="employeeManagement" data-content="employee-management"><i class="fas fa-fw fa-user-tie"></i>Employees</a></li>
+            <li><a class="featuresItem" id="leaveManagement" data-content="leave-management"><i class="fas fa-fw fa-calendar-alt"></i>Leaves</a></li>
+            <li><a class="featuresItem" id="payrollManagement" data-content="payroll-management"><i class="fas fa-fw fa-file-invoice-dollar"></i>Payrolls</a></li>
+            <li><a class="featuresItem" id="performanceReporting"data-content="performance"><i class="fas fa-fw fa-chart-line"></i>Performances</a></li>
+            <li><a class="featuresItem" id="transfers" data-content="transfers"><i class="fas fa-fw fa-exchange-alt"></i>Transfers</a></li>
+            <li><a class="featuresItem2" href="{% url 'finance_dashboard' %}" id="finance"><i class="fas fa-fw fa-sack-dollar"></i>Finances</a></li>
+            <li><a class="featuresItem2" href="{% url 'create_report' %}" id="reports"><i class="fas fa-fw fa-file-circle-plus"></i>Reports</a></li>
+            <li><a class="featuresItem" id="accountSettings" data-content="settings"><i class="fas fa-fw fa-cog"></i>Account Settings</a></li>
         </ul>
     </div>
     <div class="right-pane">
@@ -55,8 +56,9 @@
                             <div class="container">
                                 <h1>Welcome, {{ user.first_name }}</h1>
                                 <div class="profile-picture">
-                                    <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                                    <img src="{{user.profile_picture.url}}" alt="dp icon">
                                 </div>
+                                <small>{{user.email}}</small>
                                 <section class="featureSlide">
                                     <div class="feature">
                                         <i class="fas fa-users"></i>
@@ -232,8 +234,8 @@
                                                 <ul>
                                                     <li><a class="moreEmpDetail"  id="viewEmpDetailBtn" data-employeeID="{{ employee.pk }}" data-content="viewEmpDetailContainer">View</a></li>
                                                     <li><a class="moreEmpDetail" id="editEmpDetailBtn" data-employeeID="{{ employee.pk }}" data-content="updateEmpDetailContainer">Edit</a></li>
-                                                    <li><a class="moreEmpDetail"  id="archiveEmpDetailBtn" data-employeeID="{{ employee.pk }}"  data-content="archiveEmpDetailContainer">Archive</a></li>
-                                                    <li><a class="moreEmpDetail"  id="deleteEmpDetailBtn" data-employeeID="{{ employee.pk }}"  data-content="deleteEmpDetailContainer">Delete</a></li>
+                                                    <li><a class="moreEmpDetail"  id="archiveEmpDetailBtn" data-employeeID="{{ employee.employee_id}}"  data-content="archiveEmpDetailContainer">Archive</a></li>
+                                                    <li><a class="moreEmpDetail"  id="deleteEmpDetailBtn" data-employeeID="{{ employee.employee_id}}"  data-content="deleteEmpDetailContainer">Delete</a></li>
                                                 </ul>
                                             </center>
                                             </div>
@@ -1226,8 +1228,15 @@
                                     <th colspan="2">Leave Request Form</th>
                                 </tr>
                                 <tr>
-                                    <td><label for="employeeName">Employee Name:</label></td>
-                                    <td><input type="text" id="employeeName"></td>
+                                    <td><label for="employeeName">Employee:</label></td>
+                                    <td>
+                                        <select id="employeeName" name="employee_id">
+                                            <option value="" disabled selected>Select</option>
+                                            {% for employee in employees %}
+                                            <option value="{{ employee.employee_id }}">{{ employee.first_name }} {{ employee.last_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><label for="employeeID">Employee ID:<span class="asteriskField">*</span></label></td>
@@ -1492,7 +1501,7 @@
                     <button class="tab3 nav-tab" data-tab3="payroll-statistics"><i class="fas fa-chart-pie"></i> Statistics</button>
                 </div>
                 
-                {% comment %} Apply for Leave {% endcomment %}
+                {% comment %} Create Payroll {% endcomment %}
                 <div class="tab-contents3" id="create-payroll">
                     <div class="createPayRollForm">
                         <h4>Create a Payroll</h4>
@@ -1690,19 +1699,19 @@
                                 <td>{{ payroll.net_pay|intcomma }}</td>
                                 <td>{{ payroll.payment_status }}</td>
                                 <td>
-                                  <div class="dropdown">
-                                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                                    <div class="dropdown-menu">
-                                        <center>
-                                        <ul>
-                                            <li><a class="moreEmpDetail" href="{% url 'payroll_detail' payroll.id %}" class="btn btn-primary btn-sm">View</a></li>
-                                            <li><a class="moreEmpDetail" href="{% url 'update_payroll' payroll.id %}" class="btn btn-primary btn-sm">Update</a></li>
-                                            <li><a class="moreEmpDetail" href="{% url 'delete_payroll' payroll.id %}" class="btn btn-primary btn-sm">Delete</a></li>
-                                            <li><a class="moreEmpDetail" href="{% url 'payroll_history' payroll.employee.pk %}" class="btn btn-primary btn-sm">History</a></li>
-                                        </ul>
-                                    </center>
+                                    <div class="dropdown">
+                                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                        <div class="dropdown-menu">
+                                            <center>
+                                                <ul>
+                                                    <li><a class="moreEmpDetail" href="{% url 'payroll_detail' payroll.id %}" class="btn btn-primary btn-sm">View</a></li>
+                                                    <li><a class="moreEmpDetail" href="{% url 'update_payroll' payroll.id %}" class="btn btn-primary btn-sm">Update</a></li>
+                                                    <li><a class="moreEmpDetail" href="{% url 'delete_payroll' payroll.id %}" class="btn btn-primary btn-sm">Delete</a></li>
+                                                    <li><a class="moreEmpDetail" href="{% url 'payroll_history' payroll.employee.pk %}" class="btn btn-primary btn-sm">History</a></li>
+                                                </ul>
+                                            </center>
+                                        </div>
                                     </div>
-                                </div>
                                 </td>
                               </tr>
                               {% endfor %}
@@ -1948,7 +1957,7 @@
                                 </td>                                
                                 <td>{{ emp.updated_at|date:'d/m/y' }}</td>
                                 <td class="controlButton">
-                                    <a class="pf-btn  btn" href="{% url 'performance_dashboard' emp.pk %}" target="_blank" rel="noreferrer">Detail</a>
+                                    <a class="pf-btn btn  btn-primary" href="{% url 'performance_dashboard' emp.pk %}" target="_blank">Review</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -1965,7 +1974,7 @@
                 {% comment %} Performance Summary {% endcomment %}
                 <div class="tab-contents4" id="performance-list">
                     <div class="searchFlex">
-                        <h3>Performance Summary</h3>
+                        <h4>Performance Summary</h4>
                         {% comment %} <div class="search-bar">
                             <input type="text" placeholder="Search performance..."><button><i class="fas fa-search"></i></button>
                         </div> {% endcomment %}
@@ -2499,7 +2508,7 @@
                 <div class="tab-contents5" id="update-profile">
                     <h4>User Profile</h4>
                     <div class="profile-picture">
-                        <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                        <img src="{{user.profile_picture.url}}" alt="dp icon">
                     </div>
                     <center>
                         <h4 style="font-family: 'rowdies' ;">Hello {{user.first_name}}</h4>
@@ -2521,7 +2530,7 @@
                 <div class="tab-contents5" id="change-passwd">
                     <h4>Update Your Password</h4>
                     <div class="profile-picture">
-                        <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                        <img src="{{user.profile_picture.url}}" alt="dp icon">
                     </div>
                     {% if change_password_form %}
                         <form class="container" method="post" action="{% url 'change_password'%}">
@@ -2539,7 +2548,7 @@
                 <div class="tab-contents5" id="upload-docs">
                     <h4>Upload docs</h4>
                     <div class="profile-picture">
-                        <img id="profilePictureView" src="{{user.profile_picture.url}}" alt="dp icon">
+                        <img src="{{user.profile_picture.url}}" alt="dp icon">
                     </div>
                     {% if branch_documents_form %}
                         <form class="container" method="post" action="{% url 'upload_branch_docs'%}" enctype="multipart/form-data">

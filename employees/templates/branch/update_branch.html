@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Update - {{ branch.name}}{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'emps/styles/performance.css' %}">
+    <script src="{% static 'emps/scripts/performance.js'%}"></script>
+    <style>
+        label {
+            color: #666;
+        }
+        form textarea {
+            background-color: #fff !important;
+        }
+    </style>
+{% endblock head %}
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<div class="updateBranch container mb-5">
+    <form action="{% url 'update_branch' branch.branch_id %}" method="post">
+        <h3>Update Branch Information</h3>
+        {% csrf_token %}
+        {% crispy form %}   
+    </form>
+</div>
+{% endblock %}

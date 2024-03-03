@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from employees.models import AdminUser, Payroll, Finance
 from organizations.models import Branch, Organization,Transfer, OrgDocuments as OrgDocs, Report
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Field
+from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Field, Button
 from crispy_forms.bootstrap import TabHolder, Tab
 from .models import Employee, Branch, GENDER_CHOICES, EMPLOYMENT_STATUS_CHOICES, DESIGNATION_CHOICES, NEXT_OF_KIN_RELATIONSHIP_CHOICES, EMPLOYEE_STATUS_CHOICES
 from .models import Performance
@@ -50,11 +50,22 @@ class DelegateAdminCreationForm(UserCreationForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(),help_text='Must contain at least 8 characters, including alphanumeric and a special character')
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(), help_text='Enter the same password as before, for validation.')
     branch = forms.ModelChoiceField(queryset=Branch.objects.none())  # Initialize queryset as empty
-
+    can_change_password = forms.ChoiceField(
+        label='Can change password?',
+        choices=[(True, 'Yes'), (False, 'No')],
+        initial=True,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        help_text='Can the delegate change their password?'
+    )
     class Meta:
         model = AdminUser
-        fields = ('branch', 'email', 'username', 'password1', 'password2', 'first_name','middle_name', 'last_name', 'can_change_password')
+        fields = ('branch', 'email', 'username', 'password1', 'password2', 'first_name', 'last_name', 'can_change_password')
 
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control validateEmail'}),
+            'password1': forms.PasswordInput(attrs={'class': 'form-control validatePassword'}),
+            'password2': forms.PasswordInput(attrs={'class': 'form-control validatePassword1'}),
+        }
     def __init__(self, organization, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['first_name'].required = True
@@ -62,8 +73,6 @@ class DelegateAdminCreationForm(UserCreationForm):
         self.fields['branch'].queryset = Branch.objects.filter(organization=organization)
         self.fields['branch'].empty_label = 'Select Branch'
         self.fields['can_change_password'].required = True
-        self.fields['can_change_password'].label = 'Can Change Password?'
-
         self.helper = FormHelper()
         self.helper.form_method = 'post'
 
@@ -74,28 +83,25 @@ class DelegateAdminCreationForm(UserCreationForm):
                 css_class='form-row'
             ),
             Row(
-                Column('middle_name', css_class='form-group col-md-6 mb-0'),
                 Column('email', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
                 Column('branch', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('username', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
                 Column('password1', css_class='form-group col-md-6 mb-0'),
-                Column('password2', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
+                Column('password2', css_class='form-group col-md-6 mb-0'),
                 Column('can_change_password', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
             ),
             Row(
-                Submit('submit', 'Submit', css_class='btn btn-primary'),
-                css_class='btnHandle'
+            Button('back', 'Back', css_class='btn btn-danger mr-5 backBtn'),
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5'),
+            css_class='btnHandle2'
             )
-
         )
 
     def clean_password2(self):
@@ -210,8 +216,25 @@ class BranchForm(forms.ModelForm):
                 Column('description', css_class='form-group col-md-6 mb-0', placeholder='Branch Description'),
                 css_class='form-row'
             ),
-            Submit('submit', 'Submit', css_class='btn btn-primary mr-5') 
+            Row(
+            Button('back', 'Back', css_class='btn btn-danger mr-5 backBtn'),
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5'),
+            css_class='btnHandle2'
+            )
         )
+        self.fields['name'].label = 'Branch Name'
+        self.fields['location'].label = 'Branch Location'
+        self.fields['email'].label = 'Branch Email'
+        self.fields['contact_phone'].label = 'Contact Person Phone'
+        self.fields['contact_email'].label = 'Contact Person Email'
+        self.fields['description'].label = 'Branch Description'
+        # set description rows to 2
+        self.fields['description'].widget.attrs['rows'] = 2
+        # prepend https:// to the social media fields
+        self.fields['facebook'].widget.attrs['value'] = 'https://facebook.com/yourpage'
+        self.fields['twitter'].widget.attrs['value'] = 'https://x.com/yourpage'
+        self.fields['linkedin'].widget.attrs['value'] = 'https://linkedin.com/in/yourpage'
+
 
 
 # Employee Detail Form
@@ -589,36 +612,6 @@ class BranchDocumentsForm(forms.ModelForm):
         self.fields['document'].help_text = 'Select a document to Upload'
         self.fields['document'].widget.attrs['accept'] = '.pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt'
 
-# # Allow super admin reset password for delegates
-# class ChangeDelegatePasswordForm(PasswordChangeForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.helper = FormHelper()
-#         self.helper.layout = Layout(
-#             Fieldset(
-#                 '',
-#                 Row(
-#                     Column('old_password', css_class='form-group col-md-6 mb-0'),
-#                     Column('can_change_password', css_class='form-group col-md-6 mb-0'),
-#                     css_class='form-row flex-center'
-#                 ),
-#                 Row(
-#                     Column('new_password1', css_class='form-group col-md-6 mb-0'),
-#                     Column('new_password2', css_class='form-group col-md-6 mb-0'),
-#                     css_class='form-row'
-#                 ),
-#                 Row(
-#                     Column('delegate_id', css_class='form-group col-md-6 mb-0'),
-#                     css_class='form-row'
-#                 ),
-#                 Row(
-#                     Column(Submit('submit', 'Submit', css_class='btn btn-primary mb-5')),
-#                     css_class='btnHandle'
-#                 )
-#             )
-#         )
-#         self.helper.form_method = 'post'
-        
 # Transfer form
 class TransferForm(forms.ModelForm):
     class Meta:

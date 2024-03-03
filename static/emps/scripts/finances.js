@@ -4,6 +4,8 @@ $(document).ready(function() {
         $(this).val(parseFloat($(this).val()).toFixed(2));
     });
 
+    $("input[type='search']").attr('placeholder', 'Search  finance reports...')
+
     // For Finance Reports
     $('#basicReport-btn').click(function() {
       $('#basicReport-modal').show(10);

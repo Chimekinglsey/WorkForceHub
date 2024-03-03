@@ -24,5 +24,6 @@ $(document).ready(function() {
     $('#report-history-btn').click(function() {
       $('#report-history-modal').slideToggle();
     });
+    $("input[type='search']").attr('placeholder', 'Enter search text')
   });
   

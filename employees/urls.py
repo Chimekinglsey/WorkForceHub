@@ -23,12 +23,25 @@ urlpatterns = [
     path('accountSettings/', emp_view.profile_settings, name='profile_settings'),
     path('uploadBranchDocs/', emp_view.upload_documents, name='upload_branch_docs'),
 
-    # Dashboard urls (org and branch)
-    path('orgDashboard/', emp_view.org_dashboard, name='org_dashboard'),
+    # Dashboard urls
     path('createOrg/', emp_view.org_dashboard, name="create_org"),
+    path('orgDashboard/', emp_view.org_dashboard, name='org_dashboard'),
     path('org/createBranch/', emp_view.create_branch, name="create_branch"),
     path('org/branch/<int:branch_id>/', emp_view.branch_dashboard, name="branch_dashboard"),
+    path('org/deleteBranch/<int:branch_id>/', emp_view.delete_branch, name="delete_branch"),
+    path('org/updateBranch/<int:branch_id>/', emp_view.update_branch, name="update_branch"),
+    path('org/deleteOrg/<str:org_id>/', emp_view.delete_organization, name="delete_organization"),
+
+
+    # Delegate and promoted delegates urls
     path('org/createDelegate/', emp_view.create_delegate, name="create_delegate"),
+    path('org/updateDelegate/<int:delegate_id>/', emp_view.update_branch, name="update_delegate"),
+    path('org/suspendDelegate/<int:delegate_id>/', emp_view.suspend_delegate, name="suspend_delegate"),
+    path('org/activateDelegate/<int:delegate_id>/', emp_view.activate_delegate, name="activate_delegate"),
+    path('org/promoteDelegate/<int:delegate_id>/', emp_view.promote_delegate, name="promote_delegate"),
+    path('org/demoteAdmin/<int:admin_id>/', emp_view.demote_admin, name="demote_admin"),
+    path('org/suspendAdmin/<int:admin_id>/', emp_view.suspend_admin, name="suspend_admin"),
+    path('org/activateAdmin/<int:admin_id>/', emp_view.restore_admin, name="restore_admin"),
 
  
     # Employee Management
@@ -36,6 +49,7 @@ urlpatterns = [
     path('archiveEmployee/<int:emp_id>/', emp_view.archive_employee, name="archive_employee"),
     path('deleteEmployee/<int:emp_id>/', emp_view.delete_employee, name="delete_employee"),
     path('restoreArchive/<int:emp_id>/', emp_view.restore_archive, name='restore_archive'),
+    path('org/deleteDelegate/<int:delegate_id>/', emp_view.delete_delegate, name="delete_delegate"),
 
     # Leave Management
     path('leaveRequest/', emp_view.leave_request, name='leave_request'),

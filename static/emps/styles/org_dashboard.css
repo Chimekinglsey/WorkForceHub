@@ -30,7 +30,7 @@
 
 .left-pane-org li {
     text-align: left;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .left-pane-org button {
@@ -58,6 +58,7 @@
 .password p {
     margin: 0;
     padding: 0;
+    margin-bottom: 10px;
 }
 
 
@@ -79,12 +80,9 @@
     overflow-y: auto;
 }
 
-.left-pane-content {
-    font-size: 0.85rem;
-}
+
 .left-pane-content .fas {
     margin-right: 10px;
-    /* color: rgb(238, 22, 25); */
     color: #222;;
 }
 
@@ -116,7 +114,7 @@
     transition: .3s ease-in-out;
 }
 .left-down-content {
-    max-height: 300px;
+    /* max-height: 300px; */ /* Uncomment this line if you want a control subsection of branches */
     overflow-y:auto;
 }
 
@@ -191,9 +189,12 @@
     margin-right: 10px;
     padding: 5px;
     cursor: pointer;
+    transition: 0.5s ease-in-out;
+    color: red !important;
+    font-size: 1.5rem;
 }
 .close:hover {
-    color: red;
+    color: #dc3545;
 }
 
 /* Styles for backdrop */
@@ -225,32 +226,38 @@
     overflow: auto;
 }
 
+#organization-form {
+    margin-top: 0% !important;
+}
 #change_admin_password_form .col-md {
         display: flex;
         justify-content: flex-end;
     }
 
-#reset_delegate_password button {
+#reset_delegate_password button, .validateSmt, #confirmOrgDeleteBtn {
     opacity: 0.6;
     user-select: none;
+    pointer-events: none;
 }
 .valid {
     opacity: 1 !important;
-    user-select: all !important;
+    user-select: auto !important;
+    pointer-events: auto !important;
 }
 
-.showBranches, .showDelegates{
+.showBranches{
     display: none;
 }
-.showBranches .list-group-item, .showDelegates .list-group-item {
+.showBranches .list-group-item{
     margin-bottom: 2px;
 }
-.showBranches .list-color a, .showDelegates .list-color a {
+.showBranches .list-color a {
     color: #551A8B;
 }
 
 
-ul li a:hover, .left-pane-org a:hover {
+ul li a:hover, .left-pane-org a:hover,
+.createDelegateBtn:hover {
     text-decoration: none;
     transition: 0.5s ease-in-out;
     padding-left: 5px;
@@ -297,16 +304,13 @@ ul li a:hover, .left-pane-org a:hover {
 .createDelegateBtn {
     /* color: tomato; */
     color: #007bff;
-    font-size: 0.9rem;
+    /* font-size: 0.9rem; */
     font-size: bold;
     cursor: pointer;
+    padding-top: 20px;
 }
 
-.createDelegateBtn:hover {
-    transition: 0.3s ease-in-out;
-    /* color: red; */
-    font-weight: bolder;
-}
+
 center h3 {
     color: #0056b3;
     font-size: 1.5rem;
@@ -395,6 +399,114 @@ center h3 {
     background-color: hsl(0, 0%, 95%);
     color: red;
 }
+
+.no-bottom p {
+    margin: 0;
+}
+
+.space-top {
+    margin-top: 20px !important;
+}
+
+
+
+
+/* Table style */
+.tableContainer {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px 0;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  th, td {
+    padding: 15px;
+    text-align: left;
+  }
+  th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+  }
+  td {
+    background-color: #fff;
+    color: #333;
+    padding: 2.5px 10px;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  .action-btns {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: none;
+  }
+  .columnAction .action-btns {
+    flex-direction: column;
+  }
+  .btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .btn:hover {
+    background-color: #0056b3;
+    color: #fff;
+  }
+  .btn-update {
+    background-color: #28a745;
+    color: wheat
+  }
+  .btn-delete {
+    background-color: #dc3545;
+    color: wheat
+  }
+.btn-suspend {
+    background-color: #eee;
+    color: #666
+  }
+  .columnAction .btn {
+    margin-bottom: 5px;
+  }
+  /* End of table style */
+
+.tab-contents6 {
+    margin-top: 0;
+}
+
+.no-space {
+    max-width: 50px;
+}
+
+.dashboard-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .dashboard-buttons button {
+    margin-bottom: 10px;
+    border-radius: 20px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+  .dashboard-buttons button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+
 /* media query */
 @media screen and (max-width: 1200px) {
     .clearfix {
@@ -428,19 +540,20 @@ center h3 {
         margin-top: 260px;
     }
     h2 {
-        font-size: 1.65rem;
+        font-size: 1.5rem !important;
     }
     h3 {
-        font-size: 1.5rem;
+        font-size: 1.3rem !important;
     }
     h4 {
-        font-size: 1.3rem;
+        font-size: 1.125rem !important;
     }
     .left-pane-org button {
         padding: 3px 5px;
     }
     .right-pane-org {
         margin-left: 27%;
+        font-size: 0.9rem !important;
     }
     
     .left-pane-org  {
@@ -452,7 +565,7 @@ center h3 {
         justify-content: center;
         align-items: center;
         width: 100%;
-        margin: 0 0.6%;
+        margin: 5px;
     }
 }
 @media screen and (max-width: 850px) {
@@ -472,7 +585,13 @@ center h3 {
 }
 @media screen and (max-width: 750px) {
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+    }
+    h3 {
+        font-size: 1.1rem !important;
+    }
+    h4 {
+        font-size: 1rem !important;
     }
 
 }

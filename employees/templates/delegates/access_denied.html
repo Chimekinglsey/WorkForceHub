@@ -55,7 +55,11 @@
             <center><h3>Sorry, you are not authorized to view this page.</h3></center>
         {% endif %}
         <img style="width: 300px; height: 200px;" src="{% static 'emps/images/403.png'%}" alt="Access Denied Image">
+        {% if request.user.is_superuser %}
+          <center><p>Go back to the <a href="{% url 'org_dashboard'%}">dashboard</a></p></center>  
+        {% else %}
         <center><h3><a href="{% url 'landing_page'%}">Go back to the homepage</a></h3></center>
+        {% endif %}
       </div>
     </div>
 </body>

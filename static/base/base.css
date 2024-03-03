@@ -269,6 +269,9 @@ table {
 .dataTable {
     width: 100% !important;
 }
+.dataTable {
+    overflow-y: auto !important;
+}
 
 table th {
     font-size: 0.85rem;
@@ -301,7 +304,7 @@ div.dt-container div.dt-search input:active {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
 }
 
-/* Overriding bootstrap h elemenets */
+/* Overriding bootstrap h elemenets 
 h2 {
     font-size: 1.5rem;
 }
@@ -317,11 +320,11 @@ h5 {
     font-size: 1rem;
 }
 
-
+*/
 .nav-link {
     display: block;
     padding: .25rem .5rem;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .tiny_images{
@@ -342,6 +345,9 @@ h5 {
     user-select: none;
 }
 
+.justify-content-between {
+    flex-wrap: nowrap;
+}
 
 
 /* 
@@ -404,6 +410,9 @@ Media Queries
     }
 }
 @media screen and (max-width: 768px) {
+    .justify-content-between {
+        flex-wrap: nowrap;
+    }
     .header-nav {
         width: 18%;
     }
@@ -423,6 +432,9 @@ Media Queries
     }
 }
 @media screen and (max-width: 530px) {
+    .justify-content-between {
+        flex-wrap: wrap;
+    }
         .header-nav {
             width: 22%;
         }

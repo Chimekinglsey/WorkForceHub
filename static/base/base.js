@@ -22,4 +22,9 @@ $(document).ready(function() {
         "info": true // Hide information display
     });
 
+    // Use forms back button
+    $('.backBtn').on('click', function() {
+        window.history.back();
+    });
+
 });

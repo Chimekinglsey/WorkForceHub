@@ -84,7 +84,7 @@
                         </button>
                         <center><h4>Financial Reports</h4></center>
                     {% if reports %}
-                        <table>
+                        <table class="dataTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -126,19 +126,19 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ report.branch }}</td>
                                     <td>{{ report.report_date }}</td>
-                                    <td>{{ report.total_revenue|intcomma }}</td>
-                                    <td>{{ report.total_expenses|intcomma }}</td>
+                                    <td>{{ report.total_revenue|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.total_expenses|default:'N/A'|intcomma }}</td>
                                     <td>{{ report.created_by }}</td>
                                     <td>{{ report.status }}</td>
                                     <td title="{{report.description}}">{{ report.description|default:'N/A'|truncatechars:'40' }}</td>
-                                    <td>{{ report.total_profit_loss|intcomma }}</td>
-                                    <td>{{ report.net_profit|intcomma }}</td>
-                                    <td>{{ report.gross_profit|intcomma }}</td>
-                                    <td>{{ report.operating_profit|intcomma }}</td>
-                                    <td>{{ report.ebitda|intcomma }}</td>
-                                    <td>{{ report.operating_expenses|intcomma }}</td>
-                                    <td>{{ report.taxes|intcomma }}</td>
-                                    <td>{{ report.interest_expenses|intcomma }}</td>
+                                    <td>{{ report.total_profit_loss|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.net_profit|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.gross_profit|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.operating_profit|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.ebitda|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.operating_expenses|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.taxes|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.interest_expenses|default:'N/A'|intcomma }}</td>
                                     <td>{{ report.profit_margin|default:'N/A' }}</td>
                                     <td>{{ report.return_on_assets|default:'N/A' }}</td>
                                     <td>{{ report.return_on_equity|default:'N/A' }}</td>
@@ -148,11 +148,11 @@
                                     <td>{{ report.interest_coverage_ratio|default:'N/A' }}</td>
                                     <td>{{ report.asset_turnover_ratio|default:'N/A' }}</td>
                                     <td>{{ report.inventory_turnover_ratio|default:'N/A' }}</td>
-                                    <td>{{ report.budgeted_revenue|intcomma }}</td>
-                                    <td>{{ report.budgeted_expenses|intcomma }}</td>
-                                    <td>{{ report.budget_variance|intcomma }}</td>
-                                    <td>{{ report.forecasted_revenue|intcomma }}</td>
-                                    <td>{{ report.forecasted_expenses|intcomma }}</td>
+                                    <td>{{ report.budgeted_revenue|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.budgeted_expenses|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.budget_variance|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.forecasted_revenue|default:'N/A'|intcomma }}</td>
+                                    <td>{{ report.forecasted_expenses|default:'N/A'|intcomma }}</td>
                                     {% if report.attachments %}
                                         <td><a href="{{ report.attachments.url }}" target="_blank">View</a></td>
                                         {% else %}

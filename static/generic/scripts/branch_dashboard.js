@@ -129,30 +129,31 @@ function flashMessage(response) {
         
     // Menu Toggle
         $(".menuToggle").on("click", function() {
-            if ($(window).width() < 800) {
+            if ($(window).width() < 850) {
                 $(".actions").slideToggle();
             }
         });
 
-    // Leave Requests
-        $("#searchLeaveHistory").on("keyup", function() {
-            let value = $(this).val().toLowerCase();
-            $(".leave-list tbody tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
+
+
+
+
+        // Employee Management
+        $('.dropdown').on('click', function(event) {
+            event.stopPropagation();
+            var dropdownMenu = $(this).find('.dropdown-menu');
+            if (dropdownMenu.hasClass('open')) {
+                dropdownMenu.slideUp().removeClass('open');
+            } else {
+                $('.dropdown-menu.open').hide().removeClass('open');
+                dropdownMenu.slideDown().addClass('open');
+            }
         });
 
-    // Employee Management
-    $('.dropdown').on('click', function(event) {
-        event.stopPropagation();
-        $(this).find('.dropdown-menu').toggle();
-    });
-
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('.dropdown').length) {
-            $('.dropdown-menu').hide();
-        }
-    });
+        // Close dropdown menu when clicking outside
+        $(document).on('click', function() {
+            $('.dropdown-menu.open').slideUp().removeClass('open');
+        });
 
 
     $('.moreEmpDetail#viewEmpDetailBtn').click(function(e) {
@@ -165,8 +166,7 @@ function flashMessage(response) {
             method: 'GET',
             dataType: 'json',
             success: function(response) {
-                
-                populateViewModal(response);    
+                populateViewModal(response);  
             },
             error: function(xhr, status, error) {
                 flashMessage(error);
@@ -196,7 +196,12 @@ function flashMessage(response) {
         // populate profile picture
         $('#profilePictureView').attr('src', employeeData.profile_picture);
         // Populate personal details
-        $('#empFullNameView').text(`${employeeData.first_name} ${employeeData.middle_name[0].toUpperCase()}. ${employeeData.last_name}`);
+        if (employeeData.middle_name) {
+            $('#empFullNameView').text(`${employeeData.first_name} ${employeeData.middle_name[0].toUpperCase()}. ${employeeData.last_name}`);
+        }
+        else {
+            $('#empFullNameView').text(`${employeeData.first_name} ${employeeData.last_name}`);
+        }
         $('#emailView').text(employeeData.email);
         $('#phone_numberView').text(employeeData.phone_number);
         $('#dobView').text(employeeData.dob);
@@ -225,7 +230,6 @@ function flashMessage(response) {
         $('#last_promotion_dateView').text(employeeData.last_promotion_date);
         $('#next_promotion_dateView').text(employeeData.next_promotion_date);
         $('#salaryView').text(employeeData.basic_salary);
-
         // Populate other information
         $('#emergency_contactsView').text(employeeData.emergency_contacts);
         $('#termination_resignation_dateView').text(employeeData.termination_resignation_date);
@@ -359,7 +363,6 @@ function flashMessage(response) {
         event.preventDefault();
         let employeeId = $('#eId').val();
         if (!employeeId || isNaN(employeeId)) {
-            alert('Employee ID not found');
             return;
         }
         form = $('#updateEmployeeForm');
@@ -606,7 +609,6 @@ function flashMessage(response) {
         event.preventDefault();
         let employeeId = $('#empId').val();
         if (!employeeId || isNaN(employeeId)) {
-            alert('Employee ID not found');
             return;
         }
         form = $('#updateBankForm');
@@ -663,6 +665,12 @@ function flashMessage(response) {
 
     $('input[type="search"]').attr('placeholder', 'Enter search text');
 
+
+    // populate leave employee id
+    $('#employeeName').change(function() {
+        let selectedEmployeeId = $(this).val();
+        $('#employeeID').val(selectedEmployeeId);
+    });
 });
 
 $(document).ready(function() {

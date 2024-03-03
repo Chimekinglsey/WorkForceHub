@@ -68,7 +68,7 @@
         </button>
 
         {% csrf_token %}
-        {% crispy review_form %}                    
+        {% crispy update_review_form %}                    
       </form>
       {% else %}
       <center style="margin-top: 100px;">
@@ -89,7 +89,7 @@
       </button>
        <center><h4>Performance History</h4></center>
        {% if performance %}
-          <table>
+          <table class="dataTable">
               <thead>
                   <tr>
                       <th>SN</th>
@@ -108,23 +108,83 @@
                   </tr>
               </thead>
               <tbody>
-                  {% for perf in performance %}
+                {% for perf in performance %}
                   <tr>
-                      <td>{{ forloop.counter }}</td>
-                      <td>{{ perf.manager_assessment }}</td>
-                      <td>{{ perf.customer_feedback }}</td>
-                      <td>{{ perf.project_performance }}</td>
-                      <td>{{ perf.peer_feedback }}</td>
-                      <td>{{ perf.improvement_plan }}</td>
-                      <td>{{ perf.attendance_punctuality }}</td>
-                      <td>{{ perf.professional_development}}</td>
-                      <td>{{ perf.kpis}}</td>
-                      <td>{{ perf.self_assessment }}</td>
-                      <td>{{ perf.performance_review }}</td>
-                      <td>{{ perf.performance_rating }}%</td>
-                      <td>{{ perf.created_at|date:'d/m/y' }}</td>
-                  </tr>
-                  {% endfor %}
+                    <td title="{{ forloop.counter }}">{{ forloop.counter }}</td>
+                    <td {% if perf.manager_assessment|length > 15 %}title="{{ perf.manager_assessment }}"{% endif %}>
+                        {% if perf.manager_assessment|length > 15 %}
+                            {{ perf.manager_assessment|slice:":15" }}...
+                        {% else %}
+                            {{ perf.manager_assessment|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.customer_feedback|length > 15 %}title="{{ perf.customer_feedback }}"{% endif %}>
+                        {% if perf.customer_feedback|length > 15 %}
+                            {{ perf.customer_feedback|slice:":15" }}...
+                        {% else %}
+                            {{ perf.customer_feedback|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.project_performance|length > 15 %}title="{{ perf.project_performance }}"{% endif %}>
+                        {% if perf.project_performance|length > 15 %}
+                            {{ perf.project_performance|slice:":15" }}...
+                        {% else %}
+                            {{ perf.project_performance|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.peer_feedback|length > 15 %}title="{{ perf.peer_feedback }}"{% endif %}>
+                        {% if perf.peer_feedback|length > 15 %}
+                            {{ perf.peer_feedback|slice:":15" }}...
+                        {% else %}
+                            {{ perf.peer_feedback|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.improvement_plan|length > 15 %}title="{{ perf.improvement_plan }}"{% endif %}>
+                        {% if perf.improvement_plan|length > 15 %}
+                            {{ perf.improvement_plan|slice:":15" }}...
+                        {% else %}
+                            {{ perf.improvement_plan|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.attendance_punctuality|length > 15 %}title="{{ perf.attendance_punctuality }}"{% endif %}>
+                        {% if perf.attendance_punctuality|length > 15 %}
+                            {{ perf.attendance_punctuality|slice:":15" }}...
+                        {% else %}
+                            {{ perf.attendance_punctuality|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.professional_development|length > 15 %}title="{{ perf.professional_development }}"{% endif %}>
+                        {% if perf.professional_development|length > 15 %}
+                            {{ perf.professional_development|slice:":15" }}...
+                        {% else %}
+                            {{ perf.professional_development|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.kpis|length > 15 %}title="{{ perf.kpis }}"{% endif %}>
+                        {% if perf.kpis|length > 15 %}
+                            {{ perf.kpis|slice:":15" }}...
+                        {% else %}
+                            {{ perf.kpis|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.self_assessment|length > 15 %}title="{{ perf.self_assessment }}"{% endif %}>
+                        {% if perf.self_assessment|length > 15 %}
+                            {{ perf.self_assessment|slice:":15" }}...
+                        {% else %}
+                            {{ perf.self_assessment|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td {% if perf.performance_review|length > 15 %}title="{{ perf.performance_review }}"{% endif %}>
+                        {% if perf.performance_review|length > 15 %}
+                            {{ perf.performance_review|slice:":15" }}...
+                        {% else %}
+                            {{ perf.performance_review|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td  title="{{ perf.performance_rating}}%">{{ perf.performance_rating }}%</td>
+                    <td title="{{ perf.created_at|date:'d/m/y' }}">{{ perf.created_at|date:'d/m/y' }}</td>
+                </tr>
+                {% endfor %}
               </tbody>
           </table>
        {% else %}

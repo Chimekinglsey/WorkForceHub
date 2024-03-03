@@ -76,10 +76,11 @@ def signup(request):
             messages.success(request, 'Account created successfully, Please login to continue.')
             return redirect('login')
         elif form.errors:
-            messages.error(request, f'Conflict in {list(form.errors)}')
+            last_error = form.errors[list(form.errors.keys())[-1]][-1]
+            messages.error(request, last_error)
             return render(request, 'employees/signup.html', {'form': form, 'errors': form.errors})
     else:
-        form = SignUpForm()
+        form = SignUpForm(data=request.POST or None)
     return render(request, 'employees/signup.html', {'form': form})
 
 
@@ -94,8 +95,14 @@ def login_view(request):
             login(request, user, backend='employees.backends.AdminUserAuthBackend')  # Authenticate the user
             messages.success(request, 'Login successful')
 
-            if user.is_superuser and  user.employee_id is None:
+            if user.is_superuser and user.employment_status is not 'Suspended' and  user.employee_id is None:
                 return redirect('profile_update')
+            
+            if user.employment_status == 'Suspended':
+                messages.error(request, 'Your account has been suspended, contact the admin for more information')
+                error_message = 'Your account has been suspended, contact the admin for more information'
+                return render(request, 'delegate/access_denied.html', error_message=error_message)
+            
             if not user.is_superuser:
                 return redirect('branch_dashboard', branch_id=user.branch.branch_id)
             return redirect('create_org')
@@ -119,7 +126,7 @@ def profile_update(request):
             return redirect('create_org')
     else:
         # Initialize form with instance of the logged-in user
-        form = ProfileUpdateForm(instance=request.user)
+        form = ProfileUpdateForm(instance=request.user, initial={'email': request.user.email}, data=request.POST or None)
     return render(request, 'employees/profile_update.html', {'form': form})
 
 
@@ -131,20 +138,30 @@ def org_dashboard(request):
     """Organization Dashboard"""
     if request.user.is_delegate:
         branch = request.user.branch
+        messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=branch.branch_id)
-    form = BranchForm(request.user)
+    # branch = AdminUser.objects.get(branch=request.user.branch)
+    form = BranchForm(request.user, data=request.POST or None)
     org = Organization.objects.filter(admin_user=request.user).first()
     branches = Branch.objects.filter(organization=org)
     admin = request.user
-    # Get all delegate admins associated with the organization outside the current user
-    delegate_admins = AdminUser.objects.filter(branch__organization=org, is_delegate=True, is_superuser=False)
-    delegate_admin_form = DelegateAdminCreationForm(organization=org, prefix='create_delegate_admin')        
-    change_password_form = ChangePasswordForm(request.user)
-   
 
+    # get master admin user
+    if org:
+        if org.admin_user ==admin:
+            master_admin =admin
+        # Get all delegate admins associated with the organization outside the current user
+        delegate_admins = AdminUser.objects.filter(branch__organization=org, is_delegate=True, is_superuser=False)
+        superusers = AdminUser.objects.filter(branch__organization=org, is_superuser=True)
+        delegate_admin_form = DelegateAdminCreationForm(organization=org, data=request.POST or None)        
+    else:
+        master_admin = None
+        delegate_admins = None
+        superusers = None
+        delegate_admin_form = None
 
-    organization = Organization.objects.filter(admin_user=request.user).first()
-    reports = Report.objects.filter(branch__organization=organization)
+    change_password_form = ChangePasswordForm(request.user, data=request.POST or None)
+    reports = Report.objects.filter(branch__organization=org)
 
 
     """Transfer Statistics"""
@@ -154,14 +171,15 @@ def org_dashboard(request):
     declined_transfers = transfers.filter(status='Declined')
     monthly_transfer_count = transfers.filter(created_at__month=timezone.now().month).count()
     last_month_transfer_count = transfers.filter(created_at__month=timezone.now().month-1).count()
-    employees = Employee.objects.filter(branch__organization=organization)
+    employees = Employee.objects.filter(branch__organization=org)
 
 
     """context"""
     context = {'form': form, 'org': org, 'branches': branches, 'user': admin, 'delegate_admin_form': delegate_admin_form,
                 'delegate_admins': delegate_admins, 'transfers': transfers, 'pending_transfers': pending_transfers,
                 'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers, 'monthly_transfer_count': monthly_transfer_count,
-                'last_month_transfer_count': last_month_transfer_count, 'employees': employees, 'reports': reports, 'admin_password_form': change_password_form
+                'last_month_transfer_count': last_month_transfer_count, 'employees': employees, 'reports': reports, 'admin_password_form': change_password_form,
+                'master_admin': master_admin, 'superusers': superusers
                 }
 
     if request.method == 'POST':
@@ -182,33 +200,141 @@ def org_dashboard(request):
             org.org_id = generate_org_id()
             org.save()
             messages.success(request, 'Organization created successfully')
-        return redirect('org_dashboard')
+        return JsonResponse({'type': 'success', 'message': 'Organization created successfully'}, status=201)
     return render(request, 'employees/org_dashboard.html', context=context)
 
 
+
+# delete organization
+@login_required(login_url='login')
+@csrf_exempt
+@require_POST
+def delete_organization(request, org_id):
+    """Delete organization"""
+    if not request.user.is_superuser or request.user.branch.organization.org_id != org_id\
+        or request.user.branch.organization is None or request.user.branch.organization.admin_user != request.user:
+        error_message = 'Your are not authorized to perform this operation'
+        messages.error(request, error_message)
+        return JsonResponse({'type': 'error', 'message': error_message, 'status': 'error'}, status=200)
+    org = get_object_or_404(Organization, org_id=org_id)
+    if not org:
+        return Http404('Organization not found')
+    org.delete()
+    messages.success(request, 'Organization deleted successfully')
+    return JsonResponse({'type': 'success', 'message': 'Organization deleted successfully'}, status=200)
+
 # Delete Branch
+@login_required(login_url='login')
+@csrf_exempt
+@require_POST
 def delete_branch(request, branch_id):
     """delete organization branch"""
     if not request.user.is_superuser:
         error_message = 'Your are not authorized to perform this operation'
         return render(request, 'delegate/access_denied.html', error_message=error_message)
     
-    branch = get_object_or_404(Branch, id=branch_id)
+    branch = get_object_or_404(Branch, branch_id=branch_id)
     if not branch:
         return Http404('Branch not found')
-    get_delegate_admin = AdminUser.objects.filter(branch=branch, is_delegate=True, is_superuser=False)
+    get_delegate_admin = AdminUser.objects.filter(branch=branch, is_delegate=True,
+                                                  is_superuser=False, is_staff=False).exclude(id=request.user.id)
     if get_delegate_admin:
         for admin in get_delegate_admin:
             admin.delete()
+    if request.user.branch == branch:
+        messages.error(request, "This branch is associated with the organization's admin and cannot be deleted")
+        return JsonResponse({'type': 'error', 'message': "This branch is associated with the organization's admin and cannot be deleted"}, status=200)
     branch.delete()
     messages.success(request, 'Branch deleted successfully')
-    return redirect('org_dashboard')
+    return JsonResponse({'type': 'success', 'message': 'Branch deleted successfully'}, status=200)
 
 
+# delete delegate
+@login_required(login_url='login')
+@csrf_exempt
+@require_POST
+def delete_delegate(request, delegate_id):
+    """Delete delegate admin"""
+    if not request.user.is_superuser:
+        error_message = 'Your are not authorized to perform this operation'
+        return render(request, 'delegate/access_denied.html', error_message=error_message)
+    delegate = get_object_or_404(AdminUser, id=delegate_id)
+    if not delegate:
+        return Http404('Delegate admin not found')
+    delegate.delete()
+    messages.success(request, 'Delegate admin deleted successfully')
+    return JsonResponse({'type': 'success', 'message': 'Delegate admin deleted successfully'}, status=200)
 
+# update branch
+@login_required(login_url='login')
+@csrf_exempt
+def update_branch(request, branch_id):
+    """Update branch"""
+    if not request.user.is_superuser:
+        error_message = 'Your are not authorized to perform this operation'
+        return render(request, 'delegate/access_denied.html', error_message=error_message)
+    branch = get_object_or_404(Branch, branch_id=branch_id)
+    if not branch:
+        return Http404('Branch not found')
+    
+    form = BranchForm(request.user, instance=branch, data=request.POST or None)
+    context = {'form': form, 'branch': branch}
+    if request.method == 'POST':
+        form = BranchForm(request.user, request.POST, instance=branch)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Branch updated successfully')
+            return redirect('org_dashboard')
+        else:
+            messages.error(request, 'Branch update failed')
+            return redirect('org_dashboard')
+    return render(request, 'branch/update_branch.html', context=context)
 
+# update delegate
+@login_required(login_url='login')
+@csrf_exempt
+@require_POST
+def update_delegate(request, delegate_id):
+    """Update delegate admin"""
+    delegate = get_object_or_404(AdminUser, id=delegate_id)
+    form = DelegateAdminCreationForm(organization=delegate.branch.organization, data=request.POST, instance=delegate)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Delegate admin updated successfully')
+        return JsonResponse({'success': True}, status=status.HTTP_201_CREATED)
+    else:
+        messages.error(request, 'Delegate admin update failed')
+        return JsonResponse({'success': False, 'error_message': form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+# suspend delegate
+@login_required(login_url='login')
+@csrf_exempt
+@require_POST
+def suspend_delegate(request, delegate_id):
+    """Suspend delegate admin"""
+    delegate = get_object_or_404(AdminUser, id=delegate_id)
+    if not delegate:
+        return Http404('Delegate admin not found')
+    delegate.is_active = False
+    delegate.employment_status = 'Suspended'
+    delegate.save()
+    messages.success(request, 'Delegate admin suspended successfully')
+    return JsonResponse({'success': True}, status=status.HTTP_201_CREATED)
 
+# unsuspend delegate
+@login_required(login_url='login')
+@csrf_exempt
+@require_POST
+def activate_delegate(request, delegate_id):
+    """Unsuspend delegate admin"""
+    delegate = get_object_or_404(AdminUser, id=delegate_id)
+    if not delegate:
+        return Http404('Delegate admin not found')
+    delegate.is_active = True
+    delegate.employment_status = 'Active'
+    delegate.save()
+    messages.success(request, 'Delegate admin now active!')
+    return JsonResponse({'success': True}, status=status.HTTP_201_CREATED)
 
 # create delegate admin
 @login_required(login_url='login')
@@ -218,34 +344,37 @@ def create_delegate(request):
     if not request.user.is_superuser:
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
-    org = Organization.objects.filter(admin_user=request.user).first()
 
-    form = DelegateAdminCreationForm(organization=org, data=request.POST, prefix='create_delegate_admin')
+    org = Organization.objects.filter(admin_user=request.user).first()
+    form = DelegateAdminCreationForm(data=request.POST, organization=org)
+
     if form.is_valid():
+        # Extract cleaned data from the form
         branch = form.cleaned_data['branch']
         email = form.cleaned_data['email']
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
         first_name = form.cleaned_data['first_name']
         last_name = form.cleaned_data['last_name']
-        middle_name = form.cleaned_data['middle_name']
         can_change_password = form.cleaned_data['can_change_password']
         is_delegate = True
         is_superuser = False
 
-
         # Create delegate admin and associate it with the selected branch
-        delegate_admin = AdminUser.objects.create_user(username=username, email=email, password=password, middle_name=middle_name,
-                                                       first_name=first_name, last_name=last_name, can_change_password=can_change_password,
-                                                       is_delegate=is_delegate, is_superuser=is_superuser, branch=branch)
+        delegate_admin = AdminUser.objects.create_user(
+            username=username, email=email, password=password,
+            first_name=first_name, last_name=last_name, can_change_password=can_change_password, 
+            is_delegate=is_delegate, is_superuser=is_superuser, branch=branch
+        )
         delegate_admin.save()
 
         messages.success(request, 'Delegate admin created successfully')
         return JsonResponse({'success': True}, status=status.HTTP_201_CREATED)
     else:
-        messages.error(request, 'Delegate admin creation failed')
-        return JsonResponse({'success': False, 'error_message': form.errors}, status=status.HTTP_400_BAD_REQUEST)
-
+        # If form validation fails, return errors in JSON response
+        last_error = form.errors[list(form.errors.keys())[-1]][-1]
+        messages.error(request, f'Error occurred: {last_error}')
+        return JsonResponse({'success': False, 'error_message': form.errors}, status=200)
 
 # create branch of organization
 @login_required(login_url='login')
@@ -262,7 +391,7 @@ def create_branch(request):
             branch = form.save(commit=False)
             branch.branch_id = generate_branch_id()
             branch.save()
-            superuser, created = AdminUser.objects.get(pk=request.user.pk)
+            superuser = AdminUser.objects.get(pk=request.user.pk)
             if not superuser.branch:
                 superuser.branch = branch
                 superuser.save()
@@ -273,7 +402,6 @@ def create_branch(request):
             return JsonResponse({'success': False, 'error_message': form.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         messages.error(request, f'Error occurred: {str(e)}')
-        print('Exception:', e)
         return JsonResponse({'success': False, 'error_message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
@@ -304,11 +432,11 @@ def branch_dashboard(request, branch_id):
 
 
     # forms
-    form = EmployeeForm(initial={'branch': branch, 'adminuser': request.user})
-    profile_form = UserProfileForm(instance=request.user)
-    change_password_form = ChangePasswordForm(request.user)
-    branch_documents_form = BranchDocumentsForm()
-    transfer_form = TransferForm(organization=organization, adminuser=request.user, initial={'source_branch': branch})
+    form = EmployeeForm(initial={'branch': branch, 'adminuser': request.user}, data=request.POST or None, files=request.FILES or None)
+    profile_form = UserProfileForm(instance=request.user, data=request.POST or None, files=request.FILES or None)
+    change_password_form = ChangePasswordForm(request.user, data=request.POST or None)
+    branch_documents_form = BranchDocumentsForm(data=request.POST or None, files=request.FILES or None)
+    transfer_form = TransferForm(organization=organization, adminuser=request.user, initial={'source_branch': branch}, data=request.POST or None)
 
     # employee statistics
     total_employees_count = Employee.objects.filter(branch=branch, is_archived=False).count()
@@ -338,12 +466,12 @@ def branch_dashboard(request, branch_id):
     total_payment = total_netpay + total_allowances
 
     # performance statistics
-    performance = Performance.objects.filter(employee__branch=branch).order_by('-performance_rating')
+    performance = Performance.objects.filter(employee__branch=branch)
     underperforming_employees = Performance.objects.filter(employee__branch=branch, performance_rating__lt=60)
     average_performance_rating = mean([p.performance_rating for p in performance]) if performance else 0
     high_performers = performance.filter(performance_rating__gte=80)
     improvement_rate = (high_performers.count() / performance.count()) * 100 if performance else 0
-    highest_rating = performance.first()
+    highest_rating = performance.order_by('-performance_rating').first()
     employee_engagement = 'High' if average_performance_rating >= 70 else 'Low'
 
 
@@ -371,10 +499,10 @@ def branch_dashboard(request, branch_id):
                 'employee_engagement': employee_engagement, 'profile_form': profile_form, 'change_password_form': change_password_form,
                 'branch_documents_form': branch_documents_form, 'transfer_form': transfer_form, 'transfers': transfers,
                 'pending_transfers': pending_transfers, 'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers,
-                'transfer_history': transfer_history, 'incoming_transfers_count': incoming_transfers_count, 'outgoing_transfers_count': outgoing_transfers_count
+                'transfer_history': transfer_history, 'incoming_transfers_count': incoming_transfers_count, 'outgoing_transfers_count': outgoing_transfers_count,
+                'organization': organization
               }
     if request.method == 'POST':
-        print(request.POST)
         form = EmployeeForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             employee_id = request.POST.get('employee_id')
@@ -522,7 +650,7 @@ def manage_leave_request(request, leave_id):
         leave.leave_status = 'Declined'
         leave.save()
         messages.success(request, 'Leave request declined')
-    return redirect('branch_dashboard', branch_id=leave.employee.branch.branch_id)
+    return JsonResponse({'type': 'success', 'message': 'Leave request updated successfully'}, status=200)
 
 
 
@@ -533,7 +661,7 @@ def create_payroll(request):
     """Create payroll for an employee"""
     data = request.POST.dict()
     try:
-        employee = Employee.objects.get(pk=data['employee_id'])
+        employee = Employee.objects.get(employee_id=data['employee_id'], branch__branch_id=request.user.branch.branch_id)
         employee.basic_salary = int(data['basic_salary'])
         employee.save()
     except Employee.DoesNotExist:
@@ -570,7 +698,7 @@ def update_payroll(request, payroll_id):
             messages.error(request, f'{list(form.errors)}Payroll update failed')
             return render(request, 'payroll/update_payroll.html', {'form': form})
     else:
-        form = PayrollForm(instance=payroll)
+        form = PayrollForm(instance=payroll, data=request.POST or None)
     return render(request, 'payroll/update_payroll.html', {'form': form})
 
 def payroll_detail(request, payroll_id):
@@ -616,11 +744,13 @@ def performance_dashboard(request, emp_id):
     try:
         performance_instance = Performance.objects.filter(employee=employee).first()
         if performance_instance:
-            review_form = PerformanceReviewForm(instance=performance_instance)
+            update_review_form = PerformanceReviewForm(instance=performance_instance, data=request.POST or None)
             performance_id = performance_instance.id
         else:
-            review_form = PerformanceReviewForm()
+            update_review_form = None
             performance_id = None
+        
+        review_form = PerformanceReviewForm(data=request.POST or None)
     except Performance.DoesNotExist:
         pass
 
@@ -637,7 +767,7 @@ def performance_dashboard(request, emp_id):
                                                          'employee_docs': employee_docs, 'performance_id': performance_id,
                                                          'payroll': payroll, 'appointments': appointments,
                                                          'attendance': attendance, 'leave': leave,
-                                                         'review_form': review_form}
+                                                         'review_form': review_form, 'update_review_form': update_review_form}
                                                         )
 
 @require_POST
@@ -647,14 +777,14 @@ def performance_review(request, emp_id):
         employee = Employee.objects.get(pk=emp_id)
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
-        return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
+        return redirect('branch_dashboard', branch_id=employee.branch.branch_id)
     form = PerformanceReviewForm(request.POST)
     if form.is_valid():
         performance = form.save(commit=False)
         performance.employee = employee
         performance.save()
         messages.success(request, 'Performance review submitted successfully')
-    return redirect('branch_dashboard', branch_id=employee.branch.branch_id)
+    return redirect('performance_dashboard', emp_id=employee.id)
 
 
 # update project performance
@@ -692,7 +822,12 @@ def transfer_request(request):
         raise Http404('No Organization Found for this user')
     form = TransferForm(org, request.user, request.POST)
     if form.is_valid():
+        # check whether there is a pending transfer for this employee
         transfer_request = form.save(commit=False)
+        if Transfer.objects.filter(employee=transfer_request.employee, status='Pending').exists():
+            messages.error(request, 'This employee already has a pending transfer request')
+            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+        
         transfer_request.requested_by = request.user
         transfer_request.source_branch=request.user.branch
         transfer_request.organization = org
@@ -761,11 +896,11 @@ def create_report(request):
         report = Report.objects.filter(branch=branch).first()
         if report:
             report_id = report.id
-            update_form = ReportForm(instance=report, initial={'created_by': request.user, 'branch': branch})
+            update_form = ReportForm(instance=report, initial={'created_by': request.user, 'branch': branch}, data=request.POST or None, files=request.FILES or None)
         else:
             report_id = None
-            update_form = ReportForm(initial={'created_by': request.user, 'branch': branch})
-        form = ReportForm(initial={'created_by': request.user, 'branch': branch})
+            update_form = ReportForm(initial={'created_by': request.user, 'branch': branch}, data=request.POST or None, files=request.FILES or None)
+        form = ReportForm(initial={'created_by': request.user, 'branch': branch}, data=request.POST or None, files=request.FILES or None)
 
     except Report.DoesNotExist:
         pass
@@ -781,10 +916,10 @@ def create_report(request):
             report_instance.created_by = user
             report_instance.save()
             messages.success(request, 'Report created successfully')
-            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+            return redirect('create_report')
         else:
             messages.error(request, 'Failed to create report. Please check the form.')
-            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+            return redirect('create_report')
     return render(request, 'reports/reports.html', {'form': form, 'user': user, 'report_id': report_id, 'reports': reports,
                                                     'update_form': update_form})
 
@@ -911,8 +1046,8 @@ def finance_report(request, type=None):
         messages.error(request, "Branch not found")
         return JsonResponse({'type': 'error', 'message': 'Branch not found'}, status=404)
     
-    basic_form = BasicFinanceForm(initial={'created_by': request.user, 'branch': branch})
-    detailed_form = DetailedFinanceForm(initial={'created_by': request.user, 'branch': branch})
+    basic_form = BasicFinanceForm(initial={'created_by': request.user, 'branch': branch}, data=request.POST or None, files=request.FILES or None)
+    detailed_form = DetailedFinanceForm(initial={'created_by': request.user, 'branch': branch}, data=request.POST or None, files=request.FILES or None)
     reports = Finance.objects.filter(branch=branch)
     user = request.user
 
@@ -941,9 +1076,10 @@ def finance_report(request, type=None):
             report_instance.created_by = user
             report_instance.save()
             messages.success(request, 'Finance report created successfully')
-            return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
+            return redirect('finance_dashboard')
         else:
             messages.error(request, 'Failed to create finance report. Please check the form.')
+            return redirect('finance_dashboard')
     return render(request, 'reports/finances.html', context=context)
 
 
@@ -1015,6 +1151,97 @@ def reset_delegate_password(request):
 
 
 
+
+
+# promote delegate to superuser
+@csrf_exempt
+@require_POST
+def promote_delegate(request, delegate_id):
+    """Promote delegate to superuser"""
+    if request.user.is_superuser:
+        delegate = get_object_or_404(AdminUser, id=delegate_id)
+        if not delegate or not delegate.is_delegate or not delegate.branch.organization == request.user.branch.organization:
+            messages.error(request, 'You cannot promote this delegate to superuser')
+            return JsonResponse({'type': 'error', 'message': 'You cannot promote this delegate to superuser', 'success': False}, status=200)
+        delegate.is_superuser = True
+        delegate.is_delegate = False
+        delegate.can_change_password = True
+        delegate.save()
+        messages.success(request, 'Delegate promoted to superuser successfully')
+        return JsonResponse({'type': 'success', 'message': 'Delegate promoted to superuser successfully', 'success': True}, status=200)
+    else:
+        messages.error(request, 'You do not have permission to promote delegate')
+        return JsonResponse({'type': 'error', 'message': 'You do not have permission to promote delegate', 'success': False}, status=200)
+
+
+# demote superuser to delegate
+@csrf_exempt
+@require_POST
+def demote_admin(request, admin_id):
+    """Demote superuser to delegate"""
+    if request.user.is_superuser:
+        delegate = get_object_or_404(AdminUser, id=admin_id)
+        if not delegate.is_superuser or not delegate.branch.organization == request.user.branch.organization\
+            or delegate == request.user or delegate.branch.organization.admin_user == delegate:
+            messages.error(request, 'You cannot demote this superuser to delegate')
+            return JsonResponse({'type': 'error', 'message': 'You cannot demote this superuser to delegate', 'success': False}, status=200)
+        delegate.is_superuser = False
+        delegate.is_delegate = True
+        delegate.can_change_password = False
+        delegate.save()
+        messages.success(request, 'Superuser demoted to delegate successfully')
+        return JsonResponse({'type': 'success', 'message': 'Superuser demoted to delegate successfully', 'success': True}, status=200)
+    else:
+        messages.error(request, 'You do not have permission to demote superuser')
+        return JsonResponse({'type': 'error', 'message': 'You do not have permission to demote superuser', 'success': False}, status=200)
+
+
+#  suspend admin user
+@csrf_exempt
+@require_POST
+def suspend_admin(request, admin_id):
+    """Suspend admin user"""
+    if request.user.is_superuser:
+        admin = get_object_or_404(AdminUser, id=admin_id)
+        if not admin or admin == request.user or admin.branch.organization.admin_user == admin:
+            messages.error(request, 'You cannot suspend this user')
+            return JsonResponse({'type': 'error', 'message': 'You cannot suspend this user', 'success': False}, status=200)
+        admin.is_active = False
+        admin.employment_status = 'Suspended'
+        admin.can_change_password = False
+        admin.save()
+        messages.success(request, 'User suspended successfully')
+        return JsonResponse({'type': 'success', 'message': 'User suspended successfully', 'success': True}, status=200)
+    else:
+        messages.error(request, 'You do not have permission to suspend user')
+        return JsonResponse({'type': 'error', 'message': 'You do not have permission to suspend user', 'success': False}, status=200)
+
+
+# restore suspended admin
+@csrf_exempt
+@require_POST
+def restore_admin(request, admin_id):
+    """Restore suspended admin user"""
+    if request.user.is_superuser:
+        admin = get_object_or_404(AdminUser, id=admin_id)
+        if not admin or admin == request.user or admin.branch.organization.admin_user == admin:
+            messages.error(request, 'You cannot restore this user')
+            return JsonResponse({'type': 'error', 'message': 'You cannot restore this user', 'success': False}, status=200)
+        admin.is_active = True
+        admin.employment_status = 'Active'
+        admin.can_change_password = True
+        admin.is_superuser = True
+        admin.save()
+        messages.success(request, 'User restored successfully')
+        return JsonResponse({'type': 'success', 'message': 'User restored successfully', 'success': True}, status=200)
+    else:
+        messages.error(request, 'You do not have permission to restore user')
+        return JsonResponse({'type': 'error', 'message': 'You do not have permission to restore user', 'success': False}, status=200)
+
+
+
+
+
 """Search Feature"""
 def search_employee(request):
     if request.method == 'GET':
@@ -1041,26 +1268,27 @@ def forgot_password(request):
         recipient = request.POST.get('email').strip()
         subject = "Password Reset Code"
         token = generate_password_reset_token()
-        user = get_object_or_404(AdminUser, email=recipient)
-        if user:
-            # Use get_or_create to create a new PasswordResetToken if it doesn't exist
-            password_reset_token, created = PasswordResetToken.objects.get_or_create(user=user)
-            password_reset_token.token = token
-            password_reset_token.created_at = timezone.now()  # Update the created_at field
-            password_reset_token.save()
+        try:
+            user = AdminUser.objects.get(email=recipient)
+        except AdminUser.DoesNotExist:
+            messages.error(request, 'No admin user found with this email')
+            return redirect('login')
+        if not user.can_change_password:
+            messages.error(request, 'You do not have permission to reset password, please contact your admin')
+            return redirect('login')
+        # Use get_or_create to create a new PasswordResetToken if it doesn't exist
+        password_reset_token, created = PasswordResetToken.objects.get_or_create(user=user)
+        password_reset_token.token = token
+        password_reset_token.created_at = timezone.now()  # Update the created_at field
+        password_reset_token.save()
 
-            message = f"Your password reset code is {token} (expires in one hour).\n\nPlease do not share this code with anyone\nIf you didn't request this pin, we recommend you change your WorkForceHub password.\n\nRegards, \nKingsley, WorkForceHub Team"
-            try:
-                print('sending')
-                send_mail(subject, message, sender, [recipient])
-                print('sent')
-                messages.success(request, 'Password reset code sent successfully')
-                return render(request, 'password/reset_token.html', context={'user_email': recipient})
-            except SMTPException as e:
-                messages.error(request, 'Failed to send password reset code, please try again later')
-                return redirect('login')
-        else:
-            messages.error(request, 'User does not exist')
+        message = f"Your password reset code is {token} (expires in one hour).\n\nPlease do not share this code with anyone\nIf you didn't request this pin, we recommend you change your WorkForceHub password.\n\nRegards, \nKingsley, WorkForceHub Team"
+        try:
+            send_mail(subject, message, sender, [recipient])
+            messages.success(request, 'Password reset code sent successfully')
+            return render(request, 'password/reset_token.html', context={'user_email': recipient})
+        except SMTPException as e:
+            messages.error(request, 'Failed to send password reset code, please try again later')
             return redirect('login')
     return render(request, 'employee/login.html', context={'user_email': recipient})
 
@@ -1079,6 +1307,10 @@ def generate_password_reset_token():
 #confirm password reset token
 def confirm_password_reset_token(request, email):
     """Confirm password reset token"""
+    if not request.user.can_change_password:
+        messages.error(request, 'You do not have permission to reset password, please contact your admin')
+        return redirect('login')
+
     if request.method == 'POST':
         token = request.POST.get('token')
         user_email = email.strip()
@@ -1086,7 +1318,6 @@ def confirm_password_reset_token(request, email):
         
         try:
             password_reset_token = PasswordResetToken.objects.get(user=user)
-            print(token, password_reset_token.token, password_reset_token.is_expired())
         except PasswordResetToken.DoesNotExist:
             messages.error(request, 'User does not exist')
             return render(request, 'password/reset_token.html', context={'user_email': email})
@@ -1104,6 +1335,10 @@ def confirm_password_reset_token(request, email):
 # reset password
 def reset_password(request, email):
     """Reset Password"""
+    if not request.user.can_change_password:
+        messages.error(request, 'You do not have permission to reset password, please contact your admin')
+        return redirect('login')
+
     if request.method == 'POST':
         password = request.POST.get('newPassword')
         confirm_password = request.POST.get('confirmPassword')
