@@ -19,7 +19,7 @@ header {
 header nav {
     display: flex;
     justify-content: space-between;
-    padding: 0 5%;
+    padding: 1 5%;
 }
 
 nav ul {
@@ -63,9 +63,6 @@ section {
     padding: 4% 0;
 }
 
-.overview {
-margin-bottom: 30px;
-}
 .profile img {
     border-radius: 50%;
     width: 200px;

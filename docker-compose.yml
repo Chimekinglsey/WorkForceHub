@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    container_name: workforcehub_db
+    environment:
+      - POSTGRES_DB=workforcehub
+      - POSTGRES_USER=workforcehub_admin
+      - POSTGRES_PASSWORD=workforcehub_admin_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  web:
+    container_name: workforcehub_web
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/workforcehub
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+volumes:
+  postgres_data:

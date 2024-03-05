@@ -40,6 +40,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 0px;
 }
 
 .left-pane-org button:hover {
@@ -141,6 +142,11 @@
 }
 .left-pane-org .cardie {
     padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 150px;
 }
 
 .cardie:hover {

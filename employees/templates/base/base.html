@@ -4,21 +4,22 @@
         {% load static %}
         {% load humanize %}
         <meta charset="UTF-8">
-        <script src="{% static 'base/jQuery.js' %}"></script>
+        <link rel="icon" type="image/png" href="{% static 'base/images/logo.png' %}">
+        <script src="{% static 'base/scripts/jQuery.js' %}"></script>
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
         <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'base/popper.min.js' %}"></script>
+        <script src="{% static 'base/scripts/popper.min.js' %}"></script>
         <script src="{% static 'DataTables/datatables.min.js' %}"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="{% static 'DataTables/datatables.min.css'%}">
-        <link rel="stylesheet" href="{% static 'base/flash.css' %}">
-        <script src="{% static 'base/font-awesome.js'%}"></script>
-        <script src="{% static 'base/base.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'base/base.css' %}">
-        <script src="{% static 'base/flash.js'%}"></script>
+        <link rel="stylesheet" href="{% static 'base/styles/flash.css' %}">
+        <script src="{% static 'base/scripts/font-awesome.js'%}"></script>
+        <script src="{% static 'base/scripts/base.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'base/styles/base.css' %}">
+        <script src="{% static 'base/scripts/flash.js'%}"></script>
         {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
         <title>{% block title %}Home WorkForceHub{% endblock title %}</title>
         {% block head %}
@@ -37,6 +38,13 @@
         <nav class="header-nav">
             {% if user.is_authenticated %}
                 {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
+                {% block dashboard %}
+                    {% if user.is_superuser %}
+                            <a href="{% url 'org_dashboard' %}">Dashboard</a>
+                    {% else%}
+                            <a href="{% url 'branch_dashboard' user.branch.branch_id %}">Dashboard</a>
+                    {% endif %}
+                {% endblock dashboard %}
                 {% block logout %}<a class="logoutBtn btn" href="{% url 'logout' %}">Logout</a>{% endblock logout %}
             {% else %}
                 {% block terms %}<a href="{% url 'terms' %}">Terms</a>{% endblock terms %}

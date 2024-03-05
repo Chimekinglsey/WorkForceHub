@@ -1,0 +1,64 @@
+/* Styles for payroll history table */
+
+.containerBox {
+    overflow: auto;
+}
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    min-width: 850px;
+    overflow-x: scroll;
+}
+
+/* Table header styling */
+thead {
+    background-color: #f2f2f2;
+    vertical-align: top;
+}
+
+/* Table header cells */
+th {
+    padding: 12px 4px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* Table data cells */
+td {
+    padding: 12px 4px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* Highlight even rows */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Hover effect for table rows */
+tbody tr:hover {
+    background-color: #e9e9e9;
+}
+
+/* Responsive table */
+@media screen and (max-width: 600px) {
+    /* Make table rows stack vertically on small screens */
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    /* Collapse table cells into single column */
+    th, td {
+        display: block;
+        text-align: left;
+    }
+    /* Adjust font size for smaller screens */
+    th, td {
+        font-size: 12px;
+    }
+}

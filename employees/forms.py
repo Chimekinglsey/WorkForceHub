@@ -125,17 +125,12 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['employee_id', 'department', 'dob', 'phone_number', 'profile_picture', 
                   'job_role', 'joining_date', 'first_name', 'last_name', 'middle_name']
         widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date', 'required': 'true'}),
-            'joining_date': forms.DateInput(attrs={'type': 'date', 'required': 'true'}),
-            'employee_id': forms.TextInput(attrs={'placeholder': 'Employee ID', 'required': 'true'}),
-            'department': forms.TextInput(attrs={'required': 'true'}),
-            'job_role': forms.TextInput(attrs={'required': 'true'}),
-            'first_name': forms.TextInput(attrs={'required': 'true'}),
-            'last_name': forms.TextInput(attrs={'required': 'true'}),
-            'phone_number': forms.TextInput(attrs={'required': 'true'}),
-            'profile_picture': forms.FileInput(attrs={'required': 'true'}),
+            'dob': forms.DateInput(attrs={'type': 'date'}),
+            'joining_date': forms.DateInput(attrs={'type': 'date'}),
+            'phone_number': forms.TextInput(attrs={'type': 'tel'}),
+            'employee_id': forms.TextInput(attrs={'title': 'Override the employee ID if necessary'}),
         }
-
+        # TODO: Allow employee_id to be auto-generated if blank
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -177,7 +172,25 @@ class ProfileUpdateForm(forms.ModelForm):
                 ),
             )
         )
-
+        self.fields['dob'].required = True
+        self.fields['joining_date'].required = True
+        self.fields['employee_id'].required = True
+        self.fields['department'].required = True
+        self.fields['job_role'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['phone_number'].required = True
+        self.fields['profile_picture'].required = True
+        self.fields['dob'].label = 'Date of Birth'
+        self.fields['joining_date'].label = 'Date Employed'
+        self.fields['employee_id'].label = 'Employee ID'
+        self.fields['department'].label = 'Department'
+        self.fields['job_role'].label = 'Job Role'
+        self.fields['profile_picture'].label = 'Profile Picture'
+        self.fields['phone_number'].label = 'Phone Number'
+        self.fields['first_name'].label = 'First Name'
+        self.fields['last_name'].label = 'Last Name'
+        self.fields['middle_name'].label = 'Middle Name'
 
 # Organizations branch form
 class BranchForm(forms.ModelForm):
@@ -207,12 +220,12 @@ class BranchForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('facebook', css_class='form-group col-md-6 mb-0'),
-                Column('twitter', css_class='form-group col-md-6 mb-0'),
+                Column('facebook', css_class='form-group col-md-6 mb-0 presignedUrl'),
+                Column('twitter', css_class='form-group col-md-6 mb-0 presignedUrl'),
                 css_class='form-row'
             ),
             Row(
-                Column('linkedin', css_class='form-group col-md-6 mb-0'),
+                Column('linkedin', css_class='form-group col-md-6 mb-0 presignedUrl'),
                 Column('description', css_class='form-group col-md-6 mb-0', placeholder='Branch Description'),
                 css_class='form-row'
             ),

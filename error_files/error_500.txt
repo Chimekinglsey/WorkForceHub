@@ -1,0 +1,4 @@
+2024-03-04 11:20:51,104 - 127.0.0.1 - requested_resource: /privacy/ - 
+2024-03-05 02:08:43,812 - 172.20.0.1 - requested_resource: /login/ - relation "employees_adminuser" does not exist
+LINE 1: ...rd", "employees_adminuser"."is_master_admin" FROM "employees...
+                                                             ^

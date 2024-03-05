@@ -1,3 +1,4 @@
+from cgitb import handler
 from django.urls import path, include
 from employees import api_views, views as emp_view
 from organizations import views as org_views
@@ -24,7 +25,7 @@ urlpatterns = [
     path('uploadBranchDocs/', emp_view.upload_documents, name='upload_branch_docs'),
 
     # Dashboard urls
-    path('createOrg/', emp_view.org_dashboard, name="create_org"),
+    # path('createOrg/', emp_view.org_dashboard, name="create_org"),
     path('orgDashboard/', emp_view.org_dashboard, name='org_dashboard'),
     path('org/createBranch/', emp_view.create_branch, name="create_branch"),
     path('org/branch/<int:branch_id>/', emp_view.branch_dashboard, name="branch_dashboard"),
@@ -103,9 +104,12 @@ urlpatterns = [
     path('developers/', emp_view.developers, name='developers'),
 
 
+    # set favicon
+    path('favicon.ico/', emp_view.favicon, name='favicon'),
 
 
     # API URLS
+    path('api/', org_views.WorkforceHubAPI.as_view(), name='workforcehub-api-root'),
     path('api/', include(router.urls)),
     path('employees/<int:pk>/', api_views.EmployeeDetailViewSet.as_view(), name='employee-detail'),
     path('adminusers/<int:pk>/', api_views.AdminUserDetailViewSet.as_view(), name='adminuser-detail'),

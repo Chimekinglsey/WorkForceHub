@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'emps/styles/confirmationModal.css'%}">
     <script src="{% static 'emps/scripts/org_dashboard.js'%}"></script>
 {% endblock head %}
-
+{% block dashboard %}{% endblock dashboard %}
 
 {% block title %}{% if org %}{{ org.name }}{% else %}Dashboard{% endif %}{% endblock title %}
 
@@ -184,21 +184,9 @@
         </div>
     </div>
 
+{% comment %} =============FORMS================== {% endcomment %}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    
       {% comment %} Create Organization Form {% endcomment %}
     <form id="organization-form" method="post" class="container mt-5 tab-contents2">
         <div class="close-btn">
@@ -234,7 +222,7 @@
                 <input type="text" id="sector" name="sector" class="form-control" value="{{org.sector|default:''}}" required placeholder="Enter Industry sector">
             </div>
             <div class="form-group col-md-6">
-                <label for="size">Size<span class="asteriskField">*</span></label>
+                <label for="size">Employees<span class="asteriskField">*</span></label>
                 <select id="size" name="size" class="form-control" required>
                     <option value="">--Select--</option>
                     <option value="1 - 20" {% if org.size == "1 - 20" %} selected {% endif %}>1 - 20</option>
@@ -248,7 +236,7 @@
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="branches">Branches<span class="asteriskField">*</span></label>
+                <label for="branches">Number of Branches<span class="asteriskField">*</span></label>
                 <select id="branches" name="branches" class="form-control" required>
                     <option value="">--Select--</option>
                     <option value="1 - 10" {% if org.branches == "1 - 10" %} selected {% endif %}>1 - 10</option>
@@ -298,22 +286,22 @@
                 <textarea id="employee_benefits" name="employee_benefits" class="form-control" placeholder="Enter Employee Benefits">{{ org.employee_benefits|default:'' }}</textarea>
             </div>
         </div>
-
+        
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="facebook">Facebook</label>
-                <input type="url" id="facebook" name="facebook" value="{{org.facebook|default:'https://facebook.com/yourpage'}}" class="form-control"  placeholder="Facebook Page">
+                <input type="url" id="facebook" name="facebook" value="{{org.facebook|default:'https://facebook.com/yourpage'}}" class="form-control presignedUrl" placeholder="https://facebook.com/">
             </div>
             <div class="form-group col-md-6">
                 <label for="twitter">Twitter</label>
-                <input type="url" id="twitter" name="twitter" value="{{org.twitter|default:'https://x.com/yourpage'}}" class="form-control"  placeholder="X (Twitter) handle">
+                <input type="url" id="twitter" name="twitter" value="{{org.twitter|default:'https://x.com/yourpage'}}" class="form-control presignedUrl" placeholder="https://x.com/">
             </div>
         </div>
-
+        
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="linkedin">Linkedin</label>
-                <input type="url" id="linkedin" name="linkedin" value="{{org.linkedin|default:'https://linkedin.com/in/yourpage'}}" class="form-control"  placeholder="LinkedIn Page">
+                <input type="url" id="linkedin" name="linkedin" value="{{org.linkedin|default:'https://linkedin.com/in/yourpage'}}" class="form-control presignedUrl" placeholder="https://linkedin.com/in/">
             </div>
             <div class="form-group col-md-6">
                 <label for="certifications">Certifications</label>
@@ -453,19 +441,19 @@
                         <center><p class="user_name">{{ user.username }}</p></center>
                     </section>
                     {% if org %}
-                    {% if org.name|length > 15 %}
-                    <center class="no-bottom">
-                        <p> Welcome Back,</p>
-                        <p><b class="org_name">{{ org.name|slice:':15' }}</b>
-                        </p>
-                    </center> 
-                    {% else %}
+                        {% if org.name|length > 15 %}
                         <center class="no-bottom">
                             <p> Welcome Back,</p>
-                            <p><b class="org_name">{{ org.name }}</b>
+                            <p><b class="org_name">{{ org.name|slice:':15' }}</b>
                             </p>
                         </center> 
-                    {% endif %}
+                        {% else %}
+                            <center class="no-bottom">
+                                <p> Welcome Back,</p>
+                                <p><b class="org_name">{{ org.name }}</b>
+                                </p>
+                            </center> 
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="left-down-content">
@@ -473,7 +461,13 @@
                         {% if org %}
                         <h4 class="saira"> My Organization</h4>
                         <ul>
-                            <li><button class="createBranchBtn">Create Branch</button></li>
+                            <li><button class="createBranchBtn">
+                                {% if branches %}
+                                Add Branch
+                                {% else %}
+                                Create Branch
+                                {% endif %}
+                            </button></li>
                             {% if branches %}
                             <li class="createDelegateBtn"><i class="fas fa-user-plus"></i>Add Delegate</li>
                             {% endif %}
@@ -542,16 +536,32 @@
                 <div class="welcome-section mgt2 active">
                     <div class="cardie">
                         {% if org %}
-                            <h3>Create Branch</h3>
-                            <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
-                            <button class="createBranchBtn">Create Branch</button>
+                            <h3>
+                                {% if branches %}
+                                    Add More Branches
+                                {% else %}
+                                    Create Branch
+                                {% endif %}
+                            </h3>
+                            {% if branches %}
+                                <p>Expand your organization by adding more branches. Manage your workforce across multiple locations efficiently.</p>
                             {% else %}
+                                <p>Start managing your organization's workforce efficiently. Create a branch to start working with your employee data seamlessly.</p>
+                            {% endif %}
+                            <button class="createBranchBtn">
+                                {% if branches %}
+                                    Add More Branches
+                                {% else %}
+                                    Create Branch
+                                {% endif %}
+                            </button>
+                        {% else %}
                             <h3>Create Organization</h3>
                             <p>Start managing your organization's workforce efficiently. Create an organization to consolidate and centralize your employee data across branches.</p>
                             <button class="createOrgBtn">Create Organization</button>
                         {% endif %}
                     </div>
-                    {% comment %} floating images {% endcomment %}
+                                        {% comment %} floating images {% endcomment %}
                     <div class="landing-left">
                         <h6 class="script">. . . your one-stop solution to employee management</h6>
         
@@ -593,7 +603,12 @@
                                 <li>Create delegate admin</li>
                                 <li>Start managing your workforce seamlessly</li>
                             </ol>
-                        <button  class="createOrgBtn">Get started</button>
+                            {% if org %}
+                                <button class="createBranchBtn"> Add Branches</button>
+                            {% else %}
+                                <button  class="createOrgBtn">Get started</button>
+                            {% endif %}
+                    
                     </div>
         
                     <!-- Why Choose WorkForceHub Card -->

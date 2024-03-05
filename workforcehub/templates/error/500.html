@@ -1,0 +1,48 @@
+{% extends 'base/base.html'%}
+{% load static%}
+{% block head %}
+    <style>
+        .exceptionContainer {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            color: #e74c3c;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+{% block title %}Server Error{% endblock title %}
+{% block content %}
+<div class="exceptionContainer">
+    <div class="container">
+            <h1>500 - Server Error</h1>
+            <p>Oops! Something went wrong on our end.</p>
+            <p>Please try again later or <a onclick="window.history.back()">go back</a>.</p>
+        </div>
+</div>
+{% endblock content %}

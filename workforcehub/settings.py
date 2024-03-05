@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from pickle import APPEND
-from telnetlib import AUTHENTICATION
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +26,9 @@ SECRET_KEY = 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost', '*'
+]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -63,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'employees.middleware.ErrorHandlerMiddleware',
+    'employees.middleware.NotFoundMiddleware',
 ]
 
 ROOT_URLCONF = 'workforcehub.urls'
@@ -89,12 +91,24 @@ USE_L10N = True
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'workforcehub', # database name
+        'USER': 'workforcehub_admin', # database user (default is 'postgres', create user ABC with password 1234; grant all privileges on database ABCD to ABC)
+        'PASSWORD': 'workforcehub_admin_password', # database password
+        'HOST': 'db',  # wiil evaluate to IP address of the docker container running the database
+        'PORT': '5432',           # Typically PostgreSQL runs on port 5432
     }
 }
+
 
 AUTHENTICATION_BACKENDS = [
     'employees.backends.AdminUserAuthBackend',
@@ -144,6 +158,9 @@ STATICFILES_DIRS = [
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR,  'media')
 MEDIA_URL = '/media/'
+
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

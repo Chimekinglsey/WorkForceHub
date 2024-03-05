@@ -27,7 +27,11 @@
                 <p class="error">{{ error }}</p>
             {% endif %} 
             <label for="username" title="Enter your registered username and email address">UserName or Email</label><br>
-            <input type="text" name="username_or_email" required placeholder="enter username or email"><br>
+            {% if username_or_email %}
+                <input type="text" name="username_or_email" required placeholder="enter username or email" value="{{ username_or_email }}"><br>
+            {% else %}
+                <input type="text" name="username_or_email" required placeholder="enter username or email"><br>
+            {% endif %}
             <label for="password" title="Enter you Password">Password</label><br>
             <input type="password" name="password" placeholder="********" id="password" required autocomplete="on">
             <span toggle="#password" class="password-toggle"></span><br><br>

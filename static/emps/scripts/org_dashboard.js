@@ -19,7 +19,7 @@ $(document).ready(function() {
 
         // Send AJAX request to create organization
         $.ajax({
-            url: '/createOrg/',
+            url: '/orgDashboard/',
             method: 'POST',
             data: formData,
             success: function(response) {
@@ -27,7 +27,7 @@ $(document).ready(function() {
                 $('.spinner-container').hide();
                 form.trigger('reset');
                 // reload the page
-                window.location.href = '/createOrg/';
+                window.location.href = '/orgDashboard/';
             },
             error: function(xhr, status, error) {
                 // Handle error response
@@ -38,7 +38,17 @@ $(document).ready(function() {
         });
     });
 
-
+    // prefill the url in orgaization form
+    $('.presignedUrl').on('input', function() {
+        var val = $(this).val();
+        var placeholder = $(this).attr('placeholder');
+        if (val && val.startsWith(placeholder)) {
+            var parts = val.split('/yourpage');
+            if (parts.length > 1) {
+                $(this).val(parts[0] + '/yourpage' + parts[1]);
+            }
+        }
+    });
 
     $('#branch-form').submit(function(e) {
         // start spinner
@@ -59,7 +69,7 @@ $(document).ready(function() {
                 // Handle success response, e.g., redirect to branch creation
                 form.trigger('reset');
                 // reload the page
-                window.location.href = '/createOrg/';
+                window.location.href = '/orgDashboard/';
             },
             error: function(xhr, status, error) {
                 // Handle error response
@@ -90,7 +100,7 @@ $(document).ready(function() {
             success: function(response) {
                 // Handle success response, e.g., redirect to branch creation
                 form.trigger('reset');
-                window.location.href = '/createOrg/';
+                window.location.href = '/orgDashboard/';
             },
             error: function(xhr, status, error) {
                 // Handle error response
@@ -120,7 +130,7 @@ $(document).ready(function() {
             success: function(response) {
                 // Handle success response, e.g., redirect to branch creation
                 form.trigger('reset');
-                window.location.href = '/createOrg/';
+                window.location.href = '/orgDashboard/';
             },
             error: function(xhr, status, error) {
                 // Handle error response

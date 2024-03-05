@@ -1,0 +1,76 @@
+.welcomeSection {
+    font-family: 'poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9bb;
+    color: #333;
+    box-sizing: border-box;
+    display: block;
+  }
+  
+  /* Hero Section */
+  .hero {
+    background-image: url('../../../static/emps/images/bgr2.jpg'), linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    background-size: cover;
+    background-position: center;
+    object-fit: cover;
+    text-align: center;
+    padding: 5px 20px;
+    color: #fff;
+    min-height: 90vh;
+    border-radius: 10px;
+  }
+  .hero h1 {
+    font-size:2rem;
+    margin-bottom: 20px;
+  }
+
+.welcomeSection .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.featureSlide {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.feature {
+  background-color: #fff;
+  padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    width: 50% !important;
+    margin: auto auto;
+    display: none;
+  }
+  
+  .feature i{
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  .feature h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+/* ======================= */
+
+.featureSlide {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.feature.active {
+  display: block;
+}
+
+.goodStat {
+  color: rgb(93, 178, 8);
+}

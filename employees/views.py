@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from requests import get
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -43,6 +44,16 @@ def generate_branch_id():
         if branch_id[0] != '0' and not Branch.objects.filter(branch_id=branch_id).exists():
             return branch_id
 
+def generate_employee_id():
+    """Generate 4 digits and 2 Uppercase employee ID"""
+    while True:
+        nums = ''.join(random.choices(string.digits, k=4))
+        chars = ''.join(random.choices(string.ascii_uppercase, k=2))
+        employee_id = nums + chars
+        # Check if the first character is not zero
+        if employee_id[0] != '0' and not Employee.objects.filter(employee_id=employee_id).exists():
+            return employee_id
+        
 def parse_date(date_str):
     """Parse a date string in the format yyyy-mm-dd to a date object.
 
@@ -95,7 +106,7 @@ def login_view(request):
             login(request, user, backend='employees.backends.AdminUserAuthBackend')  # Authenticate the user
             messages.success(request, 'Login successful')
 
-            if user.is_superuser and user.employment_status is not 'Suspended' and  user.employee_id is None:
+            if user.is_superuser and user.employment_status != 'Suspended' and  user.employee_id is None:
                 return redirect('profile_update')
             
             if user.employment_status == 'Suspended':
@@ -105,10 +116,10 @@ def login_view(request):
             
             if not user.is_superuser:
                 return redirect('branch_dashboard', branch_id=user.branch.branch_id)
-            return redirect('create_org')
+            return redirect('org_dashboard')
         else:
             messages.error(request, 'Incorrect username or password')
-            return redirect('login') 
+            return render(request, 'employees/login.html', {'username_or_email': username_or_email})
     return render(request, 'employees/login.html')
 
 
@@ -121,12 +132,15 @@ def profile_update(request):
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
+            form.save(commit=False)
+            form.instance.adminuser = request.user
             form.save()
             messages.success(request, 'Profile updated successfully')
-            return redirect('create_org')
+            return redirect('org_dashboard')
     else:
         # Initialize form with instance of the logged-in user
-        form = ProfileUpdateForm(instance=request.user, initial={'email': request.user.email}, data=request.POST or None)
+        form = ProfileUpdateForm(instance=request.user, initial={'email': request.user.email,
+                                                                 'employee_id': generate_employee_id()}, data=request.POST or None)
     return render(request, 'employees/profile_update.html', {'form': form})
 
 
@@ -198,6 +212,7 @@ def org_dashboard(request):
         else:
             org = Organization(admin_user=admin_user, **org_data)
             org.org_id = generate_org_id()
+            admin.is_master_admin = True
             org.save()
             messages.success(request, 'Organization created successfully')
         return JsonResponse({'type': 'success', 'message': 'Organization created successfully'}, status=201)
@@ -364,7 +379,7 @@ def create_delegate(request):
         delegate_admin = AdminUser.objects.create_user(
             username=username, email=email, password=password,
             first_name=first_name, last_name=last_name, can_change_password=can_change_password, 
-            is_delegate=is_delegate, is_superuser=is_superuser, branch=branch
+            is_delegate=is_delegate, is_superuser=is_superuser, branch=branch, adminuser=request.user
         )
         delegate_admin.save()
 
@@ -420,9 +435,6 @@ def branch_dashboard(request, branch_id):
         branch = request.user.branch
     else:
         branch = get_object_or_404(Branch, branch_id=branch_id)
-        # if branch.organization.admin_user != request.user or branch.organization is None:
-    if not branch:
-        raise Http404('Branch not found')
 
     organization = branch.organization
     branches = Branch.objects.filter(organization=organization)
@@ -524,7 +536,6 @@ def branch_dashboard(request, branch_id):
 
 
 
-
 """Employee Management"""
 # update employee
 @require_POST
@@ -610,8 +621,6 @@ def restore_archive(request, emp_id):
     employee.save()
     messages.success(request, f'Employee {employee.employee_id} restored successfully')
     return JsonResponse({'type': 'success', 'message': 'Employee record unarchived successfully'}, status=200)
-
-
 
 
 """Leave Management"""
@@ -818,8 +827,6 @@ def delete_performance_review(request, performance_id):
 def transfer_request(request):
     """Submit transfer request"""
     org = get_object_or_404(Organization, id=request.user.branch.organization.id)
-    if not org:
-        raise Http404('No Organization Found for this user')
     form = TransferForm(org, request.user, request.POST)
     if form.is_valid():
         # check whether there is a pending transfer for this employee
@@ -1240,8 +1247,6 @@ def restore_admin(request, admin_id):
 
 
 
-
-
 """Search Feature"""
 def search_employee(request):
     if request.method == 'GET':
@@ -1259,7 +1264,8 @@ def search_employee(request):
             # Return all employees if no search term provided
             employees = Employee.objects.none()
         return render(request, 'search_results.html', {'employees': employees})
-    
+
+
 # Forgot Password
 def forgot_password(request):
     """Forgot Password"""
@@ -1369,7 +1375,7 @@ def logout_view(request):
 
 # Error 404
 def error_404(request, exception):
-    return render(request, 'error/404.html', status=404)
+    return render(request, 'error/404.html', status=404) # Renders error 404 page from project templates
 
 # Error 500
 def error_500(request):
@@ -1377,7 +1383,7 @@ def error_500(request):
 
 # Error 403
 def error_403(request, exception):
-    return render(request, 'error/403.html', status=403)
+    return render(request, '403.html', status=403)# Renders error 403 page
 
 
 
@@ -1385,20 +1391,24 @@ def error_403(request, exception):
 """ Footer Section Navs"""
 def privacy(request):
     """Privacy Policy"""
-    return render(request, 'base/privacy.html')
+    return render(request, 'navs/privacy.html')
 
 def terms(request):
     """Terms and Conditions"""
-    return render(request, 'base/terms.html')
+    return render(request, 'navs/terms.html')
 
 def about(request):
     """About Us"""
-    return render(request, 'base/about.html')
+    return render(request, 'navs/about.html')
 
 def faq(request):
-    return render(request, 'base/faq.html')
+    return render(request, 'navs/faq.html')
 
 def developers(request):
     """Developers"""
-    return render(request, 'base/developers.html')
+    return render(request, 'navs/developers.html')
 
+# favicon
+def favicon(request):
+    """Favicon logo"""
+    return redirect('/static/base/images/logo.png')

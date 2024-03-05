@@ -1,7 +1,3 @@
-from email.policy import default
-from enum import unique
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -201,6 +197,7 @@ class AdminUser(BaseUser, AbstractUser):
     is_superuser = models.BooleanField(_('superuser status'), default=True, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
     can_change_password = models.BooleanField(_('Change password status'), default=True, help_text=_('Designates whether the user can change their password.'))
     delegated_branches = models.ManyToManyField(Branch, related_name='authorized_delegates')
+    is_master_admin = models.BooleanField(_('Master admin status'), default=False, help_text=_('Designates whether the user is the master admin for the organization.'))
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='admin_user_permissions')
     groups = models.ManyToManyField(Group, blank=True, related_name='admin_user_groups')
     # TODO: Allow delegate admins to manage multiple branches
