@@ -9,10 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 from pathlib import Path
 import os
-from re import DEBUG
 import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ') if os.environ.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 
@@ -61,6 +59,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'employees.middleware.ErrorHandlerMiddleware',
+    'employees.middleware.NotFoundMiddleware',
+    'employees.middleware.Custom404Middleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,8 +69,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'employees.middleware.ErrorHandlerMiddleware',
-    'employees.middleware.NotFoundMiddleware',
 ]
 
 ROOT_URLCONF = 'workforcehub.urls'
@@ -100,24 +99,17 @@ if database_url:
     DATABASES = {
         'default': dj_database_url.parse(database_url)
     }
-elif DEBUG:
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
+else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'workforcehub', # database name
-            'USER': 'kingsley', # database user (default is 'postgres', create user ABC with password 1234; grant all privileges on database ABCD to ABC)
-            'PASSWORD': 'root', # database password
-            'HOST': '',  # wiil evaluate to IP address of the docker container running the database
-            'PORT': '5432',           # Typically PostgreSQL runs on port 5432
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'workforcehub', # database name
+                'USER': 'kingsley', # database user (default is 'postgres', create user ABC with password 1234; grant all privileges on database ABCD to ABC)
+                'PASSWORD': 'root', # database password
+                'HOST': '',  # wiil evaluate to IP address of the docker container running the database
+                'PORT': '5432',           # Typically PostgreSQL runs on port 5432
+            }
         }
-    }
 
 
 AUTHENTICATION_BACKENDS = [

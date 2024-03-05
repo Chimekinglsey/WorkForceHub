@@ -65,10 +65,24 @@ class NotFoundMiddleware:
 
     def process_exception(self, request, exception):
         if isinstance(exception, Http404):
-            # Log 404 error to file
-            logger_404.error(exception, extra={
-                'client_ip': request.META.get('REMOTE_ADDR'),
-                'requested_resource': f"requested_resource: {request.path}",
-            })
-            return render(request, 'error/404.html', status=404)
+            # # Log 404 error to file
+            # logger_404.error(exception, extra={
+            #     'client_ip': request.META.get('REMOTE_ADDR'),
+            #     'requested_resource': f"requested_resource: {request.path}",
+            # })
+            return render(request, '404.html', status=404)
         return None
+    
+class Custom404Middleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if response.status_code == 404:
+            return self.handle_404(request)
+        return response
+
+    def handle_404(self, request, exception=None):
+        # Render your custom 404 template
+        return render(request, '404.html', status=404)

@@ -422,6 +422,10 @@ Media Queries
     .logoutBtn {
         padding: 0;
     }
+    footer nav a {
+        padding: 0 7px;
+        font-size: 0.9rem;
+    }
 }
 @media screen and (max-width: 600px) {
     .header-nav {

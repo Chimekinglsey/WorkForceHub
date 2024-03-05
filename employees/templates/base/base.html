@@ -36,8 +36,8 @@
         {% block menu %} <button id="menu-toggle"> Menu <span class="fas fa-bars"></span> </button>{% endblock menu %}
 
         <nav class="header-nav">
+            {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
             {% if user.is_authenticated %}
-                {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
                 {% block dashboard %}
                     {% if user.is_superuser %}
                             <a href="{% url 'org_dashboard' %}">Dashboard</a>
