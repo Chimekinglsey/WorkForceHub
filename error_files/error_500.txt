@@ -9,3 +9,13 @@ LINE 1: ...rd", "employees_adminuser"."is_master_admin" FROM "employees...
 2024-03-05 05:15:08,642 - 127.0.0.1 - requested_resource: / - Missing staticfiles manifest entry for 'base/images/logo.png'
 2024-03-05 05:15:31,648 - 127.0.0.1 - requested_resource: / - Missing staticfiles manifest entry for 'base/images/logo.png'
 2024-03-05 12:11:22,751 - 127.0.0.1 - requested_resource: / - settings.DATABASES is improperly configured. Please supply the ENGINE value. Check settings documentation for more details.
+2024-03-05 14:52:18,028 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 14:54:37,438 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 14:54:39,118 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 14:54:40,643 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 14:56:59,300 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 15:05:24,907 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 15:05:27,985 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 15:05:34,026 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 15:05:35,968 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
+2024-03-05 15:05:37,065 - 127.0.0.1 - requested_resource: /login/ - Missing staticfiles manifest entry for ''
