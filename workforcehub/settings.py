@@ -103,11 +103,11 @@ else:
     DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'workforcehub', # database name
-                'USER': 'kingsley', # database user (default is 'postgres', create user ABC with password 1234; grant all privileges on database ABCD to ABC)
-                'PASSWORD': 'root', # database password
+                'NAME': 'workforcehub', 
+                'USER': 'kingsley',
+                'PASSWORD': 'root',
                 'HOST': '',  # wiil evaluate to IP address of the docker container running the database
-                'PORT': '5432',           # Typically PostgreSQL runs on port 5432
+                'PORT': '5432',    
             }
         }
 
@@ -159,9 +159,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# if not DEBUG:
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_URL = '/static/'
 
 # Additional directories where Django should look for static files
