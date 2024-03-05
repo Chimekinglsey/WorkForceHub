@@ -10,7 +10,7 @@ COPY . .
 
 # Install the project dependencies.
 RUN pip install -r requirements.txt
-COPY init.sql /docker-entrypoint-initdb.d/
+# COPY init.sql /docker-entrypoint-initdb.d/
 
 
 # Set environmental variables: we will set database credentials and other sensitive information in the docker-compose file.
@@ -21,7 +21,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Both `ENV key=value` and `ENV key value` are valid for setting environment variables.
 
 # Install Vim and upgrade pip as dependencies.
-RUN apt-get update && apt install -y postgresql-client  vim && pip install --upgrade pip
+RUN pip install --upgrade pip
+# RUN apt-get update && apt install -y postgresql-client  vim && pip install --upgrade pip
 
 # We are using SQLite file database, so MySQL or PostgreSQL servers are not needed in the development environment.
 
@@ -34,5 +35,5 @@ EXPOSE 8000
 # CMD ["python", "manage.py", "runserver"]
 
 # ENTRYPOINT sets the primary command that is executed when the container starts.
-# It is similar to CMD but does not allow the command to be overridden at runtime.
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] is the default command to run at container startup but we will use docker-compose to override it.
+# It is similar to CMD but does not allow the command to be overridden at runtime. is the default command to run at container startup but we will use docker-compose to override it.
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Cookie&family=Diphylleia&family=Domine&family=Dosis:wght@400;500&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=El+Messiri&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@600&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quintessential&family=Roboto+Flex:opsz@8..144&family=Rowdies:wght@300;400;700&family=Sora:wght@200;400;600&display=swap');
+
+.performance-dashboard, .custom-dashboard {
+    text-align: center;
+    padding: 20px;
+    overflow: auto;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .archive-modal {
+    color: #e0e0e0;
+    text-align: left;
+  }
+  
+
+  .employee-profile {
+    margin-bottom: 20px;
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  }
+  
+  .employee-info h2 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: 'Rowdies', cursive;
+    font-size: 24px;
+  }
+  
+  .employee-info p {
+    margin: 5px 0;
+  }
+  
+  .performance-actions, .action-tabs {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+  }
+  
+  .action-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .action-button:hover {
+    background-color: #024084;
+  }
+  /* Modal styles */
+
+  .archive-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 100; 
+    overflow-y: auto;
+  }
+
+  .col-md {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  form {
+    margin-top: 50px;
+  }  
+
+  .close {
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    padding: 5px;
+    opacity: 0.85;
+  }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border: 1px solid #dddddda8;
+  color: #333;
+}
+
+th, td {
+  border-bottom: 1px solid #dddddda8;
+}
+  label, legend {
+    color: #ddd;
+  }
+
+  form textarea {
+    background: #f2f2f2 !important;
+    color: black !important;
+  }
+  
+/* Profile picture styling */
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 20px auto;
+  /* margin-bottom: 20px; */
+  background-color: #f0f0f0;
+  border: 1px solid#1a295e5e
+}
+
+.profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+tr {
+  background-color: #f0f0f0;
+}
+tr:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+tr:hover {
+  background-color: #e0e0e0;
+}
+
+#performanceHistory-modal, .history-modal {
+  padding-top: 50px;
+  overflow: auto;
+}
+
+.history-container {
+  overflow: auto;
+}
+.history-container h4  {
+  color: #f2f3f3;
+}
+
+#detailedReport-modal .nav-tabs {
+  color: #fff;
+  padding: 0 20px;
+  border-top: 1px solid #f2f2f2;
+  border: none;
+}
+
+
+.custom-dashboard form.container {
+  text-align: left;
+}
+
+.archive-modal fieldset legend {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+
+.performance-dashboard .db-title {
+  font-weight: bolder;
+  font-family: 'Montserrat', sans-serif;
+  background-image: linear-gradient(to right, #0e276c, #0a0a09, #39c02a, #0e276c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#financeStats-modal {
+  min-height: 100vh;
+}
+li a.nav-link {
+  margin: 0 3px;
+}
+li a.nav-link:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+
+.custom-control-label.mb-0 {
+  color: #504e4e;
+}
+

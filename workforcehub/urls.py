@@ -27,10 +27,12 @@ urlpatterns = [
     
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 """ 
-# Error handling (middleware is in use at the moment for testing purposes)
+# Error handling (middleware is in use at the moment for testing and logging purposes)
 # uncomment the following lines to use the error handling views
 handler404 = 'employees.views.error_404'
 handler500 = 'employees.views.error_500'

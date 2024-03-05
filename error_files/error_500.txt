@@ -2,3 +2,9 @@
 2024-03-05 02:08:43,812 - 172.20.0.1 - requested_resource: /login/ - relation "employees_adminuser" does not exist
 LINE 1: ...rd", "employees_adminuser"."is_master_admin" FROM "employees...
                                                              ^
+2024-03-05 04:51:48,297 - 127.0.0.1 - requested_resource: / - [Errno -2] Name or service not known
+2024-03-05 04:52:20,046 - 127.0.0.1 - requested_resource: / - [Errno -2] Name or service not known
+2024-03-05 04:52:45,288 - 127.0.0.1 - requested_resource: / - [Errno -2] Name or service not known
+2024-03-05 04:56:17,371 - 127.0.0.1 - requested_resource: / - [Errno -2] Name or service not known
+2024-03-05 05:15:08,642 - 127.0.0.1 - requested_resource: / - Missing staticfiles manifest entry for 'base/images/logo.png'
+2024-03-05 05:15:31,648 - 127.0.0.1 - requested_resource: / - Missing staticfiles manifest entry for 'base/images/logo.png'

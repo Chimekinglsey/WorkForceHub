@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,21 +20,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu='
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    'localhost', '*'
-]
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ') if os.environ.get('ALLOWED_HOSTS') else ['localhost']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'developers.workforcehub@gmail.com'
-EMAIL_HOST_PASSWORD = 'orkn lwki lwbk oxxi'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'developers.workforcehub@gmail.com'
+# EMAIL_HOST_PASSWORD = 'orkn lwki lwbk oxxi'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +46,7 @@ INSTALLED_APPS = [
     'organizations',
     'rest_framework',
     'crispy_forms',
-   'fontawesomefree',
+    'fontawesomefree',
     "crispy_bootstrap4",
     'django_cron',
     'django.contrib.humanize',
@@ -57,6 +60,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -90,7 +94,13 @@ USE_L10N = True
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(database_url)
+    }
+elif DEBUG:
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -98,16 +108,16 @@ USE_L10N = True
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'workforcehub', # database name
-        'USER': 'workforcehub_admin', # database user (default is 'postgres', create user ABC with password 1234; grant all privileges on database ABCD to ABC)
-        'PASSWORD': 'workforcehub_admin_password', # database password
-        'HOST': 'db',  # wiil evaluate to IP address of the docker container running the database
-        'PORT': '5432',           # Typically PostgreSQL runs on port 5432
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'workforcehub', # database name
+            'USER': 'kingsley', # database user (default is 'postgres', create user ABC with password 1234; grant all privileges on database ABCD to ABC)
+            'PASSWORD': 'root', # database password
+            'HOST': '',  # wiil evaluate to IP address of the docker container running the database
+            'PORT': '5432',           # Typically PostgreSQL runs on port 5432
+        }
     }
-}
 
 
 AUTHENTICATION_BACKENDS = [
@@ -152,15 +162,21 @@ APPEND_SLASH = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-MEDIA_ROOT = os.path.join(BASE_DIR,  'media')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Additional directories where Django should look for static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
