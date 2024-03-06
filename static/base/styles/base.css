@@ -304,23 +304,9 @@ div.dt-container div.dt-search input:active {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
 }
 
-/* Overriding bootstrap h elemenets 
-h2 {
-    font-size: 1.5rem;
+#homeLink {
+    cursor: pointer;
 }
-
-h3 {
-    font-size: 1.25rem;
-}
-
-h4 {
-    font-size: 1.125rem;
-}
-h5 {
-    font-size: 1rem;
-}
-
-*/
 .nav-link {
     display: block;
     padding: .25rem .5rem;
@@ -363,7 +349,7 @@ Media Queries
         flex-direction: column;
         display: none;
         position: absolute;
-        top: 70px;
+        top: 68px;
         right: 0;
         background-color: #232f3e;
         width: 15%;

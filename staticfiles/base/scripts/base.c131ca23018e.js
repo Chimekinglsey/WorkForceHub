@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('#homeLink').click(function(){
+    $('.homeLink').click(function(){
         window.location.href = '/';
     })
     $('input[type="search"]').attr('placeholder', 'Enter search text');

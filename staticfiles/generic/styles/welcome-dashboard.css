@@ -10,7 +10,7 @@
   
   /* Hero Section */
   .hero {
-    background-image: url('../../../staticfiles/emps/images/bgr2.jpg'), linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    background-image: url('/static/emps/images/bgr2.jpg'), linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
     background-size: cover;
     background-position: center;
     object-fit: cover;
@@ -58,6 +58,7 @@
   .feature h3 {
     color: #007bff;
     margin-bottom: 10px;
+    font-size: 1.5rem;
   }
 /* ======================= */
 
@@ -73,4 +74,16 @@
 
 .goodStat {
   color: rgb(93, 178, 8);
+}
+
+@media screen and (max-width: 900px) {
+  .featureSlide .feature h3 {
+    font-size: 1.1rem;
+}
+}
+
+@media screen and (max-width: 768px) {
+  .featureSlide .feature h3 {
+    font-size: 1rem;
+}
 }
