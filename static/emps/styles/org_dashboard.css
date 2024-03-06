@@ -700,6 +700,9 @@ table {
     .left-pane-org .fa-plus-circle {
         color: black !important;
     }
+    .left-pane-org .fa-angle-down {
+        color: #fff;
+    }
     .createDelegateBtn {
         padding-top: 0;
     }
