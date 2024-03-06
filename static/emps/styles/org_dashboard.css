@@ -68,7 +68,9 @@
     color: #0056b3;
 }
 
-
+.left-pane-org .fa-plus-circle {
+    color: #fff !important;
+}
 
 
 
@@ -347,6 +349,10 @@ center h3 {
     display: block;
 }
 
+.downMore {
+    display: none;
+}
+
 /* Styles for statistics modal */
 .reportStats {
     display:  flex;
@@ -511,6 +517,25 @@ table {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.ToggleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    margin: 0 10px 10px 10px;
+    color: #fff;
+}
+.ToggleContainer h4 {
+    margin: 0;
+    padding: 10px 25px;
+    font-weight: 500;
+}
+.ToggleContainer:hover .fa-angle-down {
+    transform: rotate(180deg);
+}
 
 
 /* media query */
@@ -557,14 +582,7 @@ table {
     .left-pane-org button {
         padding: 3px 5px;
     }
-    .right-pane-org {
-        margin-left: 27%;
-        font-size: 0.9rem !important;
-    }
-    
-    .left-pane-org  {
-        width: 27%;
-    }
+
     .actions .tab6 {
        display: flex;
        flex-direction: column;
@@ -615,14 +633,6 @@ table {
 }
 
 
-@media screen and (max-width: 600px) {
-    /* .right-pane-org {
-        width: 60%;
-    } */
-    /* .left-pane-org {
-        width: 35%;
-    } */
-}
 @media screen and (max-width: 530px) {
 
     .left-pane-org {
@@ -640,4 +650,70 @@ table {
         padding-left: 1.5%;
     }
 
+}
+
+
+/* flex dashboard */
+@media screen and (max-width: 768px) {
+  .create-org {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+    .left-pane-org {
+        float: none ;
+        width: 100%;
+        padding: 5%;
+        position: static;
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+    }
+    .downMore {
+        display: flex;
+        justify-content: space-between;
+    }
+    .right-pane-org {
+        margin-left: 0;
+        padding: 5%;
+    }
+    .actionContainer {
+        display: flex;
+        justify-content: space-around;
+        margin: 10px;
+        
+    }
+    .left-pane-org button {
+        background: transparent;
+        color: #007bff;;
+    }
+    .left-pane-org button:hover {
+        background: transparent;
+        transition: 0.5s ease-in-out;
+        transform: translateX(5px);
+        cursor: pointer;
+        color: #222;
+    }
+    .top1 {
+        margin-top: 0 !important;
+    }
+    .left-pane-org .fa-plus-circle {
+        color: black !important;
+    }
+    .createDelegateBtn {
+        padding-top: 0;
+    }
+    .logout {
+        font-size: 1rem;
+    }
+
+    .left-pane-org .cardie {
+        min-height: 150px;
+        width: 70%;
+        margin: auto;
+        margin-bottom: 20px;
+    }
+    .mobileLeft {
+        margin-right: 10px;
+    }
 }

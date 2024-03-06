@@ -34,8 +34,8 @@
 
 <div class="dashboard-container">
     <div class="left-pane">
-        <div class="org"><center><h5>{{ organization.name|truncatechars:'20' }}</h5></center></div>
-        <div class="featuresToggleContainer">   <h4 class="featuresToggle">{{branch.name|truncatechars:'15'}}</h4> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
+        <div class="org"><center><h5>{{ organization.name|truncatechars:'20' }}<small>({{branch.name|truncatechars:'15'}})</small></h5></center></div>
+        <div class="featuresToggleContainer">   <h5 class="featuresToggle">Features</h5> <div class="rotate180"><i class="fas fa-angle-down"></i></div></div>
         <ul class="featuresList">
             <li><a class="featuresItem" id="employeeManagement" data-content="employee-management"><i class="fas fa-fw fa-user-tie"></i>Employees</a></li>
             <li><a class="featuresItem" id="leaveManagement" data-content="leave-management"><i class="fas fa-fw fa-calendar-alt"></i>Leaves</a></li>

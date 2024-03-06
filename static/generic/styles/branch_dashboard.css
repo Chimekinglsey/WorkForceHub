@@ -33,7 +33,7 @@ body {
 .left-pane ul {
     list-style: none;
     padding: 0;
-    margin-top: 30px;
+    margin-top: 15px;
 }
 
 .left-pane li {
@@ -58,6 +58,7 @@ body {
 .featuresToggleContainer {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 5px;
     background: rgb(214, 240, 238);
     color: #223;
@@ -67,6 +68,7 @@ body {
 .featuresToggleContainer:hover .fa-angle-down {
     transform: rotate(180deg);
 }
+
 
 .rotate180 {
     display: none;
@@ -602,16 +604,7 @@ table .btn {
     cursor: pointer;
     margin: auto auto;
 }
-/*
-.controlButton2:hover {
-    color: #222;
-}
 
-.controlButton2 a {
-    margin: 2px;
-    padding: 2px;
-    font-weight: 500;
-} */
 
 .controlButton .del-pf-btn {
     background: #a20c0c;
@@ -628,7 +621,6 @@ table .btn {
     color: #5cb85c;
 }
 .featuresToggle {
-    font-family: 'sora','Quintessential', sans-serif;
     color: #223;
     user-select: none;
     margin: 5px;

@@ -57,7 +57,7 @@
     color: inherit;
 }
 
-@media screen and (max-width:900){
+@media screen and (max-width: 900px){
     .flash-container {
         position: fixed;
         left:20%;

@@ -38,6 +38,28 @@ $(document).ready(function() {
         });
     });
 
+    // if width is <= 900px, toggle left pane down content when .ToggleContainer is clicked or hovered
+    const toggleContainer = $('.ToggleContainer');
+
+    toggleContainer.click(function() {
+        if ($(window).width() <= 768) {
+            $('.actionContainer').slideToggle();
+        }
+    });
+
+    // if width is less <=900px add class active to .downMore, else remove class active. Bind it to window resize
+    $(window).resize(function() {
+        toggleDownMore();
+    });
+    function toggleDownMore() {
+        if ($(window).width() <= 768) {
+            $('.ToggleContainer').show();
+        } else {
+            $('.ToggleContainer').hide();
+        }
+    }
+
+    toggleDownMore();
     // prefill the url in orgaization form
     $('.presignedUrl').on('input', function() {
         var val = $(this).val();
@@ -597,9 +619,13 @@ $(document).ready(function() {
     
         // Update left pane position on window scroll and resize
         $(window).on('scroll resize', function() {
-            updateLeftPanePosition();
+            if ($(window).width() > 768) {
+                updateLeftPanePosition();
+            }
         });
     
         // Initial position update
-        updateLeftPanePosition();
+        if ($(window).width() > 768){
+            updateLeftPanePosition();
+        }
     });

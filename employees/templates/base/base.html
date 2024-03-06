@@ -64,7 +64,7 @@
                 {% if forloop.last %}
                 <div class="flash-message {% if message.tags %}flash-{{ message.tags }}{% endif %}">
                     <p style="font-weight: bold;">{{ message }}</p>
-                    <button class="flash-close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                    <p class="flash-close-btn" onclick="this.parentElement.style.display='none'">&times;</p>
                 </div>
                 {% endif %}
             {% endfor %}

@@ -456,16 +456,16 @@
                         {% endif %}
                     {% endif %}
                 </div>
-                <div class="left-down-content">
-                    <div class="action-links">
+                <div class="ToggleContainer" style="display: none;"> <h4> Dashboard</h4> <div class="rotate180"><i class="fa fa-angle-down"></i></div></div>
+                <div class="actionContainer">
+                    <div class="mobileLeft">
                         {% if org %}
-                        <h4 class="saira"> My Organization</h4>
                         <ul>
                             <li><button class="createBranchBtn">
                                 {% if branches %}
-                                Add Branch
+                                <i class="fas fa-plus-circle"></i> Add Branch
                                 {% else %}
-                                Create Branch
+                                <i class="fas fa-plus-circle"></i>Create Branch
                                 {% endif %}
                             </button></li>
                             {% if branches %}
@@ -473,58 +473,63 @@
                             {% endif %}
                         </ul>
                         {% else %}
-                        <h5>Organization Dashboard</h5>
                         <ul>
-                            <li><button class="createOrgBtn">Create Organization</button></li>
+                            <li><button class="createOrgBtn"><i class="fas fa-plus-circle"></i><h5>Create Organization</h5></button></li>
                         </ul>
                         {% endif %}
-                        <ul>
-                            <li><a class="listBranches"><i class="fas fa-fw fa-code-branch"></i>Visit Branch</a></li>
-                            <div class="showBranches">
-                                {% if branches %}
-                                    <ul>
-                                        {% for branch in branches %}
-                                        <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.branch_id %}">{{ branch.name }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <ul>
-                                        <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
-                                    </ul>
-                                {% endif %}
+                        <div class="left-down-content">
+                            <div class="action-links">
+                                <ul>
+                                    <li><a class="listBranches"><i class="fas fa-fw fa-code-branch"></i>Visit Branch</a></li>
+                                    <div class="showBranches">
+                                        {% if branches %}
+                                            <ul>
+                                                {% for branch in branches %}
+                                                <li class="list-group-item list-color"><a href="{%url 'branch_dashboard' branch.branch_id %}">{{ branch.name }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <ul>
+                                                <li class="list-group-item list-color"><a href="">No Branch Yet</a></li>
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <li><a id="reports" data-content="reports" class=""><i class="fas fa-file-alt fa-fw"></i>Reports</a></li>
+                                    <li><a id="transfers" data-content="transfers" class=""><i class="fas fa-exchange-alt fa-fw"></i>Transfers</a></li>
+                                </ul>
                             </div>
-                            <li><a id="reports" data-content="reports" class=""><i class="fas fa-file-alt fa-fw"></i>Reports</a></li>
-                            <li><a id="transfers" data-content="transfers" class=""><i class="fas fa-exchange-alt fa-fw"></i>Transfers</a></li>
-                        </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="password">
-                    <p class="space-top">
-                        <a class="manageBranch" data-content="branches" title="Manage branches">
-                            <i class="fas fa-fw fa-sitemap"></i>Branches
-                        </a>
-                    </p>
-                    <p>
-                        <a class="delegateBtn" data-content="delegates" title="Manage delegates">
-                            <i class="fas fa-fw fa-users"></i>Delegates
-                        </a>
-                    </p>
-                    <p class="space-top">
-                        <a class="superuserBtn" data-content="superusers" title="Manage superusers">
-                            <i class="fas fa-fw fa-user-cog"></i>Superusers
-                        </a>
-                    </p>
-                    
-                </div>
-                <div class="password">
-                    <p>
-                        <a class="adminSettings" id="adminSettingsBtn" data-content="settings">
-                            <i class="fas fa-fw fa-gears"></i>Settings 
-                        </a>
-                    </p>
-                </div>
-                <div class="logout">
-                    <p class="logoutBtn"> <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></p>
+                    <div class="mobileRight">
+                        <div class="password">
+                            <p class="space-top top1">
+                                <a class="manageBranch" data-content="branches" title="Manage branches">
+                                    <i class="fas fa-fw fa-sitemap"></i>Branches
+                                </a>
+                            </p>
+                            <p>
+                                <a class="delegateBtn" data-content="delegates" title="Manage delegates">
+                                    <i class="fas fa-fw fa-users"></i>Delegates
+                                </a>
+                            </p>
+                            <p class="space-top top2">
+                                <a class="superuserBtn" data-content="superusers" title="Manage superusers">
+                                    <i class="fas fa-fw fa-user-cog"></i>Superusers
+                                </a>
+                            </p>
+                            
+                        </div>
+                        <div class="password">
+                            <p>
+                                <a class="adminSettings" id="adminSettingsBtn" data-content="settings">
+                                    <i class="fas fa-fw fa-gears"></i>Settings 
+                                </a>
+                            </p>
+                        </div>
+                        <div class="logout">
+                            <p class="logoutBtn"> <a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
