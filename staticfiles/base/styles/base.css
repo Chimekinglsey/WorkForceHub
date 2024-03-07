@@ -27,9 +27,7 @@ header {
     width: 100%;
     z-index: 1000;
 }
-/* .header-wrapper {
-    padding-top: 85px;
-} */
+
 .baseContainer {
     min-height: 100vh;
 }
@@ -265,13 +263,12 @@ footer nav a:hover {
 table {
     font-size: 0.9rem;
     margin-bottom: 15px;
+    overflow: auto !important;
 }
 .dataTable {
     width: 100% !important;
 }
-.dataTable {
-    overflow-y: auto !important;
-}
+
 
 table th {
     font-size: 0.85rem;
@@ -352,17 +349,19 @@ Media Queries
         top: 68px;
         right: 0;
         background-color: #232f3e;
-        width: 15%;
-        padding: 5px 0;
+        width: max-content;
+        padding: 5px;
         text-align: center;
-        align-items: flex-end;
-        padding-right: 3%;
         border-radius: 5px;
         border-top-right-radius: 0;
         border-top-left-radius: 0;
         transition: transform 0.3s ease;
-        transform: translateY(-100%);
+        transform: translateY(0);
+        min-width: 20%;
         z-index: 1000;
+    }
+    .header-nav a {
+        padding: 5px;
     }
     nav.show {
         display: flex;
@@ -382,28 +381,25 @@ Media Queries
         background: transparent;
         color: #32dc38;
         font-weight: bold;
-        padding: 0px !important;
     }
     
     .loginBtn {
         background: transparent;
         color: #a4cef1;
         font-weight: bold;
-        padding: 0px !important;
     }
-    .logoutBtn {
-        padding: 0;
+    .logoutBtn:hover {
+        background-color: transparent !important;
+        color: tomato;
+
     }
 }
 @media screen and (max-width: 768px) {
     .justify-content-between {
         flex-wrap: nowrap;
     }
-    .header-nav {
-        width: 18%;
-    }
     .header-nav a {
-    font-family: 0.95em;
+    font-size: 0.95em;
     }
     .logoutBtn {
         padding: 0;
@@ -414,9 +410,6 @@ Media Queries
     }
 }
 @media screen and (max-width: 600px) {
-    .header-nav {
-        width: 20%;
-    }
     .header-nav a {
         font-size: 0.9em;
     }
@@ -425,11 +418,29 @@ Media Queries
     .justify-content-between {
         flex-wrap: wrap;
     }
-        .header-nav {
-            width: 22%;
-        }
         .header-nav a{
            font-size: 0.9em;
         }
 }
 
+@media print {
+    /* Hide elements not needed for printing */
+    header, footer, .left-pane, .justify-content-between,
+    .menuToggle, .hidePrint, .action {
+      display: none;
+    }
+    .right-pane {
+      width: 100%;
+    }
+    .searchFlex h4 {
+        text-align: center;
+        text-transform: uppercase;
+    }
+    
+    /* Adjust font sizes and colors for printing */
+    body {
+      font-size: 12pt;
+      color: #000;
+    }
+  }
+  

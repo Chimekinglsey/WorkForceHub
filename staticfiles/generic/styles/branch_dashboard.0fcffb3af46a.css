@@ -497,7 +497,6 @@ tr:hover {
     color: white;
     margin-top: 0;
 }
-
 .flash-close-btn {
     position: absolute;
     right: 10px;
@@ -562,12 +561,10 @@ table .btn {
 .settings h3 {
     font-family: Arial, Helvetica, sans-serif;
 }
-
 .settings .col-md {
     display: flex;
     justify-content: flex-end;
 }
-
 .settings .tab5 {
     width: 32%;
 }
@@ -577,7 +574,6 @@ table .btn {
 .performance #performance-list {
     display: block;
 }
-
 .featuresList .fas {
     margin-right: 8px;
     text-align: left;
@@ -594,11 +590,9 @@ table .btn {
     align-items: center;
     text-align: center;
 }
-
 #change-passwd .form-row {
     text-align: center;
 }
-
 #change-passwd #hint_id_new_password1 {
     text-align: left;
 }
@@ -626,13 +620,16 @@ table .btn {
 .goodStat {
     color: #5cb85c;
 }
-
 .featuresToggle {
     color: #223;
     user-select: none;
     margin: 5px;
 }
-
+/*  
+.featuresItem, .featuresItem2 {
+    font-family: 'EB Garamond', "Libre Baskerville", serif;
+}
+*/
 .tabTitle {
     display: none;
 }
@@ -732,11 +729,8 @@ table .btn {
     .menu-toggle-icon  {
         display: block;
     }
-    .searchFlex{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
+    .searchFlex h3 {
+        font-size: 1.4rem;
     }
 
     /* Adjust tab width for mgt sections */
@@ -788,7 +782,6 @@ table .btn {
 
 .menu-toggle-icon {
     display: block;
-    margin-left: 10px;
 }
 
 /* Adjust tab width for mgt sections */
@@ -804,12 +797,7 @@ table .btn {
 .tab-contents5, .tabcontent6 {
     display: none;
 }
-h3 {
-    font-size: 1.5rem;
 }
-h4 {
-    font-size: 1.4rem;
-}}
 
 @media screen and (max-width: 645px) {
     .justify-content-between {

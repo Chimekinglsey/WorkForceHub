@@ -27,7 +27,9 @@ header {
     width: 100%;
     z-index: 1000;
 }
-
+/* .header-wrapper {
+    padding-top: 85px;
+} */
 .baseContainer {
     min-height: 100vh;
 }
@@ -423,24 +425,3 @@ Media Queries
         }
 }
 
-@media print {
-    /* Hide elements not needed for printing */
-    header, footer, .left-pane, .justify-content-between,
-    .menuToggle, .hidePrint, .action {
-      display: none;
-    }
-    .right-pane {
-      width: 100%;
-    }
-    .searchFlex h4 {
-        text-align: center;
-        text-transform: uppercase;
-    }
-    
-    /* Adjust font sizes and colors for printing */
-    body {
-      font-size: 12pt;
-      color: #000;
-    }
-  }
-  

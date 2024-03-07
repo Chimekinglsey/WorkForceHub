@@ -46,10 +46,10 @@ urlpatterns = [
 
  
     # Employee Management
-    path('updateEmployee/<int:emp_id>/', emp_view.update_employee, name="update_employee"),
-    path('archiveEmployee/<int:emp_id>/', emp_view.archive_employee, name="archive_employee"),
-    path('deleteEmployee/<int:emp_id>/', emp_view.delete_employee, name="delete_employee"),
-    path('restoreArchive/<int:emp_id>/', emp_view.restore_archive, name='restore_archive'),
+    path('updateEmployee/<str:emp_id>/', emp_view.update_employee, name="update_employee"),
+    path('archiveEmployee/<str:emp_id>/', emp_view.archive_employee, name="archive_employee"),
+    path('deleteEmployee/<str:emp_id>/', emp_view.delete_employee, name="delete_employee"),
+    path('restoreArchive/<str:emp_id>/', emp_view.restore_archive, name='restore_archive'),
     path('org/deleteDelegate/<int:delegate_id>/', emp_view.delete_delegate, name="delete_delegate"),
 
     # Leave Management
@@ -65,7 +65,7 @@ urlpatterns = [
     path('payrollHistory/<int:emp_id>/', emp_view.payroll_history, name='payroll_history'),
 
     # Performance Management
-    path('employeePerformance/<int:emp_id>/', emp_view.performance_dashboard, name='performance_dashboard'),
+    path('employeePerformance/<str:emp_id>/', emp_view.performance_dashboard, name='performance_dashboard'),
     path('performanceReview/<int:emp_id>/', emp_view.performance_review, name='performance_review'),
     path('updatePerformance/<int:performance_id>/', emp_view.update_performance_review, name='update_performance'),
     path('deletePerformance/<int:performance_id>/', emp_view.delete_performance_review, name='delete_performance'),

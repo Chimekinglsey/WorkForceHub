@@ -543,7 +543,7 @@ def update_employee(request, emp_id):
     """Update employee record"""
     data = request.POST.dict()
     try:
-        employee = Employee.objects.get(pk=emp_id)
+        employee = Employee.objects.get(employee_id=emp_id)
     except Employee.DoesNotExist:
         return JsonResponse({'error': 'Employee not found'}, status=404)
 
@@ -579,7 +579,7 @@ def update_employee(request, emp_id):
 @login_required
 def delete_employee(request, emp_id):
     try:
-        employee = Employee.objects.get(pk=emp_id)
+        employee = Employee.objects.get(employee_id=emp_id)
         id = employee.employee_id
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
@@ -592,7 +592,7 @@ def delete_employee(request, emp_id):
 @require_POST
 def archive_employee(request, emp_id):
     try:
-        employee = Employee.objects.get(pk=emp_id)
+        employee = Employee.objects.get(employee_id=emp_id)
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
         return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
@@ -609,7 +609,7 @@ def archive_employee(request, emp_id):
 @login_required
 def restore_archive(request, emp_id):
     try:
-        employee = Employee.objects.get(pk=emp_id)
+        employee = Employee.objects.get(employee_id=emp_id)
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
         return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)
@@ -746,7 +746,7 @@ def delete_payroll(request, payroll_id):
 def performance_dashboard(request, emp_id):
     """Performance Dashboard"""
     try:
-        employee = Employee.objects.get(pk=emp_id)
+        employee = Employee.objects.get(employee_id=emp_id)
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found")
         return JsonResponse({'type': 'error', 'message': 'Employee not found'}, status=404)

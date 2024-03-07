@@ -1,7 +1,6 @@
-/* flash messages */
+/* flash messages #switched to bootstrap alerts 
 .flash-container {
     position: fixed;
-    /* top: 80px; */
     left:20%;
     right: 20%;
     max-width: 700px;
@@ -9,12 +8,10 @@
 }
 
 .flash-message {
-    /* padding: 15px; */
-    /* margin-bottom: 10px; */
-    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     background-color: #fff;
     color: #333;
     animation: fadeInOut 0.5s ease-in-out;
@@ -29,11 +26,10 @@
 .flash-close-btn {
     position: absolute;
     right: 10px;
-    top: 5px;
-    padding-left: 2px;
     border: none;
-    color: red;
+    color: white;
     opacity: 0.8;
+    margin-right: 5px;
 }
 .flash-close-btn:hover {
     opacity: 1;
@@ -57,13 +53,10 @@
     color: inherit;
 }
 
-@media screen and (max-width:900){
+@media screen and (max-width: 768px){
     .flash-container {
-        position: fixed;
-        left:20%;
-        right: 20%;
-        padding: 20px;
-        z-index: 9999;
-        font-size: 14px;
+        left:0%;
+        right: 0%;
+        font-size: 12px;
     }
-}
+}*/

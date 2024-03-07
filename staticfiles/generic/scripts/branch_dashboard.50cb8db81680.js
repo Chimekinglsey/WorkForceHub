@@ -43,7 +43,7 @@ function flashMessage(response) {
     });
     $('.featuresToggleContainer').click(function () {
         if ($(window).width() <= 754) {
-            $('.featuresList').slideToggle();
+            $('.featuresList').toggle();
         }
     });
 
@@ -58,19 +58,19 @@ function flashMessage(response) {
         }
     });
 
-    // // Handle mouse enter and leave events for the left pane
-    // $('.featuresToggleContainer').hover(
-    //     function() { // Mouse enter
-    //         if ($(window).width() <= 754) {
-    //             $('.featuresList').slideDown();
-    //         }
-    //     });
+    // Handle mouse enter and leave events for the left pane
+    $('.featuresToggleContainer').hover(
+        function() { // Mouse enter
+            if ($(window).width() <= 754) {
+                $('.featuresList').slideDown();
+            }
+        });
 
-    // $('.right-pane').mouseenter(function() {
-    //     if ($(window).width() <= 754) {
-    //         $('.featuresList').slideUp();
-    //     }
-    // });
+    $('.right-pane').mouseenter(function() {
+        if ($(window).width() <= 754) {
+            $('.featuresList').slideUp();
+        }
+    });
         // employee management tab
         $(".tab").on("click", function() {
             $(".tab").removeClass("active");

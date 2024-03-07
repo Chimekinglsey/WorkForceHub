@@ -58,19 +58,19 @@ function flashMessage(response) {
         }
     });
 
-    // Handle mouse enter and leave events for the left pane
-    $('.left-pane').hover(
-        function() { // Mouse enter
-            if ($(window).width() <= 754) {
-                $('.featuresList').slideDown();
-            }
-        },
-        function() { // Mouse leave
-            if ($(window).width() <= 754) {
-                $('.featuresList').slideUp();
-            }
-        }
-    );
+    // // Handle mouse enter and leave events for the left pane
+    // $('.featuresToggleContainer').hover(
+    //     function() { // Mouse enter
+    //         if ($(window).width() <= 754) {
+    //             $('.featuresList').slideDown();
+    //         }
+    //     });
+
+    // $('.right-pane').mouseenter(function() {
+    //     if ($(window).width() <= 754) {
+    //         $('.featuresList').slideUp();
+    //     }
+    // });
         // employee management tab
         $(".tab").on("click", function() {
             $(".tab").removeClass("active");
@@ -516,6 +516,7 @@ function flashMessage(response) {
             $('#delete-modal').slideUp();
             $('#archive-modal2').slideDown();
         });
+
         $('#submitArchiveBtn2').off().click(function(e) {
             e.preventDefault();
             // Ajax call to archive employee
@@ -547,6 +548,7 @@ function flashMessage(response) {
         });
     
     // accept and decline leave
+
     $('.approve-btn').click(function() {
         let leaveId = $(this).data('leaveid');
         $.post(`/manageLeaveRequest/${leaveId}/`, { action: 'accept' }, function(data) {
