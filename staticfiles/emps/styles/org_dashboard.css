@@ -93,7 +93,7 @@
     margin: 0;
 }
 
-.logout {
+/* .logout { // Uncomment this section if you want to add a logout button, logout at the top navigation
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -115,7 +115,7 @@
     color: red;
     padding-left: 5px;
     transition: .3s ease-in-out;
-}
+} */
 .left-down-content {
     /* max-height: 300px; */ /* Uncomment this line if you want a control subsection of branches */
     overflow-y:auto;
@@ -533,7 +533,7 @@ table {
     padding: 10px 25px;
     font-weight: 500;
 }
-.ToggleContainer:hover .fa-angle-down {
+.ToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);
 }
 
@@ -706,10 +706,14 @@ table {
     .createDelegateBtn {
         padding-top: 0;
     }
-    .logout {
+    /* .logout {
         font-size: 1rem;
-    }
-
+    } */
+   .mobileLeft button {
+        margin: auto;
+        text-align: left;
+        padding-left: 0%;
+   }
     .left-pane-org .cardie {
         min-height: 150px;
         width: 70%;
@@ -717,6 +721,11 @@ table {
         margin-bottom: 20px;
     }
     .mobileLeft {
-        margin-right: 10px;
+        margin-right: 5px;
+        width: 50%;
+    }
+    .mobileRight{
+        margin-left: 5px;
+        width: 50%;
     }
 }

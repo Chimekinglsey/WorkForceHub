@@ -19,7 +19,7 @@ header {
 header nav {
     display: flex;
     justify-content: space-between;
-    padding: 1 5%;
+    padding: 1% 5%;
 }
 
 nav ul {
@@ -160,7 +160,7 @@ footer p {
 }
 .skillItem ul li {
     margin-bottom: 10px;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .viewProject {
@@ -181,5 +181,8 @@ footer p {
     }
     h3 {
         font-size: 1.3rem !important;
+    }
+    .fas {
+        display: none;
     }
 }

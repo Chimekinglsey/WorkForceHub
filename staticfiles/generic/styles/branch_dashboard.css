@@ -65,7 +65,7 @@ body {
     border-radius: 10px;
 }
 
-.featuresToggleContainer:hover .fa-angle-down {
+.featuresToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);
 }
 

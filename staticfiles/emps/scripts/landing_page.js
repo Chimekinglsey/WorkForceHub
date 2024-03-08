@@ -1,11 +1,11 @@
 $(document).ready(function() {
-    // image slider
-    setInterval(function() {
-        let $active = $('.image-slider img.active');
-        let $next = $active.next().length ? $active.next() : $('.image-slider img:first');
-        $active.removeClass('active');
-        $next.addClass('active');
-    }, 5000);
+    // image slider // removed to reduce page load time
+    // setInterval(function() {
+    //     let $active = $('.image-slider img.active');
+    //     let $next = $active.next().length ? $active.next() : $('.image-slider img:first');
+    //     $active.removeClass('active');
+    //     $next.addClass('active');
+    // }, 5000);
 
     // FAQ accordion
     $('.question').click(function() {

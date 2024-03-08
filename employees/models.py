@@ -142,7 +142,7 @@ class BaseUser(models.Model):
     employee_id = models.CharField(_('Employee ID'), max_length=100, null=True, blank=True) # removed uniqe contraint to allow for multiple employees with same employee_id
     department = models.CharField(_('Department/division'), max_length=100)
     job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
-    joining_date = models.DateField(_('Joining date'), default='1600-01-01', null=True, blank=True)
+    joining_date = models.DateField(_('Joining date'), null=True, blank=True)
     employment_type = models.CharField(_('Employment type'), choices=EMPLOYEE_STATUS_CHOICES, max_length=100)
     employment_status = models.CharField(_('Employment status'), choices=EMPLOYMENT_STATUS_CHOICES, max_length=20, default='Active')
     designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=30, default='Employee')

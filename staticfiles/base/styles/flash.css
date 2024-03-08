@@ -41,10 +41,6 @@
     color: #fff;
 }
 
-.flash-error {
-    background-color: #d9534f;
-    color: #fff;
-}
 
 .flash-message .close-btn {
     cursor: pointer;
@@ -60,3 +56,37 @@
         font-size: 12px;
     }
 }*/
+.flash-container .container {
+    max-width: none !important;
+    margin:auto !important;
+    background-color: #fff !important;
+    padding:0 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.flash-container .alert {
+    animation: fadeInOut 0.5s ease-in-out;
+    z-index: 99999;
+}
+.alert-error {
+    background-color: #d9534f;
+    color: #fff;
+}
+.flash-container .alert-error .close{
+    color: #fff;
+    opacity: 0.8;
+    margin-right: 5px;
+}
+.alert-success .close{
+    color: #d9534f;
+    opacity: 0.8;
+    margin-right: 5px;
+}
+
+.alert-success .close:hover{
+    opacity: 1;
+}
+.alert-error .close:hover{
+    opacity: 1;
+}

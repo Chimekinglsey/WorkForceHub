@@ -137,10 +137,12 @@ def profile_update(request):
             form.save()
             messages.success(request, 'Profile updated successfully')
             return redirect('org_dashboard')
-    else:
-        # Initialize form with instance of the logged-in user
+    elif request.user.employee_id:
         form = ProfileUpdateForm(instance=request.user, initial={'email': request.user.email,
                                                                  'employee_id': generate_employee_id()}, data=request.POST or None)
+    else:
+        # Initialize form with instance of the logged-in user
+        form = ProfileUpdateForm(initial={'employee_id': generate_employee_id()}, data=request.POST or None)
     return render(request, 'employees/profile_update.html', {'form': form})
 
 

@@ -6,8 +6,9 @@ $(document).ready(function() {
 
 
     $('#menu-toggle').click(function() {
-        $('.header-nav').toggleClass('show');
+        $('.header-nav').slideToggle()
     });
+
 
     // Close the menu when clicking outside of it
     $(document).click(function(event) {

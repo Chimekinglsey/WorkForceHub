@@ -173,7 +173,6 @@ class ProfileUpdateForm(forms.ModelForm):
             )
         )
         self.fields['dob'].required = True
-        self.fields['joining_date'].required = True
         self.fields['employee_id'].required = True
         self.fields['department'].required = True
         self.fields['job_role'].required = True

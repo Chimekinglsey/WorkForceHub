@@ -38,21 +38,28 @@ $(document).ready(function() {
         });
     });
 
-    // if width is <= 900px, toggle left pane down content when .ToggleContainer is clicked or hovered
+        if ($(window).outerWidth() <= 768) {
+            $('.ToggleContainer').show();
+        } else {
+            $('.ToggleContainer').hide();
+        }
+    // if outerWidth is <= 900px, toggle left pane down content when .ToggleContainer is clicked or hovered
     const toggleContainer = $('.ToggleContainer');
 
     toggleContainer.click(function() {
-        if ($(window).width() <= 768) {
+        if ($(window).outerWidth() <= 768) {
+            $(this).toggleClass('active');
             $('.actionContainer').slideToggle();
         }
     });
 
-    // if width is less <=900px add class active to .downMore, else remove class active. Bind it to window resize
+
+    // if outerWidth is less <=900px add class active to .downMore, else remove class active. Bind it to window resize
     $(window).resize(function() {
         toggleDownMore();
     });
     function toggleDownMore() {
-        if ($(window).width() <= 768) {
+        if ($(window).outerWidth() <= 768) {
             $('.ToggleContainer').show();
         } else {
             $('.ToggleContainer').hide();
@@ -619,13 +626,13 @@ $(document).ready(function() {
     
         // Update left pane position on window scroll and resize
         $(window).on('scroll resize', function() {
-            if ($(window).width() > 768) {
+            if ($(window).outerWidth() > 768) {
                 updateLeftPanePosition();
             }
         });
     
         // Initial position update
-        if ($(window).width() > 768){
+        if ($(window).outerWidth() > 768){
             updateLeftPanePosition();
         }
     });

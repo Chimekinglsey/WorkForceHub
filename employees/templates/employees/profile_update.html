@@ -7,18 +7,32 @@
     .container {
         margin-bottom: 10px;
     }
+    small {
+        color: #6c757d;
+    }
+    @media screen and (max-width:768px) {
+        small {
+            color: #6c757d;
+            font-size: 80%;
+        }   
+    }
 </style>
 {% endblock head %}
 {% block title %}Admin User Form{% endblock title %}
 
 {% block content %}
 <div class="container mt-5">
-        <h2>Profile Update Form</h2>
-        <hr>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% crispy form %}
-        </form>
-    </div>
+    <center>
+        <h3>Profile Update</h3>
+            <small>
+                <i>Once you have updated your profile, you can proceed to create your organization and branches.</i>
+            </small>
+    </center>
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% crispy form %}
+    </form>
+</div>
 {% endblock content %}
 

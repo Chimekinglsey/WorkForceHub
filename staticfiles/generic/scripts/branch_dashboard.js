@@ -42,14 +42,15 @@ function flashMessage(response) {
         $(`.${content}`).show();
     });
     $('.featuresToggleContainer').click(function () {
-        if ($(window).width() <= 754) {
+        if ($(window).outerWidth() <= 754) {
+            $(this).toggleClass('active');
             $('.featuresList').slideToggle();
         }
     });
 
     // Function to close Feature list when window is resized to larger than 900px
     $(window).resize(function () {
-        if ($(window).width() > 754) {
+        if ($(window).outerWidth() > 754) {
             $('.featuresList').slideDown();
             $('.actions').slideDown();
         } else {
@@ -59,18 +60,6 @@ function flashMessage(response) {
     });
 
     // // Handle mouse enter and leave events for the left pane
-    // $('.featuresToggleContainer').hover(
-    //     function() { // Mouse enter
-    //         if ($(window).width() <= 754) {
-    //             $('.featuresList').slideDown();
-    //         }
-    //     });
-
-    // $('.right-pane').mouseenter(function() {
-    //     if ($(window).width() <= 754) {
-    //         $('.featuresList').slideUp();
-    //     }
-    // });
         // employee management tab
         $(".tab").on("click", function() {
             $(".tab").removeClass("active");
@@ -129,7 +118,7 @@ function flashMessage(response) {
         
     // Menu Toggle
         $(".menuToggle").on("click", function() {
-            if ($(window).width() < 850) {
+            if ($(window).outerWidth() < 850) {
                 $(".actions").slideToggle();
             }
         });
