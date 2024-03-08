@@ -118,12 +118,14 @@ nav a:hover {
     justify-content: flex-end;
     margin-top: 5px;
     align-items: center;
+    flex-wrap: nowrap;
 }
 .btnHandle2 {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     margin: 5px;
+    flex-wrap: nowrap;
 }
 
 /* modal */
