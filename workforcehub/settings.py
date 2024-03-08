@@ -184,12 +184,10 @@ if not DEBUG:
         },
     } 
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
     STATIC_URL = '/static/'
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
     # Additional directories where Django should look for static files
     STATICFILES_DIRS = [
