@@ -51,6 +51,8 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_S3_FILE_OVERWRITE = False
 AWS_S3_VERIFY = True
+AWS_LOCATION = 'static'
+
 
 INSTALLED_APPS = [
     'employees',
@@ -183,14 +185,15 @@ if not DEBUG:
             "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         },
     } 
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
 
 
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-STATIC_URL = '/static/'
+    STATIC_URL = '/static/'
 
-# Additional directories where Django should look for static files
+    # Additional directories where Django should look for static files
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
