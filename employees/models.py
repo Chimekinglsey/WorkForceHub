@@ -113,43 +113,60 @@ NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
     ('Friend', _('Friend')),
     ('Other', _('Other'))
 )
-
-# def resize_image(image_path):
-#     """Resize the image located at image_path"""
+# def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='JPEG'):
+#     """
+#     Resize the given image file and save it to the specified target path in AWS S3.
+#     """
 #     try:
-#         img = Image.open(image_path)
-#     except FileNotFoundError:
-#         return
-#     if img.height > 300 or img.width > 300:
-#         output_size = (300, 300)
-#         img.thumbnail(output_size)
-#         img.save(image_path)
+#         # Open the image
+#         image = Image.open(image_file)
+
+#         # Convert image to RGB mode if it's not already in RGB
+#         if image.mode not in ('RGB', 'L'):
+#             image = image.convert('RGB')
+
+#         if image.height > max_size[1] or image.width > max_size[0]:
+#             image.thumbnail(max_size)
+
+#         # Save the resized image to S3 using default_storage
+#         with default_storage.open(target_path, "wb") as fh:
+#             image.save(fh, format=format)
+
+#         return True  # Operation successful
+#     except Exception as e:
+#         # Log the error or handle it as needed
+#         print(f"Error resizing and saving image: {e}")
+#         return False  # Operation failed
 
 
 def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='JPEG'):
-    """
-    Resize the given image file and save it to the specified target path in AWS S3.
-    """
-    try:
-        # Open the image
-        image = Image.open(image_file)
+  """
+  Resize the given image file and save it to the specified target path in AWS S3.
+  Handles cases where no image is provided.
+  """
+  try:
+    if not image_file:  # Check if image_file is empty or None
+      return False  # No image to process
 
-        # Convert image to RGB mode if it's not already in RGB
-        if image.mode not in ('RGB', 'L'):
-            image = image.convert('RGB')
+    # Open the image
+    image = Image.open(image_file)
 
-        if image.height > max_size[1] or image.width > max_size[0]:
-            image.thumbnail(max_size)
+    # Convert image to RGB mode if it's not already in RGB
+    if image.mode not in ('RGB', 'L'):
+      image = image.convert('RGB')
 
-        # Save the resized image to S3 using default_storage
-        with default_storage.open(target_path, "wb") as fh:
-            image.save(fh, format=format)
+    if image.height > max_size[1] or image.width > max_size[0]:
+      image.thumbnail(max_size)
 
-        return True  # Operation successful
-    except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Error resizing and saving image: {e}")
-        return False  # Operation failed
+    # Save the resized image to S3 using default_storage
+    with default_storage.open(target_path, "wb") as fh:
+      image.save(fh, format=format)
+
+    return True  # Operation successful
+  except Exception as e:
+    # Log the error or handle it as needed
+    print(f"Error resizing and saving image: {e}")
+    return False  # Operation failed
 
 class BaseUser(models.Model):
     """Base model containing common fields for AdminUser and Employee"""
@@ -239,8 +256,11 @@ class AdminUser(BaseUser, AbstractUser):
         super().save(*args, **kwargs)  # Call the superclass save method
         target_path = "adminuser/profile_pictures/"
         if self.profile_picture:
-            if not resize_and_save_image(self.profile_picture, target_path):
-                raise Exception("Error resizing and saving profile picture to S3")
+            try:
+                resize_and_save_image(self.profile_picture, target_path)
+            except Exception as e:
+                print(f"Error resizing and saving profile picture to S3: {e}")
+                # Optional: Handle the error here, like logging or raising a specific exception
 
     def __str__(self):
         return self.username
@@ -260,13 +280,14 @@ class Employee(BaseUser):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the superclass save method
-
         target_path = "employees/profile_pictures/"
         if self.profile_picture:
-            if not resize_and_save_image(self.profile_picture, target_path):
-                raise Exception("Error resizing and saving profile picture to S3")
-
-
+            try:
+                resize_and_save_image(self.profile_picture, target_path)
+            except Exception as e:
+                print(f"Error resizing and saving profile picture to S3: {e}")
+                # Optional: Handle the error here, like logging or raising a specific exception
+                
     def __str__(self):
         return f'{self.last_name} {self.first_name}'
 
