@@ -6,6 +6,7 @@ from datetime import datetime, date
 from django.utils import timezone
 from organizations.models import Branch
 from PIL import Image
+from django.core.files.storage import default_storage
 from statistics import mean
 
 
@@ -124,7 +125,6 @@ NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
 #         img.thumbnail(output_size)
 #         img.save(image_path)
 
-from django.core.files.storage import default_storage
 
 def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='JPEG'):
     """
@@ -258,9 +258,8 @@ class Employee(BaseUser):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the superclass save method
-        target_path = "employees/profile_pictures/"
 
-        # Resize and save the profile picture
+        target_path = "employees/profile_pictures/"
         if self.profile_picture:
             if not resize_and_save_image(self.profile_picture, target_path):
                 raise Exception("Error resizing and saving profile picture to S3")
