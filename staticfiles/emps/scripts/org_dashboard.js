@@ -237,6 +237,10 @@ $(document).ready(function() {
             $('.backdrop').hide();
             $('#deleteOrgModal').hide();
         }
+        function hideProfileUpdate() {
+            $('.backdrop').hide();
+            $('#profileUpdateForm').hide();
+        }
 
 
         // Ensure passwords match before submission
@@ -290,6 +294,16 @@ $(document).ready(function() {
         });
 
 
+        // update admin profile
+        $('#updateProfileBtn').click(function(){
+            $('.create-org').hide();
+            $('.backdrop').show();
+            $('#profileUpdateForm').show()
+        })
+
+        $('#profileUpdateForm').submit(function (){
+            $('.spinner-container').show();
+        })
 
 
 
@@ -302,6 +316,7 @@ $(document).ready(function() {
             hideDelegateModal();
             hideDelegatePasswordModal();
             hideDeleteOrg();
+            hideProfileUpdate()
         });
     
         $('.listBranches').click(function(event){

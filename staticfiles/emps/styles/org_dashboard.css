@@ -218,7 +218,8 @@
 
 /* Styles for modal */
 #organization-form, #branch-form, #delegate-admin-form,
-#reset_delegate_password, #change_admin_password_form {
+#reset_delegate_password, #change_admin_password_form,
+#profileUpdateForm {
     display: none;
     width: 80%;
     z-index: 9;
@@ -493,8 +494,8 @@ table {
 .dashboard-buttons{
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 20px;
+    justify-content: space-around;
+    margin-top: 15px;
   }
   .dashboard-buttons button {
     margin-bottom: 10px;
@@ -505,6 +506,9 @@ table {
   .dashboard-buttons button:hover {
     transform: translateY(-3px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.buttonContainer {
+    margin: 10px;
 }
 
 .ToggleContainer {
@@ -526,9 +530,18 @@ table {
 .ToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);
 }
-
+#updateProfileBtn {
+    background-color: #1a3c22;
+}
 
 /* media query */
+
+/* this is for button-container for width greater than 850px, all buttons should have full width */
+@media screen and (min-width: 850px) {
+    .button-container button{
+        width: 100%;
+    }
+}
 @media screen and (max-width: 1200px) {
 
     .left-pane-org button {

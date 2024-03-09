@@ -1,4 +1,19 @@
 $(document).ready(function() {
+
+// Validator for images
+    $('#id_profile_picture, #profilePictureEdit').change(function() {
+        let id = $(this)
+        let fileName = id.val();
+        let validExtensions = ['jpeg', 'jpg', 'JPEG', 'JPG', 'PNG', 'png'];
+        let fileExtension = fileName.split('.').pop().toLowerCase();
+        
+        if ($.inArray(fileExtension, validExtensions) == -1) {
+            alert('Please select a valid image file (JPEG, JPG, PNG)');
+            id.val('');
+            return false;
+        }
+    });
+
     $('#homeLink').click(function(){
         window.location.href = '/';
     })

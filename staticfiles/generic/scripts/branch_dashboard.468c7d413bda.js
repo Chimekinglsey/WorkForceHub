@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // flash messages
     // AJAX success callback function
-function flashMessage(response) {
+    function flashMessage(response) {
         if (response.type === 'success') {
             $('#messageBody').text(`Success:  ${response.message}`);
             $('.flash-ajax-message').addClass('success-message');
@@ -14,7 +14,10 @@ function flashMessage(response) {
             $('#messageBody').text(response.slice(0, 50) + '...');
             $('.flash-ajax-message').addClass('error-message');
         }
-     }
+        $('.flash-ajax-message').slideToggle(
+            timeoutFlashMessage()
+        );
+    }
 
      $('.flash-close-btn').click(function() {
         $('.flash-ajax-message').removeClass('success-message');
@@ -116,13 +119,12 @@ function flashMessage(response) {
         
 
         
-    // Menu Toggle
+        // Menu Toggle
         $(".menuToggle").on("click", function() {
             if ($(window).outerWidth() < 850) {
                 $(".actions").slideToggle();
             }
         });
-
 
 
 
@@ -285,7 +287,7 @@ function flashMessage(response) {
 
     function populateEditModal(employeeData) {
         // Personal Information
-        $('#eId').val(employeeData.id);
+        $('#eId').val(employeeData.employee_id);
         $('#firstNameEdit').val(employeeData.first_name);
         $('#middleNameEdit').val(employeeData.middle_name);
         $('#lastNameEdit').val(employeeData.last_name);
@@ -350,8 +352,11 @@ function flashMessage(response) {
     // update employee data with ajax and csfr token
     $('#updateEmployeeBtn').on('click', function(event) {
         event.preventDefault();
+        $('.spinner-container').show();
+
         let employeeId = $('#eId').val();
-        if (!employeeId || isNaN(employeeId)) {
+        if (!employeeId) {
+            $('.spinner-container').hide();
             return;
         }
         form = $('#updateEmployeeForm');
@@ -376,11 +381,13 @@ function flashMessage(response) {
                 flashMessage(response);
                 $('#updateEmpDetailContainer').slideToggle();
                 $('.backdrop').hide();
+                $('.spinner-container').hide();
                 form.trigger('reset');
             },
             error: function(xhr, status, error) {
                 console.error('Error updating employee data:', error);
                 flashMessage(error);
+                $('.spinner-container').hide();
                 // $('.flash-ajax-message').slideToggle(
                 //     timeoutFlashMessage()
                 // );
@@ -388,11 +395,6 @@ function flashMessage(response) {
         });
 
     });
-    $('#updateEmployeeBtn').click(function() {
-        $('.flash-ajax-message').slideToggle(
-            timeoutFlashMessage()
-        );
-});
 
     // hide empModalContainer when cancelBtn is clicked
     $('.cancelBtn').click(function() {
