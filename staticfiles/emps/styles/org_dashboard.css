@@ -526,6 +526,7 @@ table {
     margin: 0;
     padding: 10px 25px;
     font-weight: 500;
+    color: #eee;
 }
 .ToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);

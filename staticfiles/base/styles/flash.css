@@ -68,6 +68,8 @@
 .flash-container .alert {
     animation: fadeInOut 0.5s ease-in-out;
     z-index: 99999;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
 }
 .alert-error {
     background-color: #d9534f;
