@@ -23,14 +23,10 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
 
-# Application definition
 
 # configure aws s3 bucket
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', 'workforcehub')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
@@ -40,8 +36,11 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 AWS_S3_FILE_OVERWRITE = False
-AWS_S3_VERIFY = True
-AWS_LOCATION = 'static'
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_VERIFY = True # Set to False if using a custom domain
+
+# AWS_S3_VERIFY = True
+AWS_LOCATION = 'media'
 
 
 INSTALLED_APPS = [
@@ -178,7 +177,7 @@ MEDIA_URL = '/media/'
 #     },
 
 #     "staticfiles": {
-#         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 #     },
 # } 
 # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'

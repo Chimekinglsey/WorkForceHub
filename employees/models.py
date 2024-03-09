@@ -113,17 +113,40 @@ NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
     ('Other', _('Other'))
 )
 
-def resize_image(image_path):
-    """Resize the image located at image_path"""
-    try:
-        img = Image.open(image_path)
-    except FileNotFoundError:
-        return
-    if img.height > 300 or img.width > 300:
-        output_size = (300, 300)
-        img.thumbnail(output_size)
-        img.save(image_path)
+# def resize_image(image_path):
+#     """Resize the image located at image_path"""
+#     try:
+#         img = Image.open(image_path)
+#     except FileNotFoundError:
+#         return
+#     if img.height > 300 or img.width > 300:
+#         output_size = (300, 300)
+#         img.thumbnail(output_size)
+#         img.save(image_path)
 
+from django.core.files.storage import default_storage
+
+def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='JPEG'):
+    """
+    Resize the given image file and save it to the specified target path in AWS S3.
+    """
+    try:
+        # Open the image
+        image = Image.open(image_file)
+
+        # Resize the image if necessary
+        if image.height > max_size[1] or image.width > max_size[0]:
+            image.thumbnail(max_size)
+
+        # Save the resized image to S3 using default_storage
+        with default_storage.open(target_path, "wb") as fh:
+            image.save(fh, format=format)
+
+        return True  # Operation successful
+    except Exception as e:
+        # Log the error or handle it as needed
+        print(f"Error resizing and saving image: {e}")
+        return False  # Operation failed
 
 class BaseUser(models.Model):
     """Base model containing common fields for AdminUser and Employee"""
@@ -210,8 +233,12 @@ class AdminUser(BaseUser, AbstractUser):
         ordering = ['last_name', 'first_name']
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        resize_image(self.profile_picture.path)
+        super().save(*args, **kwargs)  # Call the superclass save method
+
+        target_path = "adminuser/profile_pictures/"
+        if self.profile_picture:
+            if not resize_and_save_image(self.profile_picture, target_path):
+                raise Exception("Error resizing and saving profile picture to S3")
 
     def __str__(self):
         return self.username
@@ -230,8 +257,13 @@ class Employee(BaseUser):
         ordering = ['last_name', 'first_name']
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        resize_image(self.profile_picture.path)
+        super().save(*args, **kwargs)  # Call the superclass save method
+        target_path = "employees/profile_pictures/"
+
+        # Resize and save the profile picture
+        if self.profile_picture:
+            if not resize_and_save_image(self.profile_picture, target_path):
+                raise Exception("Error resizing and saving profile picture to S3")
 
 
     def __str__(self):
