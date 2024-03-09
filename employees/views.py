@@ -540,15 +540,19 @@ def branch_dashboard(request, branch_id):
 
 """Employee Management"""
 # update employee
+
 @require_POST
 def update_employee(request, emp_id):
-    """Update employee record"""
-    data = request.POST.dict()
+    # Retrieve employee object or return error response if not found
     try:
         employee = Employee.objects.get(employee_id=emp_id)
     except Employee.DoesNotExist:
         return JsonResponse({'error': 'Employee not found'}, status=404)
 
+    # Extract data from POST request
+    data = request.POST.dict()
+
+    # Update employee fields based on data from request
     for field in ['first_name', 'middle_name', 'last_name', 'phone_number',
                     'dob', 'gender', 'marital_status', 'address', 'nationality', 'state_of_origin',
                     'email', 'employee_id', 'branch', 'department', 'job_role', 'last_promotion_date', "next_promotion_date",
@@ -560,19 +564,23 @@ def update_employee(request, emp_id):
                     ]:
         if field in data and data[field] != '':
             if field == 'email' and employee.email != data[field]:
-                try:
-                    Employee.objects.get(email=data[field])
+                # Check if email already exists for another employee
+                if Employee.objects.filter(email=data[field]).exclude(employee_id=emp_id).exists():
                     messages.error(request, 'Employee with this email already exists')
                     return JsonResponse({'type': 'error', 'message': 'Employee with this email already exists'}, status=400)
-                except Employee.DoesNotExist:
-                    pass
             setattr(employee, field, data[field])
-        for field in ['profile_picture', 'employment_letter', 'highest_certificate']:
-            if field in request.FILES:
+
+    # Handle file uploads
+    for field in ['profile_picture', 'employment_letter', 'highest_certificate']:
+        if field in request.FILES:
+            # Get the uploaded file
+            uploaded_file = request.FILES[field]
+            if uploaded_file and uploaded_file.size > 0:  # Ensure the file is not empty and delete existing file (if any)
                 existing_file = getattr(employee, field)
                 if existing_file:
                     existing_file.delete()
-                setattr(employee, field, request.FILES[field])
+                setattr(employee, field, uploaded_file)
+
     employee.save()
     messages.success(request, 'Record updated successfully')
     return JsonResponse({'type': 'success', 'message': 'Record updated successfully'}, status=200)
