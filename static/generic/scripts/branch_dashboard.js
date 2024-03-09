@@ -285,7 +285,7 @@ function flashMessage(response) {
 
     function populateEditModal(employeeData) {
         // Personal Information
-        $('#eId').val(employeeData.id);
+        $('#eId').val(employeeData.employee_id);
         $('#firstNameEdit').val(employeeData.first_name);
         $('#middleNameEdit').val(employeeData.middle_name);
         $('#lastNameEdit').val(employeeData.last_name);
@@ -350,8 +350,11 @@ function flashMessage(response) {
     // update employee data with ajax and csfr token
     $('#updateEmployeeBtn').on('click', function(event) {
         event.preventDefault();
+        $('.spinner-container').show();
+
         let employeeId = $('#eId').val();
-        if (!employeeId || isNaN(employeeId)) {
+        if (!employeeId) {
+            $('.spinner-container').hide();
             return;
         }
         form = $('#updateEmployeeForm');
@@ -376,11 +379,13 @@ function flashMessage(response) {
                 flashMessage(response);
                 $('#updateEmpDetailContainer').slideToggle();
                 $('.backdrop').hide();
+                $('.spinner-container').hide();
                 form.trigger('reset');
             },
             error: function(xhr, status, error) {
                 console.error('Error updating employee data:', error);
                 flashMessage(error);
+                $('.spinner-container').hide();
                 // $('.flash-ajax-message').slideToggle(
                 //     timeoutFlashMessage()
                 // );
