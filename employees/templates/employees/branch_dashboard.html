@@ -20,7 +20,9 @@
 {% block title %}Branch Dashboard{% endblock title %}
 {% block signIn %}<a class="loginBtn btn logoutBtn" href="{% url 'logout' %}" >Logout</a>{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
-{% block dashboard %}{% endblock dashboard %}
+    {% if not request.user.is_superuser %}
+        {% block dashboard %}{% endblock dashboard %}
+    {% endif %}
 {% block content %}
 <center>
     <div class="flash-ajax-message">

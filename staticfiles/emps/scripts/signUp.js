@@ -37,4 +37,18 @@ $(document).ready(function() {
     }
 
     typeWelcomeText(welcome, 0);
+        function toggleTip(){
+            if ($(window).outerWidth() <= 900) {
+                $('.tip').hide();
+            }
+            else {
+                $('.tip').show()
+            }
+        }
+        toggleTip()
+
+    // Hide tip on small screens when resizing
+    $(window).resize(function(){
+        toggleTip()
+    });
 });

@@ -1,5 +1,6 @@
 # UserCreation and ProfileUpdate forms for the AdminUser model
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import UserCreationForm
 from employees.models import AdminUser, Payroll, Finance
@@ -9,6 +10,12 @@ from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Fiel
 from crispy_forms.bootstrap import TabHolder, Tab
 from .models import Employee, Branch, GENDER_CHOICES, EMPLOYMENT_STATUS_CHOICES, DESIGNATION_CHOICES, NEXT_OF_KIN_RELATIONSHIP_CHOICES, EMPLOYEE_STATUS_CHOICES
 from .models import Performance
+
+
+# This method validates image file
+def validate_image_extension(value):
+    if not value.name.endswith(('.jpeg', '.jpg', '.JPEG', '.JPG', '.PNG', '.png')):
+        raise ValidationError('Only .jpeg, .jpg, .JPEG, .JPG, .PNG, .png formats are supported.')
 
 
 # UserCreation form for the AdminUser model
@@ -125,12 +132,12 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['employee_id', 'department', 'dob', 'phone_number', 'profile_picture', 
                   'job_role', 'joining_date', 'first_name', 'last_name', 'middle_name']
         widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date'}),
+            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder':'DD/MM/YYYY'}),
             'joining_date': forms.DateInput(attrs={'type': 'date'}),
             'phone_number': forms.TextInput(attrs={'type': 'tel'}),
             'employee_id': forms.TextInput(attrs={'title': 'Override the employee ID if necessary'}),
         }
-        # TODO: Allow employee_id to be auto-generated if blank
+    profile_picture = forms.ImageField(validators=[validate_image_extension])
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()

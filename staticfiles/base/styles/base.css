@@ -120,6 +120,10 @@ nav a:hover {
     align-items: center;
     flex-wrap: nowrap;
 }
+.btnHandle * {
+    margin: 5px;
+}
+
 .btnHandle2 {
     display: flex;
     justify-content: space-evenly;
@@ -259,8 +263,16 @@ footer nav a:hover {
 
 }
 
-.image-slider{
-    max-height: 300px;
+.wfImage {
+    object-fit: cover;
+    object-position: center;
+    width: 95%;
+    min-width: 85%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin: 20px auto;
+    height: 400px;
 }
 
 table {
@@ -410,6 +422,9 @@ Media Queries
     footer nav a {
         padding: 0 7px;
         font-size: 0.9rem;
+    }
+    .wfImage {
+        height: 300px;
     }
 }
 @media screen and (max-width: 600px) {

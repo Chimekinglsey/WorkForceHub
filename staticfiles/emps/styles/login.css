@@ -311,7 +311,11 @@ label{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-
+.tip, .topTip {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
 
 
 /* Media Query */
@@ -330,23 +334,11 @@ label{
     font-size: 13px;
   }
   .landing-left {
-      margin: 5% 0;
-  }
-  .image-slider {
-    width: 500px;
-    min-width: 400px;
-  }
-  .image-slider img{
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 100%;
+      margin: 2% 0;
   }
 
   .btn{
       padding: 2%;
-  }
-  footer {
-      display: none;
   }
 }
 

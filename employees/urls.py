@@ -97,6 +97,7 @@ urlpatterns = [
 
 
     # Footer urls
+    path('quickGuide/', emp_view.quick_guide, name='quick_guide'),
     path('about/', emp_view.about, name='about'),
     path('terms/', emp_view.terms, name='terms'),
     path('privacy/', emp_view.privacy, name='privacy'),

@@ -130,7 +130,7 @@ def profile_update(request):
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        form = ProfileUpdateForm(request.POST, request.FILES or None, instance=request.user)
         if form.is_valid():
             form.save(commit=False)
             form.instance.adminuser = request.user
@@ -177,6 +177,7 @@ def org_dashboard(request):
         delegate_admin_form = None
 
     change_password_form = ChangePasswordForm(request.user, data=request.POST or None)
+    profile_update_form = ProfileUpdateForm(instance=request.user)
     reports = Report.objects.filter(branch__organization=org)
 
 
@@ -195,7 +196,7 @@ def org_dashboard(request):
                 'delegate_admins': delegate_admins, 'transfers': transfers, 'pending_transfers': pending_transfers,
                 'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers, 'monthly_transfer_count': monthly_transfer_count,
                 'last_month_transfer_count': last_month_transfer_count, 'employees': employees, 'reports': reports, 'admin_password_form': change_password_form,
-                'master_admin': master_admin, 'superusers': superusers
+                'master_admin': master_admin, 'superusers': superusers, 'profile_update_form': profile_update_form
                 }
 
     if request.method == 'POST':
@@ -1399,6 +1400,10 @@ def error_403(request, exception):
 
 
 """ Footer Section Navs"""
+def quick_guide(request):
+    """Guide for getting started"""
+    return render(request, 'navs/quick_guide.html')
+
 def privacy(request):
     """Privacy Policy"""
     return render(request, 'navs/privacy.html')

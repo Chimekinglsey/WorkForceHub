@@ -355,6 +355,16 @@
         {% crispy admin_password_form%}
     </form>
 
+    {% comment %} Create Branch Form {% endcomment %}
+    <form id="profileUpdateForm" class="container mt-5" method="post" enctype="multipart/form-data" action="{% url 'profile_update' %}">
+        <div class="close-btn">
+            <span class="close">&times;</span>
+        </div>
+        <h4>Update Your Profile</h4>
+        <hr>
+        {% csrf_token %}
+        {% crispy profile_update_form %}
+    </form>
 
     {% comment %} Reset Delegate Form {% endcomment %}
     {% if delegate_admins%}
@@ -566,13 +576,10 @@
                             <button class="createOrgBtn">Create Organization</button>
                         {% endif %}
                     </div>
-                                        {% comment %} floating images {% endcomment %}
-                    <div class="landing-left">
+                        {% comment %} floating images {% endcomment %}
+                    <div class="">
                         <h6 class="script">. . . your one-stop solution to employee management</h6>
-        
-                        <div class="image-slider">
-                            <img src="{% static 'base/images/employees8.jpg' %}" alt="slide img8"class="active">
-                        </div>
+                        <img src="{% static 'base/images/employees8.jpg' %}" alt="efficiency"class="wfImage">
                     </div>
                     <!-- About Card -->
                     <div class="cardie clearfix">
@@ -1118,21 +1125,28 @@
                         <img class="" src="{% static 'emps/images/default_profile.png' %}" alt="{{user.first_name}}">
                         {% endif %}
                     </section>        
-                    <!-- Dashboard Buttons -->
                     <div class="dashboard-buttons">
-                    <button id="changeAdminPasswordBtn" class="btn btn-primary tab2" data-tab2="update_admin_password">Change Password</button>
-                    {% if org %}
-                        <button id="updateOrgBtn" class="btn btn-secondary tab2" data-tab2="organization-form">Update Organization</button>
-                        <button id="deleteOrgBtn" class="btn btn-danger" data-orgid="{{org.org_id}}">Delete Organization</button>
-                    {% endif %}
-                    </div>
-
+                        <div class="button-container">  <button id="changeAdminPasswordBtn" class="btn btn-primary tab2" data-tab2="update_admin_password">
+                            <i class="fas fa-lock"></i> Password
+                          </button>
+                          <button id="updateProfileBtn" class="btn btn-secondary tab2" data-tab2="profile-form">
+                            <i class="fas fa-user-edit"></i> Profile
+                          </button>
+                        </div>
+                        {% if org %}
+                          <div class="button-container">  <button id="updateOrgBtn" class="btn btn-secondary tab2" data-tab2="organization-form">
+                              <i class="fas fa-building"></i> Update Org
+                            </button>
+                            <button id="deleteOrgBtn" class="btn btn-danger" data-orgid="{{org.org_id}}">
+                              <i class="fas fa-trash-alt"></i> Delete Org
+                            </button>
+                          </div>
+                        {% endif %}
+                      </div>
+                      
 
                     <div class="update_admin_password">
                         <form id="update_admin_password_form" method="post" action="{% url 'change_password' %}" class="container mt-5">
-                            <div class="close-btn">
-                                <span class="close">&times;</span>
-                            </div>
                             <center>
                                 <h3>Update Your Password</h3>
                             </center>

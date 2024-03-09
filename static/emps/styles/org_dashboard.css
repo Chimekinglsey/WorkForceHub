@@ -181,10 +181,8 @@
     background-color: #0056b3;
 }
 
-.clearfix {
-    position: relative;
-    z-index: 10;
-    margin-top: 450px;
+.wfImage {
+    width: 100%;
 }
 
 /* modal for creating organization */
@@ -220,7 +218,8 @@
 
 /* Styles for modal */
 #organization-form, #branch-form, #delegate-admin-form,
-#reset_delegate_password, #change_admin_password_form {
+#reset_delegate_password, #change_admin_password_form,
+#profileUpdateForm {
     display: none;
     width: 80%;
     z-index: 9;
@@ -271,14 +270,6 @@ ul li a:hover, .left-pane-org a:hover,
     padding-left: 5px;
     cursor: pointer;
     color: #222;
-}
-/* image slider fix */
-
-.image-slider img{
-    max-height: 360px;
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 100%;
 }
 
 /* left_section */
@@ -503,8 +494,8 @@ table {
 .dashboard-buttons{
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 20px;
+    justify-content: space-around;
+    margin-top: 15px;
   }
   .dashboard-buttons button {
     margin-bottom: 10px;
@@ -515,6 +506,9 @@ table {
   .dashboard-buttons button:hover {
     transform: translateY(-3px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.buttonContainer {
+    margin: 10px;
 }
 
 .ToggleContainer {
@@ -536,22 +530,24 @@ table {
 .ToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);
 }
-
+#updateProfileBtn {
+    background-color: #1a3c22;
+}
 
 /* media query */
-@media screen and (max-width: 1200px) {
-    .clearfix {
-        margin-top: 410px;
+
+/* this is for button-container for width greater than 850px, all buttons should have full width */
+@media screen and (min-width: 850px) {
+    .button-container button{
+        width: 100%;
     }
+}
+@media screen and (max-width: 1200px) {
+
     .left-pane-org button {
         padding: 7px;
     }
 
-}
-@media screen and (max-width: 1100px) {
-    .clearfix {
-        margin-top: 400px;
-    }
 }
 
 @media screen and (max-width: 1000px) {
@@ -559,17 +555,12 @@ table {
         font-weight: 500;
         font-size: 1.8rem;
     }
-    .clearfix {
-        margin-top: 360px;
-    }
+
     .left-pane-org button {
         padding: 5px;
     }
 }
 @media screen and (max-width: 900px) {
-    .clearfix {
-        margin-top: 260px;
-    }
     h2 {
         font-size: 1.5rem !important;
     }
@@ -602,11 +593,7 @@ table {
     }
 }
 
-@media screen and (max-width: 800px) {
-    .clearfix {
-        margin-top: 220px;
-    }
-}
+
 @media screen and (max-width: 750px) {
     h2 {
         font-size: 1.3rem;

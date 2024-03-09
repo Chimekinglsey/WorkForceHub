@@ -13,3 +13,8 @@
 2024-03-09 01:36:00,493 - 127.0.0.1 - requested_resource: /profileUpdate/ - This backend doesn't support absolute paths.
 2024-03-09 01:45:23,157 - 127.0.0.1 - requested_resource: /profileUpdate/ - This backend doesn't support absolute paths.
 2024-03-09 01:46:59,954 - 127.0.0.1 - requested_resource: /accountSettings/ - This backend doesn't support absolute paths.
+2024-03-09 12:34:38,072 - 127.0.0.1 - requested_resource: /login/ - Error resizing and saving profile picture to S3
+2024-03-09 12:34:40,522 - 127.0.0.1 - requested_resource: /login/ - Error resizing and saving profile picture to S3
+2024-03-09 15:37:57,831 - 127.0.0.1 - requested_resource: /updateEmployee/AB0001AD5/ - Error resizing and saving profile picture to S3
+2024-03-09 15:55:09,673 - 127.0.0.1 - requested_resource: /updateEmployee/AB0001AD5/ - Error resizing and saving profile picture to S3
+2024-03-09 16:02:06,964 - 127.0.0.1 - requested_resource: /updateEmployee/AB0001AD5/ - Error resizing and saving profile picture to S3

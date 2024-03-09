@@ -10,24 +10,28 @@
     {% block home %}{% endblock home %}    
 <body>
     {% block content %}
+    <div class="content">
         <div class="landing-page">
             <div class="landing-left">
-                    <h1 id="welcome">Welcome to WorkForceHub</h1>
+                    <h2 id="welcome">Welcome to WorkForceHub</h2>
                     <h6 class="script">. . . your one-stop solution to employee management</h6>
-        
-                <div class="image-slider">
-                    <img src="{% static 'base/images/employees1.jpg' %}" alt="slide img1" class="active">
-                </div>
+                    <img src="{% static 'base/images/employees1.jpg' %}" alt="happy workers" class="wfImage">
             </div>
             <div class="landing-right">
                 <div class="card pb-0">
-                    <center><h2>Streamline Your Workforce Management</h2></center>
-                    <p>Welcome to WorkForceHub, your all-in-one digital solution designed to revolutionize the way organizations manage their workforce. With our platform, you can seamlessly oversee your entire workforce across multiple branches, ensuring efficiency, accuracy, and compliance.</p>
+                    <h4>Streamline Your Workforce Management</h4>
+                    <p>Welcome to WorkForceHub, your all-in-one digital solution designed to revolutionize the way organizations manage their workforce.</p>
                     
-                    <p>We offer comprehensive suite of tools and features tailored to meet the unique needs of modern businesses. From managing employee data to processing payroll and facilitating seamless communication, WorkForceHub empowers you to streamline your organization's operations and drive productivity.</p>
-                    <p>We understand the importance of empowering organizations to effectively manage their most valuable asset—their people.
-                        Our user-friendly interface, robust features, and unparalleled customer support make us the ideal partner for organizations looking to optimize their workforce management processes and drive success.
-                    </p>
+                    <div class="get-started-wrapper">
+                      <h5>Get Started Now!</h5>
+                      <p>Effortlessly manage your workforce across branches with our intuitive platform. 
+                         Click <a href="{% url 'quick_guide' %}">here</a> for a quick guide to get started.</p>
+                    </div>
+                    
+                    <p>We offer a comprehensive suite of tools and features tailored to meet the unique needs of modern businesses. From managing employee data to processing payroll and facilitating seamless communication, WorkForceHub empowers you to streamline your organization's operations and drive productivity.</p>
+                    
+                    <p>Whether you're a small business or a large enterprise, WorkForceHub can help you achieve your workforce management goals.</p>
+
                 </div>
             </div>
         </div>
@@ -90,5 +94,6 @@
                 </div>
             </div>
         </div>
+    </div>
     {% endblock content %}
 </body>

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // flash messages
     // AJAX success callback function
-function flashMessage(response) {
+    function flashMessage(response) {
         if (response.type === 'success') {
             $('#messageBody').text(`Success:  ${response.message}`);
             $('.flash-ajax-message').addClass('success-message');
@@ -14,7 +14,10 @@ function flashMessage(response) {
             $('#messageBody').text(response.slice(0, 50) + '...');
             $('.flash-ajax-message').addClass('error-message');
         }
-     }
+        $('.flash-ajax-message').slideToggle(
+            timeoutFlashMessage()
+        );
+    }
 
      $('.flash-close-btn').click(function() {
         $('.flash-ajax-message').removeClass('success-message');
@@ -116,13 +119,12 @@ function flashMessage(response) {
         
 
         
-    // Menu Toggle
+        // Menu Toggle
         $(".menuToggle").on("click", function() {
             if ($(window).outerWidth() < 850) {
                 $(".actions").slideToggle();
             }
         });
-
 
 
 
@@ -393,11 +395,6 @@ function flashMessage(response) {
         });
 
     });
-    $('#updateEmployeeBtn').click(function() {
-        $('.flash-ajax-message').slideToggle(
-            timeoutFlashMessage()
-        );
-});
 
     // hide empModalContainer when cancelBtn is clicked
     $('.cancelBtn').click(function() {

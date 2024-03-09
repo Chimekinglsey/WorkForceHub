@@ -134,7 +134,10 @@ def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='
         # Open the image
         image = Image.open(image_file)
 
-        # Resize the image if necessary
+        # Convert image to RGB mode if it's not already in RGB
+        if image.mode not in ('RGB', 'L'):
+            image = image.convert('RGB')
+
         if image.height > max_size[1] or image.width > max_size[0]:
             image.thumbnail(max_size)
 
@@ -234,7 +237,6 @@ class AdminUser(BaseUser, AbstractUser):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the superclass save method
-
         target_path = "adminuser/profile_pictures/"
         if self.profile_picture:
             if not resize_and_save_image(self.profile_picture, target_path):

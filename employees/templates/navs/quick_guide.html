@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% load humanize %}
+{% block title %}Quick Guide{% endblock title %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'base/styles/quick_guide.css' %}">
+{% endblock %}
+
+{% block signIn %}{% endblock signIn %}
+{% block signUp %}{% endblock signUp %}
+
+{% block content %}
+<center><h2>WorkforceHub</h2></center>
+<div class="container">
+    <div class="get-started">
+        <h3>Getting Started - A Quick Guide</h3>
+        <p>WorkforceHub empowers you to manage your team efficiently and effortlessly. Here's a quick guide to get you up and running:</p>
+        
+        <ol>
+            <li>
+                <h4>Sign Up for a Free Account:</h4>
+                <p>The journey begins with a free WorkforceHub account. Head over to our signup page and enter your details (valid email and secure password). It's a quick process, and you'll be ready to personalize your experience in no time.</p>
+            </li>
+            <li>
+                <h4>Create Your Profile:</h4>
+                <p>Once signed up, take a moment to personalize your profile. Add a profile picture (optional) and ensure your contact information is accurate.</p>
+            </li>    
+            <li>
+                <h4>Build Your Organization:</h4>
+                <p>Now comes the exciting part - building your organization! WorkforceHub allows you to create a dedicated workspace for your team. Simply name your organization and fill in any relevant details.</p>
+            </li>
+            <li>
+                <h4>Establish Your Branch:</h4>
+                <p>For larger organizations, creating branches within your organization provides a structured approach. This allows you to manage geographically dispersed teams or departments separately. Each branch can have its own set of admins and employees.</p>
+            </li>
+            <li>
+                <h4>Delegate with Confidence:</h4>
+                <p>Empower your team by creating delegate admins. This can be another team member or even yourself with a different email and username. Delegate admins can oversee specific branches, allowing for shared responsibility and streamlined management.</p>
+            </li>
+            <li>
+                <h4>Log In and Take Control:</h4>
+                <p>Once everything is set up, simply log in to your WorkforceHub account and select your branch (if applicable). From here, you'll have access to a comprehensive dashboard where you can manage employee schedules, track time, process payroll, and more.</p>
+            </li>
+            <li>
+                <h4>More:</h4>
+                <p>Visit the FAQ section <a href="{% url 'faq' %}"> <strong>here</strong></a> to get more information about Workforcehub</p>
+            </li>
+        </ol>
+        
+        <p><strong>WorkforceHub:</strong> Designed for Simplicity and Efficiency</p>
+        <p>We've designed WorkforceHub to be intuitive and user-friendly. With clear instructions and a well-organized interface, you can start managing your team effectively from day one.</p>
+        <p><strong>Ready to transform your workforce management?</strong>  Get your free WorkforceHub account today! <button class="btn btn-primary"><a href="{% url 'signUp' %}">Sign up</a> </button> </p>
+    </div>
+</div>
+
+{% endblock %}
+

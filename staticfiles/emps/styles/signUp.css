@@ -139,13 +139,28 @@ label{
     margin-left: 10%;
 }
 .landing-left h1 {
-    color: whitesmoke;
+    color: #0076eb;
+    font-size: 1.75rem;
 }
-.landing-left p {
-    color: whitesmoke;
+
+
+
+.tip, .topTip {
+    display: none;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
 }
+
+
 /* media query */
 @media screen and (max-width: 900px) {
+    .topTip {
+        display: block;
+    }
     .register_container, .login_container {
         flex-direction: column;
         align-items: center;
@@ -161,17 +176,17 @@ label{
     .btn{
         padding: 2%;
     }
-    footer {
-        display: none;
-    }
 }
 
 @media screen and (max-width: 530px){
-.landing-left {
-    display: none
-}
-.register_container_inputs, .login_container_inputs{
-    width: 95%
-}
+    .landing-left {
+        display: none
+    }
+    .register_container_inputs, .login_container_inputs{
+        width: 95%
+    }
+    footer {
+        display: none;
+    }
 };
     
