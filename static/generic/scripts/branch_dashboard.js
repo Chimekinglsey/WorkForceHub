@@ -51,6 +51,20 @@ $(document).ready(function () {
         }
     });
 
+    //Adjust action buttons display for different screen sizes
+    // function activateFgroup() {
+    //     if ($(window).outerWidth() <= 768) {
+    //         $('.fgroup').addClass('active');
+    //     } else {
+    //         $('.fgroup').removeClass('active');
+    //     }
+    // }
+    // activateFgroup()
+
+    // $(window).resize(function (){
+    //     activateFgroup()
+    // })
+
     // Function to close Feature list when window is resized to larger than 900px
     $(window).resize(function () {
         if ($(window).outerWidth() > 754) {

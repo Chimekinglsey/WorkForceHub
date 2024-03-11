@@ -274,6 +274,7 @@ tbody tr:nth-child(even) {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
 
 .menu-toggle-icon {
@@ -645,6 +646,15 @@ table .btn {
 .expand-width {
     min-width: 130px;
 }
+
+
+.fgroup {
+    display: inline;
+}
+
+
+
+
 
 
   /* Optional: Make modal smaller on smaller screens */
