@@ -42,6 +42,8 @@ $(document).ready(function () {
     $('.featuresItem').click(function () {
         content = $(this).data('content');
         $('.mgt').hide();
+        $('.featuresItem').removeClass('active')
+        $(this).addClass('active')
         $(`.${content}`).show();
     });
     $('.featuresToggleContainer').click(function () {

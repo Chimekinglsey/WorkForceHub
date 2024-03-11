@@ -50,9 +50,15 @@ body {
     cursor: pointer;
 }
 
-.left-pane li a:hover {
+.left-pane li a:hover{
     background-color: #0056b3;
 }
+
+.left-pane li a.active {
+    background-color: #0056b3;
+    border: 1px solid #eee;
+}
+
 
 .org .center h5 {
     color: #f0f0f0;
