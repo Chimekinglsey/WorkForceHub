@@ -42,12 +42,16 @@
                 <p>Job Role: {{user.job_role}}</p>
                 <p class="db-title">{{ branch.name }}</p>
             </div>
-
+            <center><i class="mt-3">Manage basic or detailed financial reports</i></center>
             <div class="finance-actions action-tabs">
-                <button class="action-button" id="basicReport-btn"> Create Basic Report</button>
-                <button class="action-button" id="detailedReport-btn">Create Detailed Report</button>
-                <button class="action-button" id="reportHistory-btn">View Reports</button>
-                <button class="action-button" id="financeStats-btn">Statistics</button>
+                <div class="fgroup">
+                    <button class="action-button" id="basicReport-btn"><i class="fas fa-file-circle-plus"></i> Basic</button>
+                    <button class="action-button" id="detailedReport-btn"><i class="fas fa-file-circle-plus"></i> Detailed</button>
+                </div>
+                <div class="fgroup">
+                    <button class="action-button" id="reportHistory-btn"><i class="fas fa-file-lines"></i> Reports</button>
+                    <button class="action-button" id="financeStats-btn"><i class="fas fa-bar-chart"></i> Statistics</button>
+                </div>
             </div>
         
         
@@ -81,8 +85,10 @@
                         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
                             <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('reportHistory-modal').style.display='none'">&times;</span>
                         </button>
-                        <center><h4>Financial Reports</h4></center>
                     {% if reports %}
+                    <div class="searchFlex">
+                        <h4>Financial Reports</h4> <button class="btn btn-primary" onclick="window.print()">Print</button>
+                    </div>
                         <table class="dataTable">
                             <thead>
                                 <tr>

@@ -522,10 +522,11 @@ table {
     margin: 0 10px 10px 10px;
     color: #fff;
 }
-.ToggleContainer h4 {
+.ToggleContainer h4{
     margin: 0;
     padding: 10px 25px;
     font-weight: 500;
+    color: #eee;
 }
 .ToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);
@@ -533,6 +534,7 @@ table {
 #updateProfileBtn {
     background-color: #1a3c22;
 }
+
 
 /* media query */
 

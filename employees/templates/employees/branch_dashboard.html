@@ -39,14 +39,22 @@
         <div class="org"><center><h5>{{ organization.name|truncatechars:'20' }}<small>({{branch.name|truncatechars:'15'}})</small></h5></center></div>
         <div class="featuresToggleContainer">   <h5 class="featuresToggle">Features</h5> <div class="rotate180"><i class="fas fa-angle-down"></i></div></div>
         <ul class="featuresList">
-            <li><a class="featuresItem" id="employeeManagement" data-content="employee-management"><i class="fas fa-fw fa-user-tie"></i>Employees</a></li>
-            <li><a class="featuresItem" id="leaveManagement" data-content="leave-management"><i class="fas fa-fw fa-calendar-alt"></i>Leaves</a></li>
-            <li><a class="featuresItem" id="payrollManagement" data-content="payroll-management"><i class="fas fa-fw fa-file-invoice-dollar"></i>Payrolls</a></li>
-            <li><a class="featuresItem" id="performanceReporting"data-content="performance"><i class="fas fa-fw fa-chart-line"></i>Performances</a></li>
-            <li><a class="featuresItem" id="transfers" data-content="transfers"><i class="fas fa-fw fa-exchange-alt"></i>Transfers</a></li>
-            <li><a class="featuresItem2" href="{% url 'finance_dashboard' %}" id="finance"><i class="fas fa-fw fa-sack-dollar"></i>Finances</a></li>
-            <li><a class="featuresItem2" href="{% url 'create_report' %}" id="reports"><i class="fas fa-fw fa-file-circle-plus"></i>Reports</a></li>
-            <li><a class="featuresItem" id="accountSettings" data-content="settings"><i class="fas fa-fw fa-cog"></i>Account Settings</a></li>
+            <div class="fgroup">
+                <li><a class="featuresItem" id="employeeManagement" data-content="employee-management"><i class="fas fa-fw fa-user-tie"></i>Employees</a></li>
+                <li><a class="featuresItem" id="leaveManagement" data-content="leave-management"><i class="fas fa-fw fa-calendar-alt"></i>Leaves</a></li>
+            </div>
+            <div class="fgroup">
+                <li><a class="featuresItem" id="payrollManagement" data-content="payroll-management"><i class="fas fa-fw fa-file-invoice-dollar"></i>Payrolls</a></li>
+                <li><a class="featuresItem" id="performanceReporting"data-content="performance"><i class="fas fa-fw fa-chart-line"></i>Performances</a></li>
+            </div>
+            <div class="fgroup">
+                <li><a class="featuresItem" id="transfers" data-content="transfers"><i class="fas fa-fw fa-exchange-alt"></i>Transfers</a></li>
+                <li><a class="featuresItem2" href="{% url 'finance_dashboard' %}" id="finance"><i class="fas fa-fw fa-sack-dollar"></i>Finances</a></li>
+            </div>
+            <div class="fgroup">
+                <li><a class="featuresItem2" href="{% url 'create_report' %}" id="reports"><i class="fas fa-fw fa-file-circle-plus"></i>Reports</a></li>
+                <li><a class="featuresItem" id="accountSettings" data-content="settings"><i class="fas fa-fw fa-cog"></i>Settings</a></li>
+            </div>
         </ul>
     </div>
     <div class="right-pane">
@@ -126,10 +134,14 @@
                     <h3 class="hidePrint">Manage Records</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i></span>
                 </div>
                 <div class="employee-nav actions">
-                    <button class="tab nav-tab active" data-tab="add-employee"><i class="fas fa-user-plus"></i> Add </button>
-                    <button class="tab nav-tab" data-tab="view-employees"><i class="fas fa-users"></i> All </button>
-                    <button class="tab nav-tab" data-tab="archived-employees"> <i class="fas fa-archive"></i> Archived </button>
-                    <button class="tab nav-tab" data-tab="employee-statistics"><i class="fas fa-chart-bar"></i> Stats </button>
+                    <div class="fgroup">
+                        <button class="tab nav-tab active" data-tab="add-employee"><i class="fas fa-user-plus"></i> Add </button>
+                        <button class="tab nav-tab" data-tab="view-employees"><i class="fas fa-users"></i> All </button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab nav-tab" data-tab="archived-employees"> <i class="fas fa-archive"></i> Archived </button>
+                        <button class="tab nav-tab" data-tab="employee-statistics"><i class="fas fa-chart-bar"></i> Stats </button>
+                    </div>
                 </div>
                 {% comment %} Add employee {% endcomment %}
                 <div class="tab-contents" id="add-employee">
@@ -199,59 +211,59 @@
 
 
                {% comment %} summary table view of employees{% endcomment %}
-               <div class="tab-contents" id="view-employees">
-                    {% if employees %}
-                    <div class="searchFlex">
-                        <h4>All Employees</h4> <button class="btn btn-primary" onclick="window.print()">Print</button>
-                    </div>
-                        <table class="dataTable view-employee-table apply-leave">
-                            <thead>
-                                <tr>
-                                     <th>SN</th>
-                                    <th>ID</th>
-                                    <th>Employee</th>
-                                    <th>Department</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>More</th>
-                                </tr>
-                            </thead>
-                            <tbody class="employee-table-body">
-                                {% for employee in employees %}
-                                <tr class="s-card">
-                                    <td>{{ forloop.counter }}</td>
-                                    <td class="sf2">{{ employee.employee_id }}</td>
-                                    <td class="sf1">{{ employee.first_name }} {{ employee.last_name }}</td>
-                                    <td class="sf3">{{ employee.department }}</td>
-                                    <td class="sf4">{{ employee.job_role }}</td>
-                                    <td>{{ employee.employment_status }}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-                                            <div class="dropdown-menu">
-                                                <center>
-                                                <ul>
-                                                    <li><a class="moreEmpDetail"  id="viewEmpDetailBtn" data-employeeID="{{ employee.pk }}" data-content="viewEmpDetailContainer">View</a></li>
-                                                    <li><a class="moreEmpDetail" id="editEmpDetailBtn" data-employeeID="{{ employee.pk }}" data-content="updateEmpDetailContainer">Edit</a></li>
-                                                    <li><a class="moreEmpDetail"  id="archiveEmpDetailBtn" data-employeeID="{{ employee.employee_id}}"  data-content="archiveEmpDetailContainer">Archive</a></li>
-                                                    <li><a class="moreEmpDetail"  id="deleteEmpDetailBtn" data-employeeID="{{ employee.employee_id}}"  data-content="deleteEmpDetailContainer">Delete</a></li>
-                                                </ul>
-                                            </center>
+                <div class="tab-contents" id="view-employees">
+                        {% if employees %}
+                        <div class="searchFlex">
+                            <h4>All Employees</h4> <button class="btn btn-primary" onclick="window.print()">Print</button>
+                        </div>
+                            <table class="dataTable view-employee-table apply-leave">
+                                <thead>
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>ID</th>
+                                        <th>Employee</th>
+                                        <th>Department</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>More</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="employee-table-body">
+                                    {% for employee in employees %}
+                                    <tr class="s-card">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td class="sf2">{{ employee.employee_id }}</td>
+                                        <td class="sf1">{{ employee.first_name }} {{ employee.last_name }}</td>
+                                        <td class="sf3">{{ employee.department }}</td>
+                                        <td class="sf4">{{ employee.job_role }}</td>
+                                        <td>{{ employee.employment_status }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                                <div class="dropdown-menu">
+                                                    <center>
+                                                    <ul>
+                                                        <li><a class="moreEmpDetail"  id="viewEmpDetailBtn" data-employeeID="{{ employee.pk }}" data-content="viewEmpDetailContainer">View</a></li>
+                                                        <li><a class="moreEmpDetail" id="editEmpDetailBtn" data-employeeID="{{ employee.pk }}" data-content="updateEmpDetailContainer">Edit</a></li>
+                                                        <li><a class="moreEmpDetail"  id="archiveEmpDetailBtn" data-employeeID="{{ employee.employee_id}}"  data-content="archiveEmpDetailContainer">Archive</a></li>
+                                                        <li><a class="moreEmpDetail"  id="deleteEmpDetailBtn" data-employeeID="{{ employee.employee_id}}"  data-content="deleteEmpDetailContainer">Delete</a></li>
+                                                    </ul>
+                                                </center>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-        
-                        {% else %}
-                        <center>
-                            <h4>No Employees</h4>
-                            <p>Add employees to have them displayed here</p>
-                        </center>
-                        {% endif %}
-            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+            
+                            {% else %}
+                            <center>
+                                <h4>No Employees</h4>
+                                <p>Add employees to have them displayed here</p>
+                            </center>
+                            {% endif %}
+                </div>
 
 
 
@@ -1182,20 +1194,20 @@
                     <div class="modal-content">
                         <span class="close" aria-hidden="true" onclick="getElementById('archive-modal2').style.display='none'">&times;</span>
                         <center>
-                    <h4>Archive Employee</h4>
-                    <form id="archiveEmployeeForm2" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                        <label for="reason">Reason for Archival:</label>
-                        <textarea class="form-control" id="reason" name="reason" rows="4" cols="50"></textarea>
-                        </div>
-                        <div class="">
-                            <button type="submit" id="submitArchiveBtn2" class="archive-submit-btn btn btn-primary">Confirm</button>
-                            <button type="button" onclick="getElementById('archive-modal2').style.display='none'" class="btn btn-danger close-btn">Cancel</button>
-                        </div>
-                    </form>
-                    </center>
-                </div>
+                            <h4>Archive Employee</h4>
+                            <form id="archiveEmployeeForm2" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                <label for="reason">Reason for Archival:</label>
+                                <textarea class="form-control" id="reason" name="reason" rows="4" cols="50"></textarea>
+                                </div>
+                                <div class="">
+                                    <button type="submit" id="submitArchiveBtn2" class="archive-submit-btn btn btn-primary">Confirm</button>
+                                    <button type="button" onclick="getElementById('archive-modal2').style.display='none'" class="btn btn-danger close-btn">Cancel</button>
+                                </div>
+                            </form>
+                        </center>
+                    </div>
                 </div>
             </div>
             
@@ -1207,11 +1219,18 @@
                 </div>
             
                 <div class="leave-navigation actions">
-                    <button class="tab2 nav-tab active" data-tab2="leave-requests"><i class="fas fa-list-alt"></i> Requests </button>
-                    <button class="tab2 nav-tab" data-tab2="apply-leave"><i class="fas fa-file-signature"></i> Apply </button>
-                    <button class="tab2 nav-tab" data-tab2="active-leave"><i class="fas fa-check-circle"></i> Active </button>
-                    <button class="tab2 nav-tab" data-tab2="leave-history"><i class="fas fa-history"></i> History </button>
-                    <button class="tab2 nav-tab" data-tab2="leave-statistics"><i class="fas fa-chart-bar"></i> Stats </button>
+                    <div class="fgroup">
+                        <button class="tab2 nav-tab active" data-tab2="leave-requests"><i class="fas fa-list-alt"></i> Requests </button>
+                        <button class="tab2 nav-tab" data-tab2="apply-leave"><i class="fas fa-file-signature"></i> Apply </button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab2 nav-tab" data-tab2="active-leave"><i class="fas fa-check-circle"></i> Active </button>
+                        <button class="tab2 nav-tab" data-tab2="leave-history"><i class="fas fa-history"></i> History </button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab2 nav-tab stretch" data-tab2="leave-statistics"><i class="fas fa-chart-bar"></i> Stats </button>
+                    </div>
+
                 </div>
 
                 {% comment %} Apply for Leave {% endcomment %}
@@ -1483,10 +1502,14 @@
                 </div>
             
                 <div class="payroll-navigation actions">
-                    <button class="tab3 nav-tab active" data-tab3="create-payroll"><i class="fas fa-plus-circle"></i> Create</button>
-                    <button class="tab3 nav-tab" data-tab3="payroll-list"><i class="fas fa-list"></i> List</button>
-                    <button class="tab3 nav-tab" data-tab3="bank-info"><i class="fas fa-university"></i> Bank Info</button>
-                    <button class="tab3 nav-tab" data-tab3="payroll-statistics"><i class="fas fa-chart-pie"></i> Statistics</button>
+                    <div class="fgroup">
+                        <button class="tab3 nav-tab active" data-tab3="create-payroll"><i class="fas fa-plus-circle"></i> Create</button>
+                        <button class="tab3 nav-tab" data-tab3="payroll-list"><i class="fas fa-list"></i> List</button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab3 nav-tab" data-tab3="bank-info"><i class="fas fa-university"></i> Bank Info</button>
+                        <button class="tab3 nav-tab" data-tab3="payroll-statistics"><i class="fas fa-chart-pie"></i> Statistics</button>
+                    </div>
                 </div>
                 
                 {% comment %} Create Payroll {% endcomment %}
@@ -1894,11 +1917,17 @@
                 </div>
             
                 <div class="performance-navigation actions">
-                    <button class="tab4 nav-tab" data-tab4="performance-overview"><i class="fas fa-users"></i> <span class="tabTitle">Employees</span></button>
-                    <button class="tab4 nav-tab active" data-tab4="performance-list"><i class="fas fa-list"></i> Summary</button>
-                    <button class="tab4 nav-tab" data-tab4="high-performers"><i class="fas fa-arrow-alt-circle-up"></i> Achievers</button>
-                    <button class="tab4 nav-tab" data-tab4="underperformance"><i class="fas fa-arrow-alt-circle-down"></i> Achievers</button>
-                    <button class="tab4 nav-tab" data-tab4="statistics"><i class="fas fa-chart-line"></i> Stats</button>
+                    <div class="fgroup">
+                        <button class="tab4 nav-tab" data-tab4="performance-overview"><i class="fas fa-users"></i> <span class="tabTitle">Employees</span></button>
+                        <button class="tab4 nav-tab active" data-tab4="performance-list"><i class="fas fa-list"></i> Summary</button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab4 nav-tab" data-tab4="high-performers"><i class="fas fa-arrow-alt-circle-up"></i> Achievers</button>
+                        <button class="tab4 nav-tab" data-tab4="underperformance"><i class="fas fa-arrow-alt-circle-down"></i> Achievers</button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab4 nav-tab" data-tab4="statistics"><i class="fas fa-chart-line"></i> Stats</button>
+                    </div>
                 </div>
                 
 
@@ -2203,11 +2232,17 @@
                 </div>
             
                 <div class="performance-navigation actions">
-                    <button class="tab6 nav-tab active" data-tab6="transfer-request"><i class="fas fa-exchange-alt"></i> Request</button>
-                    <button class="tab6 nav-tab" data-tab6="pending-transfers"><i class="fas fa-hourglass-half"></i> Pending</button>
-                    <button class="tab6 nav-tab" data-tab6="declined-transfers"><i class="fas fa-times-circle"></i> Declined</button>
-                    <button class="tab6 nav-tab" data-tab6="transfer-history"><i class="fas fa-history"></i> History</button>
-                    <button class="tab6 nav-tab" data-tab6="transfer-statistics"><i class="fas fa-chart-bar"></i> Stats</button>
+                    <div class="fgroup">
+                        <button class="tab6 nav-tab active" data-tab6="transfer-request"><i class="fas fa-exchange-alt"></i> Request</button>
+                        <button class="tab6 nav-tab" data-tab6="pending-transfers"><i class="fas fa-hourglass-half"></i> Pending</button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab6 nav-tab" data-tab6="declined-transfers"><i class="fas fa-times-circle"></i> Declined</button>
+                        <button class="tab6 nav-tab" data-tab6="transfer-history"><i class="fas fa-history"></i> History</button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab6 nav-tab stretch" data-tab6="transfer-statistics"><i class="fas fa-chart-bar"></i> Stats</button>
+                    </div>
                 </div>
                 
                 {% comment %} Make a transfer request {% endcomment %}
@@ -2461,9 +2496,13 @@
                     <h3>Account Settings</h3> <span class="menu-toggle-icon"><i class="fas fa-bars"></i></span>
                 </div>
                 <div class="settings-navigation actions">
-                    <button class="tab5 nav-tab active" data-tab5="update-profile"><i class="fas fa-user"></i> Profile</button>
-                    <button class="tab5 nav-tab" data-tab5="change-passwd"><i class="fas fa-lock"></i> Password</button>
-                    <button class="tab5 nav-tab" data-tab5="upload-docs"><i class="fas fa-upload"></i> Uploads</button>
+                    <div class="fgroup">
+                        <button class="tab5 nav-tab active" data-tab5="update-profile"><i class="fas fa-user"></i> Profile</button>
+                        <button class="tab5 nav-tab" data-tab5="change-passwd"><i class="fas fa-lock"></i> Password</button>
+                    </div>
+                    <div class="fgroup">
+                        <button class="tab5 nav-tab" data-tab5="upload-docs"><i class="fas fa-upload"></i> Uploads</button>
+                    </div>
                 </div>
                 
                 {% comment %} Email and Picture update {% endcomment %}
@@ -2524,7 +2563,6 @@
                     {% endif %}                        
                 </div>
             </div>
-    
         </div>
     </div>
 </div>

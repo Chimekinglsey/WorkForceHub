@@ -44,9 +44,9 @@
     </div>
 
     <div class="performance-actions report-actions">
-      <button class="action-button" id="create-report-btn">Create Report</button>
-      <button class="action-button" id="update-report-btn">Update Report</button>
-      <button class="action-button" id="report-history-btn">Report History</button>
+      <button class="action-button" id="create-report-btn">Create</button>
+      <button class="action-button" id="update-report-btn">Update</button>
+      <button class="action-button" id="report-history-btn">History</button>
     </div>
  
   
@@ -91,8 +91,10 @@
         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
           <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('report-history-modal').style.display='none'">&times;</span>
         </button>
-        <center><h4>Report History</h4></center>
-       {% if reports %}
+        {% if reports %}
+        <div class="searchFlex">
+          <h4>Report History</h4> <button class="btn btn-primary" onclick="window.print()">Print</button>
+      </div>
        <table class="dataTable">
            <thead>
                <tr>
@@ -129,7 +131,7 @@
        </table>
        {% else %}
        <center class="space-top">
-           <h3>No Report History </h3>
+           <h4>No Report History </h4>
            <p>Report history will be displayed here</p>
        </center>
        {% endif %} 

@@ -54,6 +54,11 @@ body {
     background-color: #0056b3;
 }
 
+.org .center h5 {
+    color: #f0f0f0;
+    font-size: 1.5rem;
+    margin-top: 0;
+}
 
 .featuresToggleContainer {
     display: flex;
@@ -698,7 +703,7 @@ table .btn {
     }
 
     .tabTitle {
-        display: block;
+        display: inline-block;
     }
 
     .employee-nav .tab, 
@@ -763,61 +768,7 @@ table .btn {
 
 
 
-@media screen and (max-width: 768px) {
-.actions {
-    display: none;
-    flex-direction: column;
-    align-items: stretch;
-}
-.mgt {
-    padding: 5px;
-}
-.right-pane {
-    overflow-x: auto;
-}
 
-/* Adjust tab width for mgt sections */
-.employee-nav .tab, .leave-navigation .tab2, .payroll-navigation .tab3 {
-    width: 100%;
-    margin-bottom: 10px;
-}
-.dashboard-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-.menu-toggle-icon {
-    display: block;
-    margin-left: 10px;
-}
-
-/* Adjust tab width for mgt sections */
-.tab, .tab2, .tab3, 
-.tab4, .tab5, .tab6 {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.tab-contents, .tab-contents2,
-.tab-contents3, .tab-contents4, 
-.tab-contents5, .tabcontent6 {
-    display: none;
-}
-h3 {
-    font-size: 1.5rem;
-}
-h4 {
-    font-size: 1.4rem;
-}
-.flash-ajax-message {
-    width: 100%;
-    margin: 0;
-    font-size: 0.9rem;
-    right: 0;
-}
-
-}
 
 @media screen and (max-width: 645px) {
     .justify-content-between {
@@ -833,5 +784,140 @@ h4 {
         width: 100%;
      }
  
+}
+
+@media screen and (max-width: 768px) {
+    .actions {
+        display: none;
+    }
+    .mgt {
+        padding: 5px;
+    }
+    .right-pane {
+        overflow-x: auto;
+    }
+    
+    /* Adjust tab width for mgt sections */
+    .nav-tab{
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .dashboard-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    
+    .menu-toggle-icon {
+        display: block;
+        margin-left: 10px;
+    }
+    
+
+    .tab, .tab2, .tab3, 
+    .tab4, .tab5, .tab6 {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+    .tab-contents, .tab-contents2,
+    .tab-contents3, .tab-contents4, 
+    .tab-contents5, .tabcontent6 {
+        display: none;
+        margin-top: 5px;
+    }
+    h3 {
+        font-size: 1.5rem;
+    }
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    .flash-ajax-message {
+        width: 100%;
+        margin: 0;
+        font-size: 0.9rem;
+        right: 0;
+    }
+    
+
+
+
+    .left-pane {
+        background-color: #f0f0f0;
+        padding: 10px;
+        flex: none;
+    }
+
+    .left-pane:hover{
+        background-color: #e6e6e6;
+    }
+    .org center h5 {
+        color: #007;
+        font-size: 1.2rem;
+    }
+
+    .featuresToggleContainer{
+        border-radius: 20px;
+        background: #007bff;
+        color: #fff;
+    }
+    .featuresToggleContainer:hover {
+        background-color: #0056b3;
+    }
+
+    .featuresToggle {
+        color: #fff;
+    }
+
+    .fgroup {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: auto;
+        margin: 10px;
+    }
+    .fgroup li, .fgroup button{
+        background-color: #007bff;
+        border-radius: 20px;
+        margin: 5px;
+        color: #fff;
+        flex: 1 0 50% !important;
+    }
+    .fgroup li:hover, .fgroup button:hover{
+        background-color: #033973;
+        color: #eee;
+        border-radius: 20px;
+    }
+    .fgroup button:hover {
+        border-radius: 5px;
+    }
+    .fgroup li a{
+        color: #fff;
+        border-radius: 20px;
+    }
+    .actions {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+    }
+
+    .fgroup button {
+        border-radius: 5px;
+    }
+    .fgroup button.stretch {
+        width: 80%;
+
+    }
+    .settings h4 {
+        text-align: center;
+    }
+    .finance-actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 10px;
+    }
+
 }
 /* media query */

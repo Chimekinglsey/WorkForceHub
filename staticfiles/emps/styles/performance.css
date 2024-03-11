@@ -146,6 +146,10 @@ tr:hover {
   color: #f2f3f3;
 }
 
+.history-modal h3, .history-modal h4 {
+  color: #f2f3f3;
+}
+
 #detailedReport-modal .nav-tabs {
   color: #fff;
   padding: 0 20px;
