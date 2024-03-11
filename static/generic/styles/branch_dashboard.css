@@ -442,7 +442,7 @@ tr:hover {
     overflow: hidden;
     margin: 0 auto;
     background-color: #f0f0f0;
-    border: 1px solid#1a295e5e
+    border: 1px solid #1a295e5e
   }
   
   .profile-picture img {
@@ -624,6 +624,13 @@ table .btn {
     border: none;
 }
 
+.searchFlex{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-right: 10px;
+}
 
 .badStat { 
     color: red;
@@ -747,12 +754,6 @@ table .btn {
     .menu-toggle-icon  {
         display: block;
     }
-    .searchFlex{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-    }
 
     /* Adjust tab width for mgt sections */
     .tab, .tab2, .tab3, 
@@ -773,6 +774,14 @@ table .btn {
     .dropdown-menu {
         transform: translateX(0%);
         font-size: 0.85rem;
+    }
+    div.dt-container div.dt-length, div.dt-container div.dt-search, div.dt-container div.dt-info, div.dt-container div.dt-paging {
+        text-align: center;
+        display: flex;
+        justify-content: space-between;
+    }
+    div.dt-container div.dt-search input {
+        max-width: 200px;
     }
 }
 
@@ -797,6 +806,10 @@ table .btn {
 }
 
 @media screen and (max-width: 768px) {
+.right-pane {
+    background-color: #f5f5f5;
+}
+
     .actions {
         display: none;
     }
@@ -855,13 +868,13 @@ table .btn {
 
 
     .left-pane {
-        background-color: #f0f0f0;
+        background-color: #f5f5f5;
         padding: 10px;
         flex: none;
     }
 
     .left-pane:hover{
-        background-color: #e6e6e6;
+        background-color: #f0f0f0;
     }
     .org center h5 {
         color: #007;
