@@ -2,7 +2,6 @@
     font-family: 'poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9bb;
     color: #333;
     box-sizing: border-box;
     display: block;
@@ -10,13 +9,13 @@
   
   /* Hero Section */
   .hero {
-    background-image: url('/static/emps/images/bgr2.jpg'), linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    /* background-image: url('/static/emps/images/bgr2.jpg'), linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
     background-size: cover;
-    background-position: center;
-    object-fit: cover;
+    background-position: center; */
+    /* object-fit: cover; */
     text-align: center;
     padding: 5px 20px;
-    color: #fff;
+    color: #000;
     min-height: 90vh;
     border-radius: 10px;
   }
@@ -47,6 +46,7 @@
     color: #333;
     width: 50% !important;
     margin: auto auto;
+    border: 0.1px solid #999;
     display: none;
   }
   

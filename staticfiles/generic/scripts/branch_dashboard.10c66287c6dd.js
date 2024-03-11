@@ -42,6 +42,8 @@ $(document).ready(function () {
     $('.featuresItem').click(function () {
         content = $(this).data('content');
         $('.mgt').hide();
+        $('.featuresItem').removeClass('active')
+        $(this).addClass('active')
         $(`.${content}`).show();
     });
     $('.featuresToggleContainer').click(function () {
@@ -50,6 +52,20 @@ $(document).ready(function () {
             $('.featuresList').slideToggle();
         }
     });
+
+    //Adjust action buttons display for different screen sizes
+    // function activateFgroup() {
+    //     if ($(window).outerWidth() <= 768) {
+    //         $('.fgroup').addClass('active');
+    //     } else {
+    //         $('.fgroup').removeClass('active');
+    //     }
+    // }
+    // activateFgroup()
+
+    // $(window).resize(function (){
+    //     activateFgroup()
+    // })
 
     // Function to close Feature list when window is resized to larger than 900px
     $(window).resize(function () {

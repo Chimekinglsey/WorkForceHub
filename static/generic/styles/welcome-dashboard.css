@@ -87,7 +87,14 @@
     font-size: 1rem;
 }
 .feature {
-  width: 100%;
   min-width: 80% !important;
+  width: 100% !important;
+}
+.hero {
+  min-height: 0;
+  padding: 0;
+}
+.welcomeSection {
+  padding: 0;
 }
 }
