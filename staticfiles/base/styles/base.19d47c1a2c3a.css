@@ -283,7 +283,9 @@ table {
 .dataTable {
     width: 100% !important;
 }
-
+.dataTable th, .dataTable td { 
+    white-space: nowrap; 
+}
 
 table th {
     font-size: 0.85rem;

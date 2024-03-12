@@ -1,4 +1,5 @@
 
+
 from pathlib import Path
 import os
 from employees.get_secrets import get_secret
@@ -105,7 +106,7 @@ USE_L10N = True
 db_params = get_secret('workforcehub_db_keys')
 username = db_params['username']
 password = db_params['password']
-db_name = db_params['dbname']
+db_name = db_params['db_name']
 host = db_params['host']
 port = db_params['port']
 
@@ -113,7 +114,7 @@ if db_params:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': username,
+            'NAME': db_name,
             'USER': username,
             'PASSWORD': password,
             'HOST': host,
