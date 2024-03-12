@@ -22,7 +22,7 @@ def get_secret(secret_name, region_name='us-east-1'):
     except ClientError as e:
         raise e
 
-    secret = json.loas(get_secret_value_response['SecretString'])
+    secret = json.loads(get_secret_value_response['SecretString'])
     return secret
 
 

@@ -104,10 +104,9 @@ USE_L10N = True
 
 # Database
 db_params = get_secret('workforcehub_db_keys')
-print(db_params)
 username = db_params['username']
 password = db_params['password']
-db_name = db_params['dbname']
+db_name = db_params['db_name']
 host = db_params['host']
 port = db_params['port']
 
