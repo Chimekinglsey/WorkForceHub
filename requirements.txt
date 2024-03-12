@@ -40,3 +40,4 @@ typing_extensions==4.10.0
 urllib3==2.0.7
 uvicorn==0.27.1
 whitenoise==6.6.0
+pyscopy2-binary
