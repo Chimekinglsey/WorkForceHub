@@ -39,12 +39,6 @@ $(document).ready(function() {
         "paging": true,
         "searching": true, // Disable DataTables search to use custom search
         "info": false, // Hide information display
-       
-        "sScrollX": "100%",
-        "bScrollCollapse": true,
-        scrollX: true,
-        "responsive": false
-
     });
 
     

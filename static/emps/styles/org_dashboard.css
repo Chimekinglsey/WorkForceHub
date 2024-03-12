@@ -2,6 +2,10 @@
     list-style: none;
     text-decoration: none;
 }
+.create-org {
+    overflow: hidden;
+}
+
 /* Styles for left pane */
 .left-pane-org {
     position: fixed; 
