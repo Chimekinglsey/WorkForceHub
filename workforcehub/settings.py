@@ -1,7 +1,6 @@
 
 from pathlib import Path
 import os
-import dj_database_url
 from employees.get_secrets import get_secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -106,7 +105,7 @@ USE_L10N = True
 db_params = get_secret('workforcehub_db_keys')
 username = db_params['username']
 password = db_params['password']
-db_name = db_params['db_name']
+db_name = db_params['dbname']
 host = db_params['host']
 port = db_params['port']
 

@@ -38,8 +38,16 @@ $(document).ready(function() {
     let table = $('.dataTable').DataTable({
         "paging": true,
         "searching": true, // Disable DataTables search to use custom search
-        "info": true // Hide information display
+        "info": false, // Hide information display
+       
+        "sScrollX": "100%",
+        "bScrollCollapse": true,
+        scrollX: true,
+        "responsive": false
+
     });
+
+    
 
     // Use forms back button
     $('.backBtn').on('click', function() {
