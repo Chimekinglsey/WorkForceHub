@@ -72,3 +72,9 @@
   .proceedDeleteBtn:hover {
     background-color: #d32f2f;
   }
+
+  @media screen and  (max-width: 768px) {
+    .close {
+      font-size: 25px;
+    }
+  }

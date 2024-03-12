@@ -308,7 +308,7 @@ $(document).ready(function() {
 
 
         // Hide modal when close button is clicked
-        $('.close').click(function() {
+        $('.modal-content .close, .close-btn .close').click(function() {
             $('.modal').hide(); 
             $('.backdrop').show();
             hideBranchModal();

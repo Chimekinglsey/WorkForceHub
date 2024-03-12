@@ -131,13 +131,6 @@
     margin-bottom: 20px;
 }
 
-.question {
-    cursor: pointer;
-    color: #333;
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
 .answer {
     display: none;
     color: #666;
@@ -172,6 +165,12 @@
     color:  #007bff;
 }
 
+.question {
+    cursor: pointer;
+    color: #444 !important;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
 
 
 /* media query */
