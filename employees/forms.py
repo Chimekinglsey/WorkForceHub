@@ -10,6 +10,7 @@ from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Fiel
 from crispy_forms.bootstrap import TabHolder, Tab
 from .models import Employee, Branch, GENDER_CHOICES, EMPLOYMENT_STATUS_CHOICES, DESIGNATION_CHOICES, NEXT_OF_KIN_RELATIONSHIP_CHOICES, EMPLOYEE_STATUS_CHOICES
 from .models import Performance
+from datetime import datetime
 
 
 # This method validates image file
@@ -133,7 +134,7 @@ class ProfileUpdateForm(forms.ModelForm):
                   'job_role', 'joining_date', 'first_name', 'last_name', 'middle_name']
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date', 'placeholder':'DD/MM/YYYY'}),
-            'joining_date': forms.DateInput(attrs={'type': 'date'}),
+            'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d')}),
             'phone_number': forms.TextInput(attrs={'type': 'tel'}),
             'employee_id': forms.TextInput(attrs={'title': 'Override the employee ID if necessary'}),
         }
@@ -269,7 +270,7 @@ class EmployeeForm(forms.ModelForm):
                   ]
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
-            'joining_date': forms.DateInput(attrs={'type': 'date'}),
+            'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d')}),
             'emergency_contacts': forms.Textarea(attrs={'rows': 2}),
             'skills_qualifications': forms.Textarea(attrs={'rows': 2}),
         }
@@ -399,6 +400,12 @@ class PayrollForm(forms.ModelForm):
     class Meta:
         model = Payroll
         fields = '__all__'
+
+    # set this year as default value
+    initial = {'year': datetime.now().year, 'month': datetime.now().month}
+    widgets = {
+        'year': forms.NumberInput(attrs={'type': 'number', 'min': 1900, 'max': datetime.now().year}),
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

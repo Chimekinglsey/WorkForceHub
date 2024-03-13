@@ -1277,14 +1277,14 @@
                                 <tr>
                                     <td><label for="reason">Remark: </label></td>
                                     <td><textarea id="reason" name="reason" placeholder="Reason for leave"></textarea></td>
-                                <tr>
-                                    <td><label for="startDate">Start Date:<span class="asteriskField">*</span></label></td>
-                                    <td><input type="date" id="startDate" name="start_date" required></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="endDate">End Date:<span class="asteriskField">*</span></label></td>
-                                    <td><input type="date" id="endDate" name="end_date" required></td>
-                                </tr>
+                                    <tr>
+                                        <td><label for="startDate">Start Date:<span class="asteriskField">*</span></label></td>
+                                        <td><input type="date" id="startDate" name="start_date" max="{{ today }}" value="{{ today|date:'Y-m-d' }}" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="endDate">End Date:<span class="asteriskField">*</span></label></td>
+                                        <td><input type="date" id="endDate" name="end_date" min="{{ today }}" required></td>
+                                    </tr>
                                 <tr>
                                     <td colspan="2"><div class="btnHandle"><button type="submit">Submit</button></div></td>
                                 </tr>
@@ -1934,10 +1934,10 @@
 
                 {% comment %} overview {% endcomment %}
                 <div class="tab-contents4" id="performance-overview">
+                    {% if employees %}
                     <div class="searchFlex">
                         <h4>Overview</h4> <button class="btn btn-primary" onclick="window.print()">Print</button>
                     </div>
-                    {% if employees %}
                     <table class="dataTable">
                         <thead>
                             <tr>

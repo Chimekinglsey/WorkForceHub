@@ -19,3 +19,4 @@
 2024-03-09 15:55:09,673 - 127.0.0.1 - requested_resource: /updateEmployee/AB0001AD5/ - Error resizing and saving profile picture to S3
 2024-03-09 16:02:06,964 - 127.0.0.1 - requested_resource: /updateEmployee/AB0001AD5/ - Error resizing and saving profile picture to S3
 2024-03-09 21:11:30,874 - 127.0.0.1 - requested_resource: /signUp/ - Error resizing and saving profile picture to S3
+2024-03-13 02:03:41,131 - 127.0.0.1 - requested_resource: /org/branch/53587/ - Could not parse the remainder: ': 'd/m/y'' from 'today|date: 'd/m/y''

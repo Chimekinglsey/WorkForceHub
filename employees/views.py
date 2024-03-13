@@ -444,6 +444,7 @@ def branch_dashboard(request, branch_id):
     employees = Employee.objects.filter(branch=branch, is_archived=False)
     archived_employees = Employee.objects.filter(branch=branch, is_archived=True)
     transfers = Transfer.objects.filter(requested_by=request.user)
+    today = timezone.now().date()
 
 
     # forms
@@ -515,7 +516,7 @@ def branch_dashboard(request, branch_id):
                 'branch_documents_form': branch_documents_form, 'transfer_form': transfer_form, 'transfers': transfers,
                 'pending_transfers': pending_transfers, 'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers,
                 'transfer_history': transfer_history, 'incoming_transfers_count': incoming_transfers_count, 'outgoing_transfers_count': outgoing_transfers_count,
-                'organization': organization
+                'organization': organization, 'today': today
               }
     if request.method == 'POST':
         form = EmployeeForm(data=request.POST, files=request.FILES)
