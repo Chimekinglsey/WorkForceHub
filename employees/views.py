@@ -981,7 +981,7 @@ def statistics(request):
         # Finance statistics
     total_employee_salary = sum([p.net_pay for p in  Payroll.objects.filter(employee__branch__organization=organization)])
     total_employees = employees.count()
-    total_revenue = sum([r.total_revenue for r in fin_reports])
+    total_revenue = sum([r.total_revenue for r in fin_reports]) or 0
     total_expenses = sum([r.total_expenses for r in fin_reports])
     total_profit = total_revenue - total_expenses
     total_reports = fin_reports.count()

@@ -397,6 +397,7 @@ class Attendance(models.Model):
 
 class Payroll(models.Model):
     """Model for employee payroll"""
+
     PAYMENT_STATUS_CHOICES = [
     ('Pending', 'Pending'),
     ('Paid', 'Paid'),
@@ -635,33 +636,33 @@ class Finance(models.Model):
     comments = models.TextField(_('Comments'), blank=True)
     attachments = models.FileField(_('Attachments'), upload_to='finance_attachments/', blank=True)
     # Financial Metrics
-    total_revenue = models.DecimalField(_('Total Revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
-    total_expenses = models.DecimalField(_('Total Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    total_revenue = models.DecimalField(_('Total Revenue'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    total_expenses = models.DecimalField(_('Total Expenses'), max_digits=15, decimal_places=2, default=0.00, blank=True)
     total_profit_loss = models.DecimalField(_('Total Profit/Loss'), max_digits=10, decimal_places=2, default=0)
-    net_profit = models.DecimalField(_('Net Profit'), max_digits=15, decimal_places=2, null=True, blank=True)
-    gross_profit = models.DecimalField(_('Gross Profit'), max_digits=15, decimal_places=2, null=True, blank=True)
-    operating_profit = models.DecimalField(_('Operating Profit'), max_digits=15, decimal_places=2, null=True, blank=True)
-    ebitda = models.DecimalField(_('EBITDA'), max_digits=15, decimal_places=2, null=True, blank=True)
-    operating_expenses = models.DecimalField(_('Operating Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
-    taxes = models.DecimalField(_('Taxes'), max_digits=15, decimal_places=2, null=True, blank=True)
-    interest_expenses = models.DecimalField(_('Interest Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    net_profit = models.DecimalField(_('Net Profit'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    gross_profit = models.DecimalField(_('Gross Profit'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    operating_profit = models.DecimalField(_('Operating Profit'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    ebitda = models.DecimalField(_('EBITDA'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    operating_expenses = models.DecimalField(_('Operating Expenses'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    taxes = models.DecimalField(_('Taxes'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    interest_expenses = models.DecimalField(_('Interest Expenses'), max_digits=15, decimal_places=2, default=0.00, blank=True)
     # Financial Ratios
-    profit_margin = models.DecimalField(_('Profit Margin (%)'), max_digits=8, decimal_places=2, null=True, blank=True)
-    return_on_assets = models.DecimalField(_('Return on Assets (%)'), max_digits=8, decimal_places=2, null=True, blank=True)
-    return_on_equity = models.DecimalField(_('Return on Equity (%)'), max_digits=8, decimal_places=2, null=True, blank=True)
-    current_ratio = models.DecimalField(_('Current Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
-    quick_ratio = models.DecimalField(_('Quick Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
-    debt_to_equity_ratio = models.DecimalField(_('Debt-to-Equity Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
-    interest_coverage_ratio = models.DecimalField(_('Interest Coverage Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
-    asset_turnover_ratio = models.DecimalField(_('Asset Turnover Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
-    inventory_turnover_ratio = models.DecimalField(_('Inventory Turnover Ratio'), max_digits=8, decimal_places=2, null=True, blank=True)
+    profit_margin = models.DecimalField(_('Profit Margin (%)'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    return_on_assets = models.DecimalField(_('Return on Assets (%)'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    return_on_equity = models.DecimalField(_('Return on Equity (%)'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    current_ratio = models.DecimalField(_('Current Ratio'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    quick_ratio = models.DecimalField(_('Quick Ratio'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    debt_to_equity_ratio = models.DecimalField(_('Debt-to-Equity Ratio'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    interest_coverage_ratio = models.DecimalField(_('Interest Coverage Ratio'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    asset_turnover_ratio = models.DecimalField(_('Asset Turnover Ratio'), max_digits=8, decimal_places=2, default=0.00, blank=True)
+    inventory_turnover_ratio = models.DecimalField(_('Inventory Turnover Ratio'), max_digits=8, decimal_places=2, default=0.00, blank=True)
     # Budget Variance Analysis
-    budgeted_revenue = models.DecimalField(_('Budgeted Revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
-    budgeted_expenses = models.DecimalField(_('Budgeted Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
-    budget_variance = models.DecimalField(_('Budget Variance'), max_digits=15, decimal_places=2, null=True, blank=True)
+    budgeted_revenue = models.DecimalField(_('Budgeted Revenue'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    budgeted_expenses = models.DecimalField(_('Budgeted Expenses'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    budget_variance = models.DecimalField(_('Budget Variance'), max_digits=15, decimal_places=2, default=0.00, blank=True)
     # Forecasting
-    forecasted_revenue = models.DecimalField(_('Forecasted Revenue'), max_digits=15, decimal_places=2, null=True, blank=True)
-    forecasted_expenses = models.DecimalField(_('Forecasted Expenses'), max_digits=15, decimal_places=2, null=True, blank=True)
+    forecasted_revenue = models.DecimalField(_('Forecasted Revenue'), max_digits=15, decimal_places=2, default=0.00, blank=True)
+    forecasted_expenses = models.DecimalField(_('Forecasted Expenses'), max_digits=15, decimal_places=2, default=0.00, blank=True)
     # Audit and Logging
     created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
