@@ -586,7 +586,7 @@ table .btn {
 
 .settings #update-profile,
 .transfers #transfer-request,
-.performance #performance-list {
+.performance #performance-overview {
     display: block;
 }
 

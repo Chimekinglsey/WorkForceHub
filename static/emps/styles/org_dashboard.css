@@ -648,6 +648,14 @@ table {
 
 /* flex dashboard */
 @media screen and (max-width: 768px) {
+    #organization-form, #branch-form,
+    #delegate-admin-form, #reset_delegate_password, 
+    #change_admin_password_form, #profileUpdateForm {
+        width: 95%;
+        margin: 20px auto;
+        padding: 10px;
+    }
+
   .create-org {
     display: flex;
     flex-direction: column;

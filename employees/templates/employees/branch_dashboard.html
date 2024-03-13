@@ -1918,8 +1918,8 @@
             
                 <div class="performance-navigation actions">
                     <div class="fgroup">
-                        <button class="tab4 nav-tab" data-tab4="performance-overview"><i class="fas fa-users"></i> <span class="tabTitle">Employees</span></button>
-                        <button class="tab4 nav-tab active" data-tab4="performance-list"><i class="fas fa-list"></i> Summary</button>
+                        <button class="tab4 nav-tab active" data-tab4="performance-overview"><i class="fas fa-users"></i> <span class="tabTitle">Employees</span></button>
+                        <button class="tab4 nav-tab" data-tab4="performance-list"><i class="fas fa-list"></i> Summary</button>
                     </div>
                     <div class="fgroup">
                         <button class="tab4 nav-tab" data-tab4="high-performers"><i class="fas fa-arrow-alt-circle-up"></i> Achievers</button>
@@ -1966,7 +1966,7 @@
                                 </td>                                
                                 <td>{{ emp.updated_at|date:'d/m/y' }}</td>
                                 <td class="controlButton">
-                                    <a class="pf-btn btn  btn-primary" href="{% url 'performance_dashboard' emp.pk %}" target="_blank">Review</a>
+                                    <a class="pf-btn btn  btn-primary" href="{% url 'performance_dashboard' emp.employee_id %}" target="_blank">Review</a>
                                 </td>
                             </tr>
                             {% endfor %}

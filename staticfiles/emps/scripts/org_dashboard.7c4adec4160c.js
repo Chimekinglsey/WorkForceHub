@@ -67,17 +67,6 @@ $(document).ready(function() {
     }
 
     toggleDownMore();
-    // prefill the url in orgaization form
-    $('.presignedUrl').on('input', function() {
-        var val = $(this).val();
-        var placeholder = $(this).attr('placeholder');
-        if (val && val.startsWith(placeholder)) {
-            var parts = val.split('/yourpage');
-            if (parts.length > 1) {
-                $(this).val(parts[0] + '/yourpage' + parts[1]);
-            }
-        }
-    });
 
     $('#branch-form').submit(function(e) {
         // start spinner

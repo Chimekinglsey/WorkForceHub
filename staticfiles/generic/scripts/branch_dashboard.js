@@ -37,6 +37,9 @@ $(document).ready(function () {
     }, 5000); // 5 seconds
     }
 
+    $('#add-employee').submit(function(){
+        $('.spinner-container').show()
+    })
 
     // Load content dynamically on link click
     $('.featuresItem').click(function () {
@@ -52,20 +55,6 @@ $(document).ready(function () {
             $('.featuresList').slideToggle();
         }
     });
-
-    //Adjust action buttons display for different screen sizes
-    // function activateFgroup() {
-    //     if ($(window).outerWidth() <= 768) {
-    //         $('.fgroup').addClass('active');
-    //     } else {
-    //         $('.fgroup').removeClass('active');
-    //     }
-    // }
-    // activateFgroup()
-
-    // $(window).resize(function (){
-    //     activateFgroup()
-    // })
 
     // Function to close Feature list when window is resized to larger than 900px
     $(window).resize(function () {
@@ -141,8 +130,6 @@ $(document).ready(function () {
                 $(".actions").slideToggle();
             }
         });
-
-
 
 
         // Employee Management
@@ -271,7 +258,7 @@ $(document).ready(function () {
     }
 
     // Close modal and backdrop
-    $('.close').click(function() {
+    $('.modal-content .close, span.close').click(function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
         if ($('.flash-ajax-message').hasClass('error-message') || $('.flash-ajax-message').hasClass('success-message')) {
@@ -373,6 +360,7 @@ $(document).ready(function () {
         let employeeId = $('#eId').val();
         if (!employeeId) {
             $('.spinner-container').hide();
+            alert('Employee ID not found');
             return;
         }
         form = $('#updateEmployeeForm');
@@ -395,9 +383,9 @@ $(document).ready(function () {
     
             success: function(response) {
                 flashMessage(response);
+                $('.spinner-container').hide();
                 $('#updateEmpDetailContainer').slideToggle();
                 $('.backdrop').hide();
-                $('.spinner-container').hide();
                 form.trigger('reset');
             },
             error: function(xhr, status, error) {
@@ -526,6 +514,7 @@ $(document).ready(function () {
 
         $('#submitArchiveBtn2').off().click(function(e) {
             e.preventDefault();
+            $('.spinner-container').show();
             // Ajax call to archive employee
             form = $('#archiveEmployeeForm2');
             let formData = new FormData($('#archiveEmployeeForm2')[0]);
@@ -594,7 +583,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function(response) {
                 // populate bank details
-                $('#empId').val(response.id)
+                $('#empId').val(response.employee_id)
                 $('#bankNameBank').val(response.bank_name);
                 $('#accountNumberBank').val(response.account_number);
                 $('#accountNameBank').val(response.account_name);
@@ -616,10 +605,8 @@ $(document).ready(function () {
 
     $('#updateEmployeeBankBtn').on('click', function(event) {
         event.preventDefault();
+        $('.spinner-container').show();
         let employeeId = $('#empId').val();
-        if (!employeeId || isNaN(employeeId)) {
-            return;
-        }
         form = $('#updateBankForm');
         let formData = new FormData($('#updateBankForm')[0]);
     
@@ -679,6 +666,70 @@ $(document).ready(function () {
     $('#employeeName').change(function() {
         let selectedEmployeeId = $(this).val();
         $('#employeeID').val(selectedEmployeeId);
+    });
+
+
+
+    // Attach click event handler to the link
+    $('#add-employee .nav-link').click(function() {
+        // Check if the clicked link has the specific href attribute
+        if ($(this).attr('href') === '#employment-details') {
+            // Generate random string
+            var randomString = generateRandomString();
+            if (!$('#id_employee_id').val()) {
+                $('#id_employee_id').val(randomString);
+            }
+        }
+    });
+    
+    // Function to generate random string
+    function generateRandomString() {
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var digits = '0123456789';
+        var randomString = '';
+        for (var i = 0; i < 2; i++) {
+            randomString += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        for (var i = 0; i < 4; i++) {
+            randomString += digits.charAt(Math.floor(Math.random() * digits.length));
+        }
+        return randomString;
+    }
+    
+    function validateDate(dateString) {
+        // Parse the entered date string
+        let date = new Date(dateString);
+        // Check if the date is valid
+        if (isNaN(date.getTime())) {
+            return false; // Invalid date
+        }
+        // Calculate the age from the entered date
+        let today = new Date();
+        let age = today.getFullYear() - date.getFullYear();
+        let monthDiff = today.getMonth() - date.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
+            age--; // Adjust age if birthday hasn't occurred yet
+        }
+        // Check if the age is within the specified range (12 to 150 years)
+        return age >= 12 && age <= 150;
+    }
+
+    // Event listener for blur event on #id_dob and #dob elements
+    $('#id_dob, #dob').on('input', function() {
+        let dob = $(this).val(); // Get the entered date of birth
+        // Validate the date of birth
+        if (!validateDate(dob)) {
+            $(this).css({
+                'background': 'rgba(182, 9, 9, 0.802)',
+                'color': 'white',
+            })
+        }
+        else {
+                $(this).css({
+                    'background': '#fff',
+                    'color': '#495057',
+                })
+        }
     });
 });
 

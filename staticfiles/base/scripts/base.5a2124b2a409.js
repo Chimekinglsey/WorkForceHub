@@ -48,4 +48,30 @@ $(document).ready(function() {
         window.history.back();
     });
 
+        // Calculate the minimum and maximum date
+        let minDate = new Date();
+        minDate.setFullYear(minDate.getFullYear() - 150); // 150 years ago
+        let maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - 12); // 12 years ago
+    
+        // Format min and max date as YYYY-MM-DD
+        let minDateString = formatDate(minDate);
+        let maxDateString = formatDate(maxDate);
+    
+        // Set min and max attributes for input with id 'dob' (for date of birth)
+        $('#dob').attr('min', minDateString);
+        $('#dob').attr('max', maxDateString);
+    
+        // Set min and max attributes for input with id 'id_dob' (for date of birth in django form)
+        $('#id_dob').attr('min', minDateString);
+        $('#id_dob').attr('max', maxDateString);
+    
+    // Function to format date as YYYY-MM-DD
+    function formatDate(date) {
+        var year = date.getFullYear();
+        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+        var day = ('0' + date.getDate()).slice(-2);
+        return year + '-' + month + '-' + day;
+    }
+    
 });

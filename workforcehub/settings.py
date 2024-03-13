@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 import os
 from employees.get_secrets import get_secret
@@ -7,7 +5,7 @@ from employees.get_secrets import get_secret
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-bucket_and_mail_keys = get_secret('bucket_and_mail_keys', 'us-east-1')
+bucket_and_mail_keys = get_secret('bucket_and_mail_keys')
 
 
 # Quick-start development settings - unsuitable for production
