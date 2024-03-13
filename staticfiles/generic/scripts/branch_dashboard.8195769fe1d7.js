@@ -8,7 +8,7 @@ $(document).ready(function () {
         } 
         else if (response.type === 'error') {
             // if response message contains internal server error, display `Error: You do not have permission to perform this action`
-            if (response.message.includes(['Server', 'Internal', 'internal'])) {
+            if (response.message.includes('Server') || response.message.includes('Internal') || response.message.includes('internal')) {
                 $('#messageBody').text(`Error:  You do not have permission to perform this action`);
                 $('.flash-ajax-message').addClass('error-message');
             }
@@ -18,7 +18,7 @@ $(document).ready(function () {
                 }
         }
         else {
-            if (response.message.includes(['Server', 'Internal', 'internal'])) {
+            if (response.message.includes('Server') || response.message.includes('Internal') || response.message.includes('internal')) {
                 $('#messageBody').text(`Error:  You do not have permission to perform this action`);
                 $('.flash-ajax-message').addClass('error-message');
             }
