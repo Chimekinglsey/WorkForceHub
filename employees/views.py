@@ -443,8 +443,8 @@ def branch_dashboard(request, branch_id):
 
     organization = branch.organization
     branches = Branch.objects.filter(organization=organization)
-    employees = Employee.objects.filter(branch=branch, is_archived=False)
-    archived_employees = Employee.objects.filter(branch=branch, is_archived=True)
+    employees = Employee.objects.filter(branch=branch)
+    archived_employees = employees.filter(is_archived=True)
     transfers = Transfer.objects.filter(requested_by=request.user)
     today = timezone.now().date()
 
@@ -457,11 +457,11 @@ def branch_dashboard(request, branch_id):
     transfer_form = TransferForm(organization=organization, adminuser=request.user, initial={'source_branch': branch}, data=request.POST or None)
 
     # employee statistics
-    total_employees_count = Employee.objects.filter(branch=branch).count()
-    archived_employees_count = Employee.objects.filter(branch=branch, is_archived=True).count()
-    active_employees_count = Employee.objects.filter(branch=branch, is_archived=False, employment_status='Active').count()
-    inactive_employees_count = Employee.objects.filter(branch=branch, employment_status='Inactive').count()
-    total_employees_on_leave_count = Employee.objects.filter(branch=branch, is_archived=False, employment_status='On Leave').count()
+    total_employees_count = employees.count()
+    archived_employees_count = employees.filter(is_archived=True).count()
+    active_employees_count = employees.filter(is_archived=False, employment_status='Active').count()
+    inactive_employees_count = employees.exclude(employment_status='Active').count()
+    total_employees_on_leave_count = employees.filter(is_archived=False, employment_status='On Leave').count()
     monthly_created_employees = branch.monthly_created_employees
 
     # leave statistics
@@ -981,7 +981,7 @@ def statistics(request):
         # Finance statistics
     total_employee_salary = sum([p.net_pay for p in  Payroll.objects.filter(employee__branch__organization=organization)])
     total_employees = employees.count()
-    total_revenue = sum([r.total_revenue for r in fin_reports]) or 0
+    total_revenue = sum([r.total_revenue for r in fin_reports])
     total_expenses = sum([r.total_expenses for r in fin_reports])
     total_profit = total_revenue - total_expenses
     total_reports = fin_reports.count()
@@ -991,7 +991,7 @@ def statistics(request):
     total_employees_count = employees.count()
     archived_employees_count = employees.filter(is_archived=True).count()
     active_employees_count = employees.filter(is_archived=False, employment_status='Active').count()
-    inactive_employees_count = employees.filter(employment_status='Inactive').count()
+    inactive_employees_count = employees.exclude(employment_status='Active').count()
     total_employees_on_leave_count = Leave.objects.filter(employee__branch__organization=organization, 
                                                           leave_status='Approved', leave_end_date__gte=timezone.now().date()).count()
     monthly_created_employees = sum([b.monthly_created_employees for b in branches])
