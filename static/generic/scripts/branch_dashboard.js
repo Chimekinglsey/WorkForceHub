@@ -7,12 +7,25 @@ $(document).ready(function () {
             $('.flash-ajax-message').addClass('success-message');
         } 
         else if (response.type === 'error') {
-            $('#messageBody').text(`Error:  ${response.message}`);
-            $('.flash-ajax-message').addClass('error-message');
+            // if response message contains internal server error, display `Error: You do not have permission to perform this action`
+            if (response.message.includes('Server') || response.message.includes('Internal') || response.message.includes('internal')) {
+                $('#messageBody').text(`Error:  You do not have permission to perform this action`);
+                $('.flash-ajax-message').addClass('error-message');
+            }
+            else {
+                $('#messageBody').text(`Error:  ${response.message}`);
+                $('.flash-ajax-message').addClass('error-message');
+                }
         }
         else {
-            $('#messageBody').text(response.slice(0, 50) + '...');
-            $('.flash-ajax-message').addClass('error-message');
+            if (response.message.includes('Server') || response.message.includes('Internal') || response.message.includes('internal')) {
+                $('#messageBody').text(`Error:  You do not have permission to perform this action`);
+                $('.flash-ajax-message').addClass('error-message');
+            }
+            else {
+                    $('#messageBody').text(response.slice(0, 50) + '...');
+                    $('.flash-ajax-message').addClass('error-message');
+                }
         }
         $('.flash-ajax-message').slideToggle(
             timeoutFlashMessage()
@@ -164,9 +177,6 @@ $(document).ready(function () {
             },
             error: function(xhr, status, error) {
                 flashMessage(error);
-                $('.flash-ajax-message').slideToggle(
-                    timeoutFlashMessage()
-                );
                 console.error('Error fetching employee data:', error);
             }
         });
@@ -261,9 +271,6 @@ $(document).ready(function () {
     $('.modal-content .close, span.close, .main_block .close').click(function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
-        if ($('.flash-ajax-message').hasClass('error-message') || $('.flash-ajax-message').hasClass('success-message')) {
-            $('.flash-ajax-message').slideToggle();
-        }
     });
 
 
@@ -392,9 +399,6 @@ $(document).ready(function () {
                 console.error('Error updating employee data:', error);
                 flashMessage(error);
                 $('.spinner-container').hide();
-                // $('.flash-ajax-message').slideToggle(
-                //     timeoutFlashMessage()
-                // );
             }
         });
 
@@ -595,9 +599,6 @@ $(document).ready(function () {
             },
             error: function(xhr, status, error) {
                 flashMessage(error);
-                $('.flash-ajax-message').slideToggle(
-                    timeoutFlashMessage()
-                );
                 console.error('Error fetching employee data:', error);
             }
         });
@@ -632,9 +633,6 @@ $(document).ready(function () {
             error: function(xhr, status, error) {
                 console.error('Error updating employee data:', error);
                 flashMessage(error);
-                // $('.flash-ajax-message').slideToggle(
-                //     timeoutFlashMessage()
-                // );
             }
         });
 
