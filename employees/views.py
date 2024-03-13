@@ -365,7 +365,7 @@ def create_delegate(request):
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
 
-    org = Organization.objects.filter(admin_user=request.user).first()
+    org = Organization.objects.filter(id=request.user.branch.organization.id).first()
     form = DelegateAdminCreationForm(data=request.POST, organization=org)
 
     if form.is_valid():
@@ -969,7 +969,7 @@ def statistics(request):
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
     
-    organization = Organization.objects.filter(admin_user=request.user).first()
+    organization = Organization.objects.filter(id=request.user.branch.organization.id).first()
     fin_reports = Finance.objects.filter(branch__organization=organization)
 
 

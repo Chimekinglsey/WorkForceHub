@@ -356,7 +356,7 @@ $(document).ready(function () {
         
         // Show the modal
         $('.spinner-container').hide();
-        $('#updateEmpDetailContainer').slideToggle();
+        $('#updateEmpDetailContainer').slideDown();
     }
 
     // update employee data with ajax and csfr token
