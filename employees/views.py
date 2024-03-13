@@ -457,7 +457,7 @@ def branch_dashboard(request, branch_id):
     transfer_form = TransferForm(organization=organization, adminuser=request.user, initial={'source_branch': branch}, data=request.POST or None)
 
     # employee statistics
-    total_employees_count = Employee.objects.filter(branch=branch, is_archived=False).count()
+    total_employees_count = Employee.objects.filter(branch=branch).count()
     archived_employees_count = Employee.objects.filter(branch=branch, is_archived=True).count()
     active_employees_count = Employee.objects.filter(branch=branch, is_archived=False, employment_status='Active').count()
     inactive_employees_count = Employee.objects.filter(branch=branch, is_archived=False, employment_status='Inactive').count()
@@ -614,7 +614,7 @@ def archive_employee(request, emp_id):
     employee.archived_at = timezone.now()
     employee.archived_by = request.user.get_full_name()
     employee.archived_reason = request.POST.get('reason')
-    employee.employment_status = 'Inactive'
+    employee.employment_status='Inactive'
     employee.save()
     messages.success(request, f'Employee {employee.employee_id} archived successfully')
     return JsonResponse({'type': 'success', 'message': 'Employee record archived successfully'}, status=200)

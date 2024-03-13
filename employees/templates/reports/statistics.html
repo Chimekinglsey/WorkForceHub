@@ -34,7 +34,7 @@
         </div>
     </center>
     
-    {% comment %} delete employee {% endcomment %}
+    {% comment %} employee {% endcomment %}
     <div class="tab-contents statistics container" id="employee-statistics">
         <h2>Employee Statistics</h2>
         <div class="statistics-grid">
@@ -202,7 +202,7 @@
     </div>
 
 
-    {% comment %} Leave Statistics {% endcomment %}
+    {% comment %} Payroll Statistics {% endcomment %}
     <div class="tab-contents statistics container" id="payroll-statistics">
         <h2>Payroll Statistics</h2>
         <div class="statistics-grid">
@@ -493,7 +493,7 @@
                     <div class="statistic-info">
                         <h3>Total Revenue</h3>
                         {% if total_revenue is not None %}
-                            <p class="statsVal">{{ total_revenue|intcomma }}</p>
+                            <p class="statsVal">${{ total_revenue|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
                         {% endif %}
@@ -506,7 +506,7 @@
                     <div class="statistic-info">
                         <h3>Total Profit</h3>
                         {% if total_profit is not None %}
-                            <p class="statsVal">{{ total_profit|intcomma }}</p>
+                            <p class="statsVal">${{ total_profit|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
                         {% endif %}
@@ -519,7 +519,7 @@
                     <div class="statistic-info">
                         <h3>Total Expenses</h3>
                         {% if total_expenses %}
-                            <p class="statsVal">{{ total_expenses|intcomma }}</p>
+                            <p class="statsVal">${{ total_expenses|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
                         {% endif %}
@@ -532,7 +532,7 @@
                     <div class="statistic-info">
                         <h3>Total Employees Salary</h3>
                         {% if total_employees_salary is not None %}
-                        <p class="statsVal">{{ total_employees_salary }}</p>
+                        <p class="statsVal">${{ total_employees_salary }}</p>
                         {% else %}
                         <p class="statsVal badStat">N/A</p>
                         {% endif %}
