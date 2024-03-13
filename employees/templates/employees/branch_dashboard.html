@@ -1756,7 +1756,7 @@
                             <div class="statistic-info">
                                 <h3>Total Payroll</h3>
                                 {% if total_payment is not None %}
-                                    <p class="statsVal">{{ total_payment|intcomma }}</p>
+                                    <p class="statsVal">${{ total_payment|intcomma }}</p>
                                 {% else %}
                                      <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
@@ -1769,7 +1769,7 @@
                             <div class="statistic-info">
                                 <h3>Total Deductions</h3>
                                 {% if total_deductions is not None %}
-                                    <p class="statsVal">{{ total_deductions|intcomma }}</p>
+                                    <p class="statsVal">${{ total_deductions|intcomma }}</p>
                                 {% else %}
                                      <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
@@ -1782,7 +1782,7 @@
                             <div class="statistic-info">
                                 <h3>Total Bonus</h3>
                                 {% if total_allowances %}
-                                    <p class="statsVal">{{ total_allowances|intcomma }}</p>
+                                    <p class="statsVal">${{ total_allowances|intcomma }}</p>
                                 {% else %}
                                      <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
@@ -1795,7 +1795,7 @@
                             <div class="statistic-info">
                                 <h3>Total Net Pay</h3>
                                 {% if total_netpay is not None %}
-                                    <p class="statsVal">{{ total_netpay|intcomma }}</p>
+                                    <p class="statsVal">${{ total_netpay|intcomma }}</p>
                                 {% else %}
                                      <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
@@ -1808,7 +1808,7 @@
                             <div class="statistic-info">
                                 <h3>Average Salary</h3>
                                 {% if average_salary is not None %}
-                                    <p class="statsVal">{{ average_salary|intcomma }}</p>
+                                    <p class="statsVal">${{ average_salary|intcomma }}</p>
                                 {% else %}
                                      <p class="statsVal" style="color: red;">N/A</p>
                                 {% endif %}
