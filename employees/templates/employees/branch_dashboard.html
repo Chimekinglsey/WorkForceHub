@@ -357,7 +357,7 @@
                 <div class="container view_emp_container empModalContainer openFlashMsg" id="viewEmpDetailContainer">
                     <div class="main_block">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"onclick="getElementById('viewEmpDetailContainer').style.display='none' getElementByClassName('backdrop').style.display='none'">&times;</span>
+                            <span aria-hidden="true"onclick="document.getElementById('viewEmpDetailContainer').style.display='none' document.getElementByClassName('backdrop').style.display='none'">&times;</span>
                         </button>
                         <form class="employee_view_form">
                             <div class="profile-picture">
@@ -1681,57 +1681,55 @@
                     <div class="searchFlex">
                         <h4>Payroll List</h4> <button class="btn btn-primary" onclick="window.print()">Print</button>
                     </div>
-                        <div class="table-responsive">
-                          <table class="dataTable table table-striped">
-                            <thead>
-                              <tr>
-                                 <th>SN</th>
-                                <th>Employee</th>
-                                <th>Month</th>
-                                <th>Total Deduction</th>
-                                <th>Total Bonus</th>
-                                <th>Total Payment</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            
-                            <tbody class="employee-table-body">
-                              {% for payroll in payroll %}
-                              <tr class="s-card">
-                                <td>{{ forloop.counter }}</td>
-                                <td class="sf1">{{ payroll.employee.first_name }}{{ payroll.employee.last_name}}</td>
-                                <td class="sf2" >{{ payroll.month|month_name }}</td>
-                                <td>{{ payroll.total_deductions|intcomma }}</td>
-                                <td>{{ payroll.total_allowance|intcomma }}</td>
-                                <td>{{ payroll.net_pay|intcomma }}</td>
-                                <td>{{ payroll.payment_status }}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-                                        <div class="dropdown-menu">
-                                            <center>
-                                                <ul>
-                                                    <li><a class="moreEmpDetail" href="{% url 'payroll_detail' payroll.id %}" class="btn btn-primary btn-sm">View</a></li>
-                                                    <li><a class="moreEmpDetail" href="{% url 'update_payroll' payroll.id %}" class="btn btn-primary btn-sm">Update</a></li>
-                                                    <li><a class="moreEmpDetail" href="{% url 'delete_payroll' payroll.id %}" class="btn btn-primary btn-sm">Delete</a></li>
-                                                    <li><a class="moreEmpDetail" href="{% url 'payroll_history' payroll.employee.pk %}" class="btn btn-primary btn-sm">History</a></li>
-                                                </ul>
-                                            </center>
-                                        </div>
-                                    </div>
-                                </td>
-                              </tr>
-                              {% endfor %}
-                            </tbody>
-                          </table>
-                            {% else %}
-                            <center>
-                                <h4>No payrolls yet</h4>
-                                <p>Payrolls will be displayed here</p>
-                            </center>
-                            {% endif %}
-                        </div>
+                    <table class="dataTable apply-leave">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                        <th>Employee</th>
+                        <th>Month</th>
+                        <th>Total Deduction</th>
+                        <th>Total Bonus</th>
+                        <th>Total Payment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody class="employee-table-body">
+                        {% for payroll in payroll %}
+                        <tr class="s-card">
+                        <td>{{ forloop.counter }}</td>
+                        <td class="sf1">{{ payroll.employee.first_name }}{{ payroll.employee.last_name}}</td>
+                        <td class="sf2" >{{ payroll.month|month_name }}</td>
+                        <td>{{ payroll.total_deductions|intcomma }}</td>
+                        <td>{{ payroll.total_allowance|intcomma }}</td>
+                        <td>{{ payroll.net_pay|intcomma }}</td>
+                        <td>{{ payroll.payment_status }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                <div class="dropdown-menu">
+                                    <center>
+                                        <ul>
+                                            <li><a class="moreEmpDetail" href="{% url 'payroll_detail' payroll.id %}" class="btn btn-primary btn-sm">View</a></li>
+                                            <li><a class="moreEmpDetail" href="{% url 'update_payroll' payroll.id %}" class="btn btn-primary btn-sm">Update</a></li>
+                                            <li><a class="moreEmpDetail" href="{% url 'delete_payroll' payroll.id %}" class="btn btn-primary btn-sm">Delete</a></li>
+                                            <li><a class="moreEmpDetail" href="{% url 'payroll_history' payroll.employee.pk %}" class="btn btn-primary btn-sm">History</a></li>
+                                        </ul>
+                                    </center>
+                                </div>
+                            </div>
+                        </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                    {% else %}
+                    <center>
+                        <h4>No payrolls yet</h4>
+                        <p>Payrolls will be displayed here</p>
+                    </center>
+                    {% endif %}
                 </div>                     
             
                 {% comment %} Leave Statistics {% endcomment %}

@@ -1023,17 +1023,16 @@
                                                         <div class="dropdown-menu">
                                                             <center>
                                                             <ul>
-                                                                <li><a class="moreEmpDetail updateDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Update</a></li>
-                                                                <li><a class="moreEmpDetail deleteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Delete</a></li>
                                                                 <li><a class="moreEmpDetail suspendDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Suspend</a></li>
                                                                 <li><a class="resetDelegatePwdBtn" class="btn btn-primary btn-sm">Password</a></li>
                                                                 {% if del.employment_status == 'Suspended' %}
-                                                                    <li><a class="moreEmpDetail activateDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Activate</a></li>
+                                                                <li><a class="moreEmpDetail activateDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Activate</a></li>
                                                                 {% endif %}
                                                                 <li><a class="moreEmpDetail promoteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Promote</a></li>
                                                                 {% if user and user == master_admin and del.is_superuser %}
-                                                                    <li><a class="moreEmpDetail demoteAdminBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Demote</a></li>
+                                                                <li><a class="moreEmpDetail demoteAdminBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Demote</a></li>
                                                                 {% endif %}
+                                                                <li><a class="moreEmpDetail deleteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Delete</a></li>
                                                             </ul>
                                                         </center>
                                                         </div>

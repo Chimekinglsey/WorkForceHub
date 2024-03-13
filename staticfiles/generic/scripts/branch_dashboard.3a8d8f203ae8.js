@@ -258,7 +258,7 @@ $(document).ready(function () {
     }
 
     // Close modal and backdrop
-    $('.modal-content .close, span.close').click(function() {
+    $('.modal-content .close, span.close, .main_block .close').click(function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
         if ($('.flash-ajax-message').hasClass('error-message') || $('.flash-ajax-message').hasClass('success-message')) {

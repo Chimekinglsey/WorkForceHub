@@ -402,10 +402,10 @@ class PayrollForm(forms.ModelForm):
         fields = '__all__'
 
     # set this year as default value
-    initial = {'year': datetime.now().year, 'month': datetime.now().month}
-    widgets = {
-        'year': forms.NumberInput(attrs={'type': 'number', 'min': 1900, 'max': datetime.now().year}),
-    }
+        initial = {'year': datetime.now().year, 'month': datetime.now().month}
+        widgets = {
+            'year': forms.NumberInput(attrs={'type': 'number', 'min': 1900, 'max': datetime.now().year}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

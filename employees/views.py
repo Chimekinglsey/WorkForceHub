@@ -106,7 +106,7 @@ def login_view(request):
             login(request, user, backend='employees.backends.AdminUserAuthBackend')  # Authenticate the user
             messages.success(request, 'Login successful')
 
-            if user.is_superuser and user.employment_status != 'Suspended' and  user.employee_id is None:
+            if user.is_superuser and user.employment_status != 'Suspended' and  user.first_name is None:
                 return redirect('profile_update')
             
             if user.employment_status == 'Suspended':
@@ -139,7 +139,7 @@ def profile_update(request):
             return redirect('org_dashboard')
     elif request.user.employee_id:
         form = ProfileUpdateForm(instance=request.user, initial={'email': request.user.email,
-                                                                 'employee_id': generate_employee_id()}, data=request.POST or None)
+                                                                 'employee_id': request.user.employee_id}, data=request.POST or None)
     else:
         # Initialize form with instance of the logged-in user
         form = ProfileUpdateForm(initial={'employee_id': generate_employee_id()}, data=request.POST or None)
@@ -158,14 +158,15 @@ def org_dashboard(request):
         return redirect('branch_dashboard', branch_id=branch.branch_id)
     # branch = AdminUser.objects.get(branch=request.user.branch)
     form = BranchForm(request.user, data=request.POST or None)
-    org = Organization.objects.filter(admin_user=request.user).first()
+    org = Organization.objects.filter(id=request.user.branch.organization.id).first()
     branches = Branch.objects.filter(organization=org)
     admin = request.user
 
     # get master admin user
     if org:
-        if org.admin_user ==admin:
-            master_admin =admin
+        if org.admin_user == admin:
+            master_admin = admin
+        master_admin = None
         # Get all delegate admins associated with the organization outside the current user
         delegate_admins = AdminUser.objects.filter(branch__organization=org, is_delegate=True, is_superuser=False)
         superusers = AdminUser.objects.filter(branch__organization=org, is_superuser=True)
@@ -216,6 +217,7 @@ def org_dashboard(request):
             org = Organization(admin_user=admin_user, **org_data)
             org.org_id = generate_org_id()
             admin.is_master_admin = True
+            admin.adminuser = admin_user
             org.save()
             messages.success(request, 'Organization created successfully')
         return JsonResponse({'type': 'success', 'message': 'Organization created successfully'}, status=201)
@@ -805,7 +807,7 @@ def performance_review(request, emp_id):
         performance.employee = employee
         performance.save()
         messages.success(request, 'Performance review submitted successfully')
-    return redirect('performance_dashboard', emp_id=employee.id)
+    return redirect('performance_dashboard', emp_id=employee.employee_id)
 
 
 # update project performance
@@ -1325,10 +1327,6 @@ def generate_password_reset_token():
 #confirm password reset token
 def confirm_password_reset_token(request, email):
     """Confirm password reset token"""
-    if not request.user.can_change_password:
-        messages.error(request, 'You do not have permission to reset password, please contact your admin')
-        return redirect('login')
-
     if request.method == 'POST':
         token = request.POST.get('token')
         user_email = email.strip()
@@ -1353,10 +1351,6 @@ def confirm_password_reset_token(request, email):
 # reset password
 def reset_password(request, email):
     """Reset Password"""
-    if not request.user.can_change_password:
-        messages.error(request, 'You do not have permission to reset password, please contact your admin')
-        return redirect('login')
-
     if request.method == 'POST':
         password = request.POST.get('newPassword')
         confirm_password = request.POST.get('confirmPassword')

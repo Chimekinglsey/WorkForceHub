@@ -1,39 +1,34 @@
 from pathlib import Path
 import os
-from employees.get_secrets import get_secret
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-bucket_and_mail_keys = get_secret('bucket_and_mail_keys')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = bucket_and_mail_keys.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bucket_and_mail_keys.get('DEBUG', 'True').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = bucket_and_mail_keys.get('ALLOWED_HOSTS').split(' ') if bucket_and_mail_keys.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ') if os.environ.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = bucket_and_mail_keys.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = bucket_and_mail_keys.get('EMAIL_PORT', 587)
-EMAIL_USE_TLS = bucket_and_mail_keys.get('EMAIL_USE_TLS', True)
-EMAIL_HOST_USER = bucket_and_mail_keys.get('EMAIL_HOST_USER', None)
-EMAIL_HOST_PASSWORD = bucket_and_mail_keys.get('EMAIL_HOST_PASSWORD', None)
-
-
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
 
 
 # configure aws s3 bucket
-AWS_STORAGE_BUCKET_NAME = bucket_and_mail_keys.get('AWS_STORAGE_BUCKET_NAME')
-AWS_ACCESS_KEY_ID = bucket_and_mail_keys.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = bucket_and_mail_keys.get('AWS_SECRET_ACCESS_KEY')
-AWS_S3_REGION_NAME = bucket_and_mail_keys.get('AWS_S3_REGION_NAME')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', 'workforcehub')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', 'AKIAUQLGMTGVADMPRYU3')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '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')
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_DEFAULT_ACL = None
 AWS_S3_OBJECT_PARAMETERS = {
@@ -41,9 +36,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
-AWS_S3_VERIFY = True # Set to False if using a custom domain
-
-
+# AWS_S3_VERIFY = True
 AWS_LOCATION = 'media'
 
 
@@ -101,23 +94,11 @@ WSGI_APPLICATION = 'workforcehub.wsgi.application'
 USE_L10N = True
 
 # Database
-db_params = get_secret('workforcehub_db_keys')
-username = db_params['username']
-password = db_params['password']
-db_name = db_params['db_name']
-host = db_params['host']
-port = db_params['port']
-
-if db_params:
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': db_name,
-            'USER': username,
-            'PASSWORD': password,
-            'HOST': host,
-            'PORT': port,
-        }
+        'default': dj_database_url.parse(database_url)
     }
 else:
     DATABASES = {
