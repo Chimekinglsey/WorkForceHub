@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from requests import get
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -22,7 +21,6 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import datetime
-from django.urls import reverse
 import random, string
 from statistics import mean
 
@@ -105,8 +103,8 @@ def login_view(request):
         if user is not None:
             login(request, user, backend='employees.backends.AdminUserAuthBackend')  # Authenticate the user
             messages.success(request, 'Login successful')
-
-            if user.is_superuser and user.employment_status != 'Suspended' and  user.first_name is None:
+            
+            if user.is_superuser and user.employment_status != 'Suspended' and  not user.first_name:
                 return redirect('profile_update')
             
             if user.employment_status == 'Suspended':
@@ -114,8 +112,9 @@ def login_view(request):
                 error_message = 'Your account has been suspended, contact the admin for more information'
                 return render(request, 'delegate/access_denied.html', error_message=error_message)
             
-            if not user.is_superuser:
+            if user.is_delegate:
                 return redirect('branch_dashboard', branch_id=user.branch.branch_id)
+
             return redirect('org_dashboard')
         else:
             messages.error(request, 'Incorrect username or password')
@@ -126,15 +125,18 @@ def login_view(request):
 @login_required(login_url='login')
 def profile_update(request):
     """Update profile"""
-    if not request.user.is_superuser and request.user.employee_id is None:
+    if request.user.is_delegate:
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES or None, instance=request.user)
         if form.is_valid():
-            form.save(commit=False)
-            form.instance.adminuser = request.user
-            form.save()
+            if request.user.branch:
+                form.save()
+            else:
+                form.save(commit=False)
+                form.instance.adminuser = request.user
+                form.save()
             messages.success(request, 'Profile updated successfully')
             return redirect('org_dashboard')
     elif request.user.employee_id:
@@ -157,22 +159,24 @@ def org_dashboard(request):
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=branch.branch_id)
     # branch = AdminUser.objects.get(branch=request.user.branch)
+    try:
+        if request.user.branch:
+            org = Organization.objects.filter(admin_user=request.user.adminuser).first()
+        else:
+            org = Organization.objects.filter(admin_user=request.user).first()
+    except Organization.DoesNotExist:
+        org = None
     form = BranchForm(request.user, data=request.POST or None)
-    org = Organization.objects.filter(id=request.user.branch.organization.id).first()
     branches = Branch.objects.filter(organization=org)
-    admin = request.user
+    admin = AdminUser.objects.get(pk=request.user.pk)
 
     # get master admin user
     if org:
-        if org.admin_user == admin:
-            master_admin = admin
-        master_admin = None
         # Get all delegate admins associated with the organization outside the current user
         delegate_admins = AdminUser.objects.filter(branch__organization=org, is_delegate=True, is_superuser=False)
         superusers = AdminUser.objects.filter(branch__organization=org, is_superuser=True)
         delegate_admin_form = DelegateAdminCreationForm(organization=org, data=request.POST or None)        
     else:
-        master_admin = None
         delegate_admins = None
         superusers = None
         delegate_admin_form = None
@@ -197,7 +201,7 @@ def org_dashboard(request):
                 'delegate_admins': delegate_admins, 'transfers': transfers, 'pending_transfers': pending_transfers,
                 'approved_transfers': approved_transfers, 'declined_transfers': declined_transfers, 'monthly_transfer_count': monthly_transfer_count,
                 'last_month_transfer_count': last_month_transfer_count, 'employees': employees, 'reports': reports, 'admin_password_form': change_password_form,
-                'master_admin': master_admin, 'superusers': superusers, 'profile_update_form': profile_update_form
+                'superusers': superusers, 'profile_update_form': profile_update_form
                 }
 
     if request.method == 'POST':
@@ -218,6 +222,7 @@ def org_dashboard(request):
             org.org_id = generate_org_id()
             admin.is_master_admin = True
             admin.adminuser = admin_user
+            admin.save()
             org.save()
             messages.success(request, 'Organization created successfully')
         return JsonResponse({'type': 'success', 'message': 'Organization created successfully'}, status=201)
@@ -396,6 +401,10 @@ def create_delegate(request):
         messages.error(request, f'Error occurred: {last_error}')
         return JsonResponse({'success': False, 'error_message': form.errors}, status=200)
 
+
+
+
+
 # create branch of organization
 @login_required(login_url='login')
 @require_POST
@@ -404,12 +413,13 @@ def create_branch(request):
     if not request.user.is_superuser:
         messages.error(request, 'You do not have permission to access this page')
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
-
+    org = Organization.objects.filter(admin_user=request.user.adminuser).first()
     form = BranchForm(request.user, request.POST)
     try:
         if form.is_valid():
             branch = form.save(commit=False)
             branch.branch_id = generate_branch_id()
+            branch.organization = org
             branch.save()
             superuser = AdminUser.objects.get(pk=request.user.pk)
             if not superuser.branch:

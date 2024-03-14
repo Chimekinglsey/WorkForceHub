@@ -197,3 +197,9 @@ li a.nav-link:hover {
   color: #504e4e;
 }
 
+strong {
+  font-size: 0.9rem;
+}
+h4 {
+  color: #009dff;
+}

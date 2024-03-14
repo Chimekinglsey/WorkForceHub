@@ -10,20 +10,9 @@
     <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'emps/styles/performance.css' %}">
     <link rel="stylesheet" href="{% static 'emps/styles/org_dashboard.css'%}">
+    <link rel="stylesheet" href="{% static 'emps/styles/finances.css'%}">
     <script src="{% static 'emps/scripts/performance.js'%}"></script>
     <script src="{% static 'emps/scripts/finances.js'%}"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .container {
-            font-family: 'Montserrat', sans-serif;
-        }
-        strong {
-          font-size: 0.9rem;
-        }
-        h4 {
-          color: #009dff;
-        }
-    </style>
 {% endblock %}
 {% block signIn %}{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
@@ -184,7 +173,7 @@
             <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('financeStats-modal').style.display='none'">&times;</span>
         </button>
 
-        <div>
+        <div class="statistics container">
             <h2>Financial Statistics</h2>
             <div class="statistics-grid">
                 <div class="statistic-item">
@@ -207,7 +196,7 @@
                     <div class="statistic-info">
                         <h3>Total Revenue</h3>
                         {% if total_revenue is not None %}
-                            <p class="statsVal">{{ total_revenue|intcomma }}</p>
+                            <p class="statsVal">${{ total_revenue|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
                         {% endif %}
@@ -220,7 +209,7 @@
                     <div class="statistic-info">
                         <h3>Total Profit</h3>
                         {% if total_profit is not None %}
-                            <p class="statsVal">{{ total_profit|intcomma }}</p>
+                            <p class="statsVal">${{ total_profit|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
                         {% endif %}
@@ -233,7 +222,7 @@
                     <div class="statistic-info">
                         <h3>Total Expenses</h3>
                         {% if total_expenses %}
-                            <p class="statsVal">{{ total_expenses|intcomma }}</p>
+                            <p class="statsVal">${{ total_expenses|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
                         {% endif %}
@@ -246,7 +235,7 @@
                     <div class="statistic-info">
                         <h3>Total Employees Salary</h3>
                         {% if total_employees_salary is not None %}
-                        <p class="statsVal">{{ total_employees_salary }}</p>
+                        <p class="statsVal">${{ total_employees_salary|intcomma }}</p>
                         {% else %}
                         <p class="statsVal badStat">N/A</p>
                         {% endif %}

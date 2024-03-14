@@ -58,7 +58,7 @@
                 <div class="statistic-info">
                     <h3>Archived Employees</h3>
                     {% if archived_employees_count is not None %}
-                    <p class="statsVal">{{ active_employees_count|intcomma }}</p>
+                    <p class="statsVal">{{ archived_employees_count|intcomma }}</p>
                     {% else %}
                     <p class="statsVal" style="color: red;">N/A</p>
                     {% endif %}
@@ -431,7 +431,7 @@
                     </div>
                     <div class="statistic-info">
                         <h3>Total Employees</h3>
-                        {% if employees %}
+                        {% if employees is not None%}
                             <p class="statsVal">{{ employees.count|intcomma }}</p>
                         {% else %}
                             <p class="statsVal" style="color: red;">N/A</p>
@@ -518,7 +518,7 @@
                     </div>
                     <div class="statistic-info">
                         <h3>Total Expenses</h3>
-                        {% if total_expenses %}
+                        {% if total_expenses is not None %}
                             <p class="statsVal">${{ total_expenses|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>

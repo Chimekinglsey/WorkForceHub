@@ -133,10 +133,10 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['employee_id', 'department', 'dob', 'phone_number', 'profile_picture', 
                   'job_role', 'joining_date', 'first_name', 'last_name', 'middle_name']
         widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder':'DD/MM/YYYY'}),
-            'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d')}),
-            'phone_number': forms.TextInput(attrs={'type': 'tel'}),
-            'employee_id': forms.TextInput(attrs={'title': 'Override the employee ID if necessary'}),
+            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder': 'DD/MM/YYYY'}),
+            'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d'), 'placeholder': 'DD/MM/YYYY'}),
+            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000'}),
+            'employee_id': forms.TextInput(attrs={'placeholder': 'Employee ID', 'title': 'Override the employee ID if necessary'}),
         }
     profile_picture = forms.ImageField(validators=[validate_image_extension])
     def __init__(self, *args, **kwargs):
@@ -205,6 +205,10 @@ class BranchForm(forms.ModelForm):
         model = Branch
         fields = ['organization', 'name', 'location', 'email', 'contact_phone', 'contact_email', 
                   'facebook', 'twitter', 'linkedin', 'description']
+        widget = {
+            'contact_phone': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000'}),
+            'contact_email': forms.EmailInput(attrs={'placeholder': 'e.g abc@example.com'}),
+        }
     def __init__(self, user, *args, **kwargs):
         super(BranchForm, self).__init__(*args, **kwargs)
         self.fields['organization'].queryset = Organization.objects.filter(admin_user=user)
@@ -268,9 +272,13 @@ class EmployeeForm(forms.ModelForm):
                   'employment_status', 'employment_type', 'designation', 'adminuser', 'bank_name', 'account_number', 'account_name',
                   'pension_id', 'tax_id'
                   ]
+        # include fa icons in the placeholders  
         widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date'}),
+            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'e.g abc@example.com'}),
+            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder': 'DD/MM/YYYY'}),
             'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d')}),
+            'next_of_kin_phone_number': forms.TextInput(attrs={'type': 'tel'}),
             'emergency_contacts': forms.Textarea(attrs={'rows': 2}),
             'skills_qualifications': forms.Textarea(attrs={'rows': 2}),
         }
@@ -586,6 +594,7 @@ class UserProfileForm(forms.ModelForm):
         )
 
 class ChangePasswordForm(PasswordChangeForm):
+    # inlcude fa icons in the placeholders
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -690,10 +699,11 @@ class ReportForm(forms.ModelForm):
         model = Report
         fields = ['title', 'branch', 'report_date', 'description', 'status', 'comments',
                 'attachments', 'created_by', 'report_type', 'category']
+        # include fa icons in the placeholders
         widgets = {
-            'report_date': forms.DateInput(attrs={'type': 'date'}),
+            'report_date': forms.DateInput(attrs={'type': 'date', 'placeholder': "DD/MM/YYYY"}),
             'description': forms.Textarea(attrs={'rows': 3}),
-            'comments': forms.Textarea(attrs={'rows': 3}),
+            'comments': forms.Textarea(attrs={'rows': 2}),
         }
 
     def __init__(self, *args, **kwargs):

@@ -10,18 +10,6 @@
     <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'emps/styles/performance.css' %}">
     <script src="{% static 'emps/scripts/performance.js'%}"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .container {
-            font-family: 'Montserrat', sans-serif;
-        }
-        strong {
-          font-size: 0.9rem;
-        }
-        h4 {
-          color: #009dff;
-        }
-    </style>
 {% endblock %}
 {% block signIn %}{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
@@ -40,10 +28,9 @@
     </div>
 
     <div class="performance-actions">
-      <button class="action-button" id="review-btn">Review {{employee.first_name}}</button>
-      <button class="action-button" id="update-rev-btn">Update Review</button>
-      <button class="action-button" id="performanceHistory-btn">View Performance</button>
-      <!-- Add more buttons for other actions -->
+      <button class="action-button" id="review-btn">Create</button>
+      <button class="action-button" id="update-rev-btn">Update</button>
+      <button class="action-button" id="performanceHistory-btn">History</button>
     </div>
  
   
@@ -80,7 +67,6 @@
       {% endif %}
 
     </div>
-    <!-- Add more modals for other forms -->
     
     <div id="performanceHistory-modal" class="archive-modal">
       <div class="history-container archive-modal-content">

@@ -71,11 +71,17 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 5px;
-    background: rgb(214, 240, 238);
-    color: #223;
-    border-radius: 10px;
+    border: 1px solid #85b6c1;
+    color: #eee;
+    background-color: #0056b35e;
+    border-radius: 0;
 }
 
+.hr-dull {
+    height: 0.5px;
+    background-color: #ddd;
+    opacity: 0.8;
+}
 .featuresToggleContainer.active .fa-angle-down {
     transform: rotate(180deg);
 }
@@ -647,7 +653,7 @@ table .btn {
 }
 
 .featuresToggle {
-    color: #223;
+    color: #ddd;
     user-select: none;
     margin: 5px;
 }
@@ -722,8 +728,12 @@ table .btn {
     /* Adjust tab width for mgt sections */
     .featuresToggleContainer:hover {
         cursor: pointer;
-        background-color: #a4c6d0;
+        opacity: 0.9;
     }
+    .featuresToggleContainer {
+        background-color: #032d59;
+      }
+
 
     .tabTitle {
         display: inline-block;
@@ -889,11 +899,6 @@ table .btn {
 
     .featuresToggleContainer{
         border-radius: 20px;
-        background: #007bff;
-        color: #fff;
-    }
-    .featuresToggleContainer:hover {
-        background-color: #0056b3;
     }
 
     .featuresToggle {

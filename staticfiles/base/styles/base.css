@@ -214,7 +214,7 @@ nav a:hover {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-top-color: #333; /* Change color as needed */
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.3s linear infinite;
 }
 
 @keyframes spin {
@@ -347,6 +347,12 @@ div.dt-container div.dt-search input:active {
 
 .justify-content-between {
     flex-wrap: nowrap;
+}
+
+
+.fa-userName::before {
+    font-family: 'Font Awesome';
+    content: "\f073";
 }
 
 /* 

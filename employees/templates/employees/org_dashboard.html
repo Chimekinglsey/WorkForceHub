@@ -1029,9 +1029,6 @@
                                                                 <li><a class="moreEmpDetail activateDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Activate</a></li>
                                                                 {% endif %}
                                                                 <li><a class="moreEmpDetail promoteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Promote</a></li>
-                                                                {% if user and user == master_admin and del.is_superuser %}
-                                                                <li><a class="moreEmpDetail demoteAdminBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Demote</a></li>
-                                                                {% endif %}
                                                                 <li><a class="moreEmpDetail deleteDelegateBtn" data-delegateid="{{ del.pk }}" class="btn btn-primary btn-sm">Delete</a></li>
                                                             </ul>
                                                         </center>
@@ -1078,7 +1075,7 @@
                                             <td>{{ admin.last_login|naturaltime }}</td>
                                             <td>{{ admin.employment_status }}</td>
                                             <td class="">
-                                                {% if user == master_admin %}
+                                                {% if user.is_master_admin %}
                                                     <div class="dropdown">
                                                         <center>
                                                             <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
