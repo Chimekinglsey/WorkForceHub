@@ -556,6 +556,7 @@ def branch_dashboard(request, branch_id):
 # update employee
 
 @require_POST
+@login_required
 def update_employee(request, emp_id):
     # Retrieve employee object or return error response if not found
     try:
@@ -614,6 +615,7 @@ def delete_employee(request, emp_id):
 
 # archive employee
 @require_POST
+@login_required
 def archive_employee(request, emp_id):
     try:
         employee = Employee.objects.get(employee_id=emp_id)
@@ -650,6 +652,7 @@ def restore_archive(request, emp_id):
 """Leave Management"""
 # Leave request
 @require_POST
+@login_required
 def leave_request(request):
     """Employee leave request"""
     data = request.POST.dict()
@@ -665,9 +668,11 @@ def leave_request(request):
     messages.success(request, f"Leave request submitted successfully")
     return redirect('branch_dashboard', branch_id=branch.branch_id)
 
+
 # Accept and decline leave request
 @csrf_exempt
 @require_POST
+@login_required
 def manage_leave_request(request, leave_id):
     """Accept or decline leave request"""
     leave = get_object_or_404(Leave, pk=leave_id)
@@ -689,6 +694,7 @@ def manage_leave_request(request, leave_id):
 
 
 """Payroll Management"""
+@login_required
 @require_POST
 def create_payroll(request):
     """Create payroll for an employee"""
@@ -718,6 +724,8 @@ def create_payroll(request):
     messages.success(request, f"Payroll created successfully")
     return redirect('payroll_detail', payroll_id=payroll.id)
 
+
+@login_required
 def update_payroll(request, payroll_id):
     """Update payroll"""
     payroll = get_object_or_404(Payroll, id=payroll_id)
@@ -734,16 +742,22 @@ def update_payroll(request, payroll_id):
         form = PayrollForm(instance=payroll, data=request.POST or None)
     return render(request, 'payroll/update_payroll.html', {'form': form})
 
+
+@login_required
 def payroll_detail(request, payroll_id):
     """Payroll detail"""
     payroll = get_object_or_404(Payroll, id=payroll_id)
     return render(request, 'payroll/payroll_detail.html', {'payroll': payroll})
 
+
+@login_required
 def payroll_list(request):
     """List of payrolls"""
     payrolls = Payroll.objects.all()
     return render(request, 'payroll/payroll_list.html', {'payrolls': payrolls})
 
+
+@login_required
 def payroll_history(request, emp_id):
     employee = get_object_or_404(Employee, id=emp_id)
     payroll_history = Payroll.objects.filter(employee=employee).order_by('-year', '-month')
@@ -754,6 +768,7 @@ def payroll_history(request, emp_id):
     }
     return render(request, 'payroll/payroll_history.html', context)
 
+@login_required
 def delete_payroll(request, payroll_id):
     """Delete payroll"""
     payroll = get_object_or_404(Payroll, id=payroll_id)
@@ -803,6 +818,8 @@ def performance_dashboard(request, emp_id):
                                                          'review_form': review_form, 'update_review_form': update_review_form}
                                                         )
 
+
+@login_required
 @require_POST
 def performance_review(request, emp_id):
     """Submit performance review"""
@@ -821,6 +838,7 @@ def performance_review(request, emp_id):
 
 
 # update project performance
+@login_required
 @require_POST
 def update_performance_review(request, performance_id):
     """Update project performance"""
@@ -835,6 +853,7 @@ def update_performance_review(request, performance_id):
 
 
 # delete performance review
+@login_required
 @csrf_exempt
 def delete_performance_review(request, performance_id):
     """Delete performance review"""
@@ -847,6 +866,7 @@ def delete_performance_review(request, performance_id):
 
 
 """Transfer Management"""
+@login_required
 @require_POST
 def transfer_request(request):
     """Submit transfer request"""
@@ -871,6 +891,7 @@ def transfer_request(request):
 
 
 # cancel transfer request
+@login_required
 @require_POST
 def cancel_transfer_request(request, transfer_id):
     """Cancel transfer request"""
@@ -885,6 +906,7 @@ def cancel_transfer_request(request, transfer_id):
 
 
 # accept or decline transfer request
+@login_required
 @require_POST
 @csrf_exempt
 def manage_transfer_request(request, transfer_id):
@@ -915,10 +937,10 @@ def manage_transfer_request(request, transfer_id):
 """Reports Management and Statistics"""
 # create a report
 @login_required
-def create_report(request):
+def create_report(request, branch_id=None):
     """Create a report"""
     try:
-        branch = get_object_or_404(Branch, id=request.user.branch.id)
+        branch = get_object_or_404(Branch, branch_id=branch_id)
     except Branch.DoesNotExist:
         messages.error(request, "Branch not found")
         return JsonResponse({'type': 'error', 'message': 'Branch not found'}, status=404)
@@ -947,15 +969,16 @@ def create_report(request):
             report_instance.created_by = user
             report_instance.save()
             messages.success(request, 'Report created successfully')
-            return redirect('create_report')
+            return redirect('create_report', branch_id=branch.branch_id)
         else:
             messages.error(request, 'Failed to create report. Please check the form.')
             return redirect('create_report')
     return render(request, 'reports/reports.html', {'form': form, 'user': user, 'report_id': report_id, 'reports': reports,
-                                                    'update_form': update_form})
+                                                    'update_form': update_form, 'branch_id': branch_id})
 
 
 # Update a report
+@login_required
 @require_POST
 def update_report(request, report_id):
     """Update a report"""
@@ -1069,10 +1092,10 @@ def statistics(request):
 
 """Finance Management"""
 @login_required
-def finance_report(request, type=None):
+def finance_report(request, type=None, branch_id=None):
     """Create a finance report"""
     try:
-        branch = get_object_or_404(Branch, id=request.user.branch.id)
+        branch = get_object_or_404(Branch, branch_id=branch_id)
     except Branch.DoesNotExist:
         messages.error(request, "Branch not found")
         return JsonResponse({'type': 'error', 'message': 'Branch not found'}, status=404)
@@ -1090,7 +1113,7 @@ def finance_report(request, type=None):
     total_profit = total_revenue - total_expenses
     total_reports = reports.count()
 
-    context =  {'basic_form': basic_form, 'user': user, 'reports': reports,
+    context =  {'basic_form': basic_form, 'user': user, 'reports': reports, 'branch_id': branch_id, 'type': type,
                 'detailed_form': detailed_form, 'branch': branch, 'total_employee_salary': total_employee_salary,
                 'total_employees': total_employees, 'total_revenue': total_revenue, 'total_expenses': total_expenses,
                 'total_profit': total_profit, 'total_reports': total_reports
@@ -1107,16 +1130,17 @@ def finance_report(request, type=None):
             report_instance.created_by = user
             report_instance.save()
             messages.success(request, 'Finance report created successfully')
-            return redirect('finance_dashboard')
+            return redirect('finance_dashboard', branch_id=branch.branch_id)
         else:
             messages.error(request, 'Failed to create finance report. Please check the form.')
-            return redirect('finance_dashboard')
+            return redirect('finance_dashboard', branch_id=branch.branch_id)
     return render(request, 'reports/finances.html', context=context)
 
 
 
 
 """Account Settings"""
+@login_required
 @require_POST
 def profile_settings(request):
     form = UserProfileForm(request.POST, request.FILES, instance=request.user)
@@ -1129,6 +1153,7 @@ def profile_settings(request):
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
 
 
+@login_required
 @require_POST
 def change_password(request):
     if request.user.can_change_password:
@@ -1146,6 +1171,7 @@ def change_password(request):
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
 
 
+@login_required
 @require_POST
 def upload_documents(request):
     organization = request.user.branch.organization
@@ -1161,6 +1187,7 @@ def upload_documents(request):
         return redirect('branch_dashboard', branch_id=request.user.branch.branch_id)
 
 
+@login_required
 @require_POST
 def reset_delegate_password(request):
     """Reset delegate password"""
@@ -1185,6 +1212,7 @@ def reset_delegate_password(request):
 
 
 # promote delegate to superuser
+@login_required
 @csrf_exempt
 @require_POST
 def promote_delegate(request, delegate_id):
@@ -1206,6 +1234,7 @@ def promote_delegate(request, delegate_id):
 
 
 # demote superuser to delegate
+@login_required
 @csrf_exempt
 @require_POST
 def demote_admin(request, admin_id):
@@ -1228,6 +1257,7 @@ def demote_admin(request, admin_id):
 
 
 #  suspend admin user
+@login_required
 @csrf_exempt
 @require_POST
 def suspend_admin(request, admin_id):
@@ -1249,6 +1279,7 @@ def suspend_admin(request, admin_id):
 
 
 # restore suspended admin
+@login_required
 @csrf_exempt
 @require_POST
 def restore_admin(request, admin_id):
@@ -1272,6 +1303,7 @@ def restore_admin(request, admin_id):
 
 
 """Search Feature"""
+@login_required
 def search_employee(request):
     if request.method == 'GET':
         search_term = request.GET.get('search_term', '')

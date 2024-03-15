@@ -40,3 +40,7 @@
 2024-03-14 09:05:48,364 - 127.0.0.1 - requested_resource: /orgDashboard/ - 'QuerySet' object has no attribute 'get_bound_field'
 2024-03-14 09:06:58,855 - 127.0.0.1 - requested_resource: /orgDashboard/ - 'Organization' object has no attribute 'all'
 2024-03-14 11:30:54,087 - 127.0.0.1 - requested_resource: /orgDashboard/ - 'User' object has no attribute 'is_delegate'
+2024-03-15 16:52:57,545 - 127.0.0.1 - requested_resource: /org/branch/52609/ - 'block' tag with name 'dashboard' appears more than once
+2024-03-15 17:42:59,473 - 127.0.0.1 - requested_resource: /finance/45389/ - No Branch matches the given query.
+2024-03-15 17:50:09,840 - 127.0.0.1 - requested_resource: /org/branch/45389/ - Reverse for 'finance_report' with arguments '('45389',)' not found. 1 pattern(s) tried: ['finance/report/(?P<branch_id>[0-9]+)/(?P<type>[^/]+)/\\Z']
+2024-03-15 17:51:32,973 - 127.0.0.1 - requested_resource: /org/branch/45389/ - Reverse for 'finance_report' with keyword arguments '{'branch_id': '45389'}' not found. 1 pattern(s) tried: ['finance/report/(?P<branch_id>[0-9]+)/(?P<type>[^/]+)/\\Z']

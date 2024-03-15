@@ -15,7 +15,8 @@ bucket_and_mail_keys = get_secret('bucket_and_mail_keys', 'us-east-1')
 SECRET_KEY = bucket_and_mail_keys.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bucket_and_mail_keys.get('DEBUG', 'True').lower() == 'true'
+# DEBUG = bucket_and_mail_keys.get('DEBUG', 'True').lower() == 'true'
+DEBUG = False
 
 ALLOWED_HOSTS = bucket_and_mail_keys.get('ALLOWED_HOSTS').split(' ') if bucket_and_mail_keys.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 

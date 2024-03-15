@@ -9,11 +9,7 @@
     <link rel="stylesheet" href="{% static 'generic/styles/branch_dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'emps/styles/performance.css' %}">
     <script src="{% static 'emps/scripts/performance.js'%}"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .container {
-            font-family: 'Montserrat', sans-serif;
-        }
         strong {
           font-size: 0.9rem;
         }
@@ -27,6 +23,13 @@
 {% endblock %}
 {% block signIn %}{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
+{% block dashboard %}
+{% if user.is_superuser %}
+    <a href="{% url 'branch_dashboard' branch_id %}">Dashboard</a>
+    {% else %}
+    <a href="{% url 'branch_dashboard' user.branch.branch_id %}">Dashboard</a>
+    {% endif %}
+{% endblock dashboard %}
 
 {% block content %}
 <div class="performance-dashboard reports-db">
@@ -53,7 +56,7 @@
     <!-- Modals for forms -->
     <div id="create-report-modal" class="archive-modal">
       <!-- create-report form content -->
-      <form class="container" action="{% url 'create_report' %}" method="post" enctype="multipart/form-data">
+      <form class="container" action="{% url 'create_report' branch_id %}" method="post" enctype="multipart/form-data">
         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
           <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('create-report-modal').style.display='none'">&times;</span>
       </button>

@@ -531,8 +531,8 @@
                     </div>
                     <div class="statistic-info">
                         <h3>Total Employees Salary</h3>
-                        {% if total_employees_salary is not None %}
-                        <p class="statsVal">${{ total_employees_salary }}</p>
+                        {% if total_employee_salary is not None %}
+                        <p class="statsVal">${{ total_employee_salary|intcomma }}</p>
                         {% else %}
                         <p class="statsVal badStat">N/A</p>
                         {% endif %}

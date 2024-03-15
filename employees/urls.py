@@ -78,14 +78,14 @@ urlpatterns = [
 
 
     # Reports and statistics
-    path('branch/reports/', emp_view.create_report, name='create_report'),
+    path('branch/reports/<int:branch_id>/', emp_view.create_report, name='create_report'),
     path('branch/updateReport/<int:report_id>/', emp_view.update_report, name='update_report'),
     path('statistics/', emp_view.statistics, name='statistics'),
 
 
     # Finance URL
-    path('finance/', emp_view.finance_report, name='finance_dashboard'),
-    path('finance/<str:type>/', emp_view.finance_report, name='finance_report'),
+    path('finance/<int:branch_id>/', emp_view.finance_report, name='finance_dashboard'),
+    path('finance/report/<int:branch_id>/<str:type>/', emp_view.finance_report, name='finance_report'),
 
     # Password urls for admin
     path('changePassword/', emp_view.change_password, name='change_password'), # used by both admin and delegate with can_change_password privilege

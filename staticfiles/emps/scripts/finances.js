@@ -26,6 +26,6 @@ $(document).ready(function() {
     // toggle finance container
     $('#close').click(function() {
     $('#financeStats-modal').hide();
-      $('.financeContainer').slideToggle();
+      $('.financeContainer').show();
     });
 });

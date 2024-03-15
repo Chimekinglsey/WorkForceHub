@@ -16,10 +16,17 @@
 {% endblock %}
 {% block signIn %}{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
+{% block dashboard %}
+    {% if user.is_superuser %}
+        <a href="{% url 'branch_dashboard' branch_id %}">Dashboard</a>
+    {% else %}
+        <a href="{% url 'branch_dashboard' user.branch.branch_id %}">Dashboard</a>
+    {% endif %}
+{% endblock dashboard %}
 
 {% block content %}
 <div class="performance-dashboard custom-dashboard">
-    <div class="financeContainer statistics">
+    <div class="financeContainer container">
         <center><h2 class="db-title">Finance Dashboard</h2></center>
         <div class="employee-profile">
             <div class="profile-picture">
@@ -47,7 +54,7 @@
             <!-- Modals for forms -->
             <div id="basicReport-modal" class="archive-modal">
                 <!-- Review form content -->
-                <form class="container" action="{% url 'finance_report' type='basic'%}" method="post" enctype="multipart/form-data">
+                <form class="container" action="{% url 'finance_report' branch_id=branch_id type='basic'%}" method="post" enctype="multipart/form-data">
                     <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
                         <span class="close openFlashMsg" aria-hidden="true" onclick="getElementById('basicReport-modal').style.display='none'">&times;</span>
                     </button>
@@ -58,7 +65,7 @@
             </div>
 
             <div id="detailedReport-modal" class="archive-modal">
-            <form class="container" action="{% url 'finance_report' type='detailed' %}" method="post" enctype="multipart/form-data">
+            <form class="container" action="{% url 'finance_report' branch_id=branch_id type='detailed' %}" method="post" enctype="multipart/form-data">
                 <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
                 <span class="close openFlashMsg" aria-hidden="true" onclick="getElementById('detailedReport-modal').style.display='none'">&times;</span>
                 </button>
@@ -168,12 +175,12 @@
     </div>
        
     {% comment %} Employee transfers {% endcomment %}
-    <div class="tab-contents6 statistics container" id="financeStats-modal">
+    <div class="tab-contents6 container" id="financeStats-modal">
         <button id="close" type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
             <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('financeStats-modal').style.display='none'">&times;</span>
         </button>
 
-        <div class="statistics container">
+        <div class="statistics">
             <h2>Financial Statistics</h2>
             <div class="statistics-grid">
                 <div class="statistic-item">
@@ -221,7 +228,7 @@
                     </div>
                     <div class="statistic-info">
                         <h3>Total Expenses</h3>
-                        {% if total_expenses %}
+                        {% if total_expenses is not None %}
                             <p class="statsVal">${{ total_expenses|intcomma }}</p>
                         {% else %}
                             <p class="statsVal badStat">N/A</p>
@@ -234,8 +241,8 @@
                     </div>
                     <div class="statistic-info">
                         <h3>Total Employees Salary</h3>
-                        {% if total_employees_salary is not None %}
-                        <p class="statsVal">${{ total_employees_salary|intcomma }}</p>
+                        {% if total_employee_salary is not None %}
+                        <p class="statsVal">${{ total_employee_salary|intcomma }}</p>
                         {% else %}
                         <p class="statsVal badStat">N/A</p>
                         {% endif %}

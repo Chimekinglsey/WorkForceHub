@@ -174,7 +174,6 @@ tr:hover {
 
 .performance-dashboard .db-title {
   font-weight: bolder;
-  font-family: 'Montserrat', sans-serif;
   background-image: linear-gradient(to right, #0e276c, #0a0a09, #39c02a, #0e276c);
   -webkit-background-clip: text;
   background-clip: text;

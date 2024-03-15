@@ -63,7 +63,7 @@ $(document).ready(function () {
         $(`.${content}`).show();
     });
     $('.featuresToggleContainer').click(function () {
-        if ($(window).outerWidth() <= 754) {
+        if ($(window).outerWidth() <= 768) {
             $(this).toggleClass('active');
             $('.featuresList').slideToggle();
         }
@@ -71,13 +71,20 @@ $(document).ready(function () {
 
     // Function to close Feature list when window is resized to larger than 900px
     $(window).resize(function () {
-        if ($(window).outerWidth() > 754) {
+        if ($(window).outerWidth() > 768) {
             $('.featuresList').slideDown();
             $('.actions').slideDown();
-        } else {
+        } 
+
+        /**
+         * Uncomment the else block to hide the features list when the window is resized to less than 768px
+         * this was commented because of the behavior on mobile devices scroll
+        
+        else {
             $('.featuresList').slideUp();
             $('.actions').slideUp();
-        }
+        } 
+        */
     });
 
     // // Handle mouse enter and leave events for the left pane

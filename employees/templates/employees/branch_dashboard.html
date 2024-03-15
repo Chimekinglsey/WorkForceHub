@@ -20,9 +20,11 @@
 {% block title %}Branch Dashboard{% endblock title %}
 {% block signIn %}<a class="loginBtn btn logoutBtn" href="{% url 'logout' %}" >Logout</a>{% endblock signIn %}
 {% block signUp %}{% endblock signUp %}
-    {% if not request.user.is_superuser %}
-        {% block dashboard %}{% endblock dashboard %}
+    {% block dashboard %}
+    {% if user.is_superuser %}
+        <a href="{% url 'org_dashboard' %}">Org</a>
     {% endif %}
+    {% endblock dashboard %}
 {% block content %}
 <center>
     <div class="flash-ajax-message">
@@ -50,10 +52,10 @@
             </div>
             <div class="fgroup">
                 <li><a class="featuresItem" id="transfers" data-content="transfers"><i class="fas fa-fw fa-exchange-alt"></i>Transfers</a></li>
-                <li><a class="featuresItem2" href="{% url 'finance_dashboard' %}" id="finance"><i class="fas fa-fw fa-sack-dollar"></i>Finances</a></li>
+                <li><a class="featuresItem2" href="{% url 'finance_dashboard' branch_id=branch_id %}" id="finance"><i class="fas fa-fw fa-sack-dollar"></i>Finances</a></li>
             </div>
             <div class="fgroup">
-                <li><a class="featuresItem2" href="{% url 'create_report' %}" id="reports"><i class="fas fa-fw fa-file-circle-plus"></i>Reports</a></li>
+                <li><a class="featuresItem2" href="{% url 'create_report' branch_id %}" id="reports"><i class="fas fa-fw fa-file-circle-plus"></i>Reports</a></li>
                 <li><a class="featuresItem" id="accountSettings" data-content="settings"><i class="fas fa-fw fa-cog"></i>Settings</a></li>
             </div>
         </ul>
