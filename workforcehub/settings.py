@@ -102,14 +102,13 @@ WSGI_APPLICATION = 'workforcehub.wsgi.application'
 USE_L10N = True
 
 # Database
-db_params = get_secret('workforcehub_db_keys')
-username = db_params['username']
-password = db_params['password']
-db_name = db_params['db_name']
-host = db_params['host']
-port = db_params['port']
+username = get_secret['db_username']
+password = get_secret['db_password']
+db_name = get_secret['db_name']
+host = get_secret['db_host']
+port = get_secret['db_port']
 
-if db_params:
+if password and username and db_name and host and port:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
