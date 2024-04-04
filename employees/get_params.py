@@ -6,7 +6,7 @@ def get_parameters(parameter_names, region_name):
     parameters = {param['Name']: param['Value'] for param in response['Parameters']}
     return parameters
 
-def lambda_handler(event, context):
+def lambda_handler(event=None, context=None):
     parameter_names = [
         'ACCESS_KEY_ID',
         'ALLOWED_HOSTS',
@@ -25,7 +25,7 @@ def lambda_handler(event, context):
     ]
     
     # Fetch parameters from Parameter Store
-    region_name = context.invoked_function_arn.split(':')[3]
+    region_name = context.invoked_function_arn.split(':')[3] if context else 'us-east-1'
     parameters = get_parameters(parameter_names, region_name)
 
     # Prepare the dictionary with keys prepended with "AWS_" for uppercase keys
