@@ -1,40 +1,40 @@
 from pathlib import Path
 import os
-from employees.get_secrets import get_secret
+from employees.get_params import lambda_handler as get_secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-bucket_and_mail_keys = get_secret('bucket_and_mail_keys', 'us-east-1')
+secret_params = get_secret()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = bucket_and_mail_keys.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
+SECRET_KEY = secret_params.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = bucket_and_mail_keys.get('DEBUG', 'True').lower() == 'true'
+# DEBUG = secret_params.get('DEBUG', 'True').lower() == 'true'
 DEBUG = False
 
-ALLOWED_HOSTS = bucket_and_mail_keys.get('ALLOWED_HOSTS').split(' ') if bucket_and_mail_keys.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = secret_params.get('ALLOWED_HOSTS').split(' ') if secret_params.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = bucket_and_mail_keys.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = bucket_and_mail_keys.get('EMAIL_PORT', 587)
-EMAIL_USE_TLS = bucket_and_mail_keys.get('EMAIL_USE_TLS', True)
-EMAIL_HOST_USER = bucket_and_mail_keys.get('EMAIL_HOST_USER', None)
-EMAIL_HOST_PASSWORD = bucket_and_mail_keys.get('EMAIL_HOST_PASSWORD', None)
+EMAIL_HOST = secret_params.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = secret_params.get('EMAIL_PORT', 587)
+EMAIL_USE_TLS = secret_params.get('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = secret_params.get('EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = secret_params.get('EMAIL_HOST_PASSWORD', None)
 
 
 
 
 # configure aws s3 bucket
-AWS_STORAGE_BUCKET_NAME = bucket_and_mail_keys.get('AWS_STORAGE_BUCKET_NAME')
-AWS_ACCESS_KEY_ID = bucket_and_mail_keys.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = bucket_and_mail_keys.get('AWS_SECRET_ACCESS_KEY')
-AWS_S3_REGION_NAME = bucket_and_mail_keys.get('AWS_S3_REGION_NAME')
+AWS_STORAGE_BUCKET_NAME = secret_params.get('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = secret_params.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = secret_params.get('AWS_SECRET_ACCESS_KEY')
+AWS_S3_REGION_NAME = secret_params.get('AWS_S3_REGION_NAME')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_DEFAULT_ACL = None
 AWS_S3_OBJECT_PARAMETERS = {
