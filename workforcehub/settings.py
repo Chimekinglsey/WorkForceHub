@@ -18,7 +18,7 @@ SECRET_KEY = secret_params.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c
 # DEBUG = secret_params.get('DEBUG', 'True').lower() == 'true'
 DEBUG = False
 
-ALLOWED_HOSTS = secret_params.get('ALLOWED_HOSTS').split(' ') if secret_params.get('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = secret_params.get('AWS_ALLOWED_HOSTS').split(' ') if secret_params.get('AWS_ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = secret_params.get('EMAIL_HOST', 'smtp.gmail.com')
@@ -172,7 +172,7 @@ USE_TZ = True
 APPEND_SLASH = False
 
 if not DEBUG:
-    SECURE_SSL_REDIRECT = False  # Redirect all HTTP requests to HTTPS
+    SECURE_SSL_REDIRECT = False # Redirect all HTTP requests to HTTPS
     SESSION_COOKIE_SECURE = False  # Ensure the session cookie is only sent over HTTPS
     CSRF_COOKIE_SECURE = False  # Ensure the CSRF cookie is only sent over HTTPS
 
