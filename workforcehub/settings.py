@@ -172,9 +172,9 @@ USE_TZ = True
 APPEND_SLASH = False
 
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
-    SESSION_COOKIE_SECURE = True  # Ensure the session cookie is only sent over HTTPS
-    CSRF_COOKIE_SECURE = True  # Ensure the CSRF cookie is only sent over HTTPS
+    SECURE_SSL_REDIRECT = False  # Redirect all HTTP requests to HTTPS
+    SESSION_COOKIE_SECURE = False  # Ensure the session cookie is only sent over HTTPS
+    CSRF_COOKIE_SECURE = False  # Ensure the CSRF cookie is only sent over HTTPS
 
 
 # Static files (CSS, JavaScript, Images)
