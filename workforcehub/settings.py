@@ -102,11 +102,11 @@ WSGI_APPLICATION = 'workforcehub.wsgi.application'
 USE_L10N = True
 
 # Database
-username = get_secret['db_username']
-password = get_secret['db_password']
-db_name = get_secret['db_name']
-host = get_secret['db_host']
-port = get_secret['db_port']
+username = secret_params.get('db_username')
+password = secret_params.get('db_password')
+db_name = secret_params.get('db_name')
+host = secret_params.get('db_host')
+port = secret_params.get('db_port')
 
 if password and username and db_name and host and port:
     DATABASES = {
