@@ -3,7 +3,6 @@
 # from django.conf import settings
 # from celery import Celery, shared_task
 
-
 # app = Celery('tasks', broker=settings.CELERY_BROKER_URL, 
 #              backend=settings.CELERY_RESULT_BACKEND)
 # # app = Celery('tasks', broker='pyamqp://guest@localhost//', backend='redis://localhost:6379/0')
@@ -51,11 +50,9 @@
 # #                 retry -= 1
 # #             raise Exception(f"Failed to execute task after {timer} attempts")
 # #         return wrapper
-# #     return decorator
-                        
+# #     return decorator                   
 
 # # from celery import group, shared_task, chain, chord
-
 
 # # @app.task
 # # def fetch_in_batches(db_batch):
