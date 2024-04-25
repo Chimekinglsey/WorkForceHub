@@ -338,8 +338,8 @@
                                             <td>{{ forloop.counter }}</td>
                                             <td class="sf2">{{ employee.employee_id }}</td>
                                             <td class="sf1">{{ employee.first_name }} {{ employee.last_name }}</td>
-                                            <td class="sf3">{{ employee.department }}</td>
-                                            <td class="sf4">{{ employee.job_role }}</td>
+                                            <td class="sf3">{{ employee.department|truncatewords:2 }}</td>
+                                            <td class="sf4">{{ employee.job_role|truncatechars:'25' }}</td>
                                             <td>{{ employee.employment_status }}</td>
                                             <td>
                                                 <div class="dropdown">

@@ -94,7 +94,7 @@ def generate_next_of_kin_phone():
     return fake.phone_number()
 
 # Number of employees to generate
-num_employees = 50
+num_employees = 5
 
 # Open CSV file for writing
 with open('employees/tests/files/csv/employees.csv', mode='w', newline='') as file:
@@ -117,7 +117,7 @@ with open('employees/tests/files/csv/employees.csv', mode='w', newline='') as fi
         dob = generate_dob()
         gender = generate_gender()
         marital_status = generate_marital_status()
-        email = f"{generate_email(first_name, last_name)+str(i+1)}"
+        email = f"{generate_email(first_name, last_name)+str(i)+ '.ch'}"
         address = generate_address()
         nationality = fake.country()
         state = fake.state()

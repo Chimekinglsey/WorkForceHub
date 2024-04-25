@@ -95,6 +95,7 @@ def process_employee_data(file_content:bytes=None, filename:str=None, branch_id:
             return {'success': False, 'message': 'Unsupported file format.'}
         
         error_messages = [] # List to store error messages
+        employee_ids = [] # List to store employee IDs
         
             # Iterate over the rows in the DataFrame and create employees
         for _, row in df.iterrows():
@@ -117,7 +118,7 @@ def process_employee_data(file_content:bytes=None, filename:str=None, branch_id:
                     nationality=row.get('Nationality'),
                     state_of_origin=row.get('State of origin'),
                     phone_number=row.get('Phone number'),
-                    employee_id= generate_employee_id()  if pd.notna(row.get('Employee ID')) else row.get('Employee ID')
+                    employee_id= generate_employee_id() if pd.isna(row.get('Employee ID')) else row.get('Employee ID'),
                     department=row.get('Department/division'),
                     job_role=row.get('Job role'),
                     employment_type=row.get('Employment type', 'Full-time'),
@@ -139,9 +140,11 @@ def process_employee_data(file_content:bytes=None, filename:str=None, branch_id:
                     branch=branch,
                     adminuser=admin
                 )
+                employee_ids.append(f"{row.get('Employee ID}')} {row.get('First Name')} {row.get('Last Name')}")
             except Exception as e:
                 # Append error message with employee information to the list
                 print(e)
+                employee_ids.append(f"{row.get('Employee ID')} {row.get('First Name')} {row.get('Last Name')}")
                 error_messages.append(f'Error creating employee {row.get("First Name")} {row.get("Last Name")}: {e}')
         
         if error_messages:

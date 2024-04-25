@@ -119,12 +119,12 @@ class BaseUser(models.Model):
     middle_name = models.CharField(_('Middle name'), max_length=30, null=True, blank=True)
     dob = models.DateField(_('Date of birth'), null=True, blank=True)
     gender = models.CharField(_('Gender'), max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
-    marital_status = models.CharField(_('Marital status'), choices=MARITAL_STATUS_CHOICES, max_length=15, null=True, blank=True)
+    marital_status = models.CharField(_('Marital status'), choices=MARITAL_STATUS_CHOICES, max_length=30, null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True, blank=False)
     address = models.CharField(_('Address'), max_length=100, null=True, blank=True)
-    nationality = models.CharField(_('Nationality'), max_length=30, null=True, blank=True)
-    state_of_origin = models.CharField(_('State of origin'), max_length=30, null=True, blank=True)
-    phone_number = models.CharField(_('Phone number'), max_length=15, null=True, blank=True)
+    nationality = models.CharField(_('Nationality'), max_length=100, null=True, blank=True)
+    state_of_origin = models.CharField(_('State of origin'), max_length=50, null=True, blank=True)
+    phone_number = models.CharField(_('Phone number'), max_length=30, null=True, blank=True)
     
     # Employment Information
     employee_id = models.CharField(_('Employee ID'), max_length=100, null=True, blank=True) # removed uniqe contraint to allow for multiple employees with same employee_id
@@ -133,7 +133,7 @@ class BaseUser(models.Model):
     joining_date = models.DateField(_('Joining date'), null=True, blank=True)
     employment_type = models.CharField(_('Employment type'), choices=EMPLOYEE_STATUS_CHOICES, max_length=100, default='Full-time')
     employment_status = models.CharField(_('Employment status'), choices=EMPLOYMENT_STATUS_CHOICES, max_length=20, default='Active')
-    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=30, default='Employee')
+    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=50, default='Employee')
     level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=30, null=True, blank=True)
     last_promotion_date = models.DateField(_('Last promotion date'), null=True, blank=True)
     next_promotion_date = models.DateField(_('Next promotion date'), null=True, blank=True)
@@ -161,7 +161,7 @@ class BaseUser(models.Model):
     # Next of kin
     next_of_kin_name = models.CharField(_('Next of kin name'), max_length=100, null=True, blank=True)
     next_of_kin_relationship = models.CharField(_('Next of kin relationship'), max_length=100, choices=NEXT_OF_KIN_RELATIONSHIP_CHOICES, null=True, blank=True)
-    next_of_kin_phone_number = models.CharField(_('Next of kin phone number'), max_length=15, null=True, blank=True)
+    next_of_kin_phone_number = models.CharField(_('Next of kin phone number'), max_length=30, null=True, blank=True)
     # next_of_kin_address = models.CharField(_('Next of kin address'), max_length=100, null=True, blank=True)
 
     
