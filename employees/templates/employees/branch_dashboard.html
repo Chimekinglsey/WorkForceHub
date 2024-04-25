@@ -572,7 +572,6 @@
                 
 
                     <!-- {% comment %}Update Employee Form {% endcomment %} -->
-                    {% cache 86400 cache_emp_modals%}
                     <div class="container empModalContainer" id="updateEmpDetailContainer">
                         <form id="updateEmployeeForm" method="post" class="container mt-5 mb-5" enctype="multipart/form-data">
                             {% csrf_token %}
@@ -1248,7 +1247,6 @@
                             </center>
                         </div>
                     </div>
-                    {% endcache %}
                 </div>
                 
                 
