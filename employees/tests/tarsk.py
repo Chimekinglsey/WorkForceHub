@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.shortcuts import get_object_or_404
 from employees.models import Branch, AdminUser, Employee
+from employees.celery.tasks import generate_employee_id
 
 # Create a list to hold employee data and simulate possible errors
 @shared_task

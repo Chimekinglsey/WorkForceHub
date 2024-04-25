@@ -31,7 +31,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from .forms import EmployeesUploadForm
 from employees.celery.tasks import process_employee_data, generate_employee_id, send_password_reset_email,\
     send_welcome_mail, process_payroll_data
-from employees.tests.tarsk import test_errors
+from .tests.tarsk import test_errors
 
 
 
