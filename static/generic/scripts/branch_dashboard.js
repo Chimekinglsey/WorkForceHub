@@ -5,7 +5,7 @@ $(document).ready(function () {
         $('.spinner-container').show(
             setTimeout(function(){
                 $('.spinner-container').hide()
-            }, 5000)
+            }, 10000)
         )
     })
 

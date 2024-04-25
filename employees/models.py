@@ -116,31 +116,31 @@ NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
 class BaseUser(models.Model):
     """Base model containing common fields for AdminUser and Employee"""
     # Personal Information
-    middle_name = models.CharField(_('Middle name'), max_length=50, null=True, blank=True)
+    middle_name = models.CharField(_('Middle name'), max_length=30, null=True, blank=True)
     dob = models.DateField(_('Date of birth'), null=True, blank=True)
-    gender = models.CharField(_('Gender'), max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+    gender = models.CharField(_('Gender'), max_length=30, choices=GENDER_CHOICES, null=True, blank=True)
     marital_status = models.CharField(_('Marital status'), choices=MARITAL_STATUS_CHOICES, max_length=30, null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True, blank=False)
-    address = models.CharField(_('Address'), max_length=100, null=True, blank=True)
-    nationality = models.CharField(_('Nationality'), max_length=150, null=True, blank=True)
+    address = models.CharField(_('Address'), max_length=150, null=True, blank=True)
+    nationality = models.CharField(_('Nationality'), max_length=100, null=True, blank=True)
     state_of_origin = models.CharField(_('State of origin'), max_length=100, null=True, blank=True)
     phone_number = models.CharField(_('Phone number'), max_length=20, null=True, blank=True)
     
     # Employment Information
-    employee_id = models.CharField(_('Employee ID'), max_length=50, null=True, blank=True) # removed uniqe contraint to allow for multiple employees with same employee_id
-    department = models.CharField(_('Department/division'), max_length=150)
-    job_role = models.CharField(_('Job role'), max_length=150, null=True, blank=True)
+    employee_id = models.CharField(_('Employee ID'), max_length=20, null=True, blank=True) # removed unique contraint to allow for multiple employees with same employee_id
+    department = models.CharField(_('Department/division'), max_length=100)
+    job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
     joining_date = models.DateField(_('Joining date'), null=True, blank=True)
     employment_type = models.CharField(_('Employment type'), choices=EMPLOYEE_STATUS_CHOICES, max_length=100, default='Full-time')
-    employment_status = models.CharField(_('Employment status'), choices=EMPLOYMENT_STATUS_CHOICES, max_length=20, default='Active')
-    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=100, default='Employee')
-    level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=50, null=True, blank=True)
+    employment_status = models.CharField(_('Employment status'), choices=EMPLOYMENT_STATUS_CHOICES, max_length=50, default='Active')
+    designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=50, default='Employee')
+    level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=100, null=True, blank=True)
     last_promotion_date = models.DateField(_('Last promotion date'), null=True, blank=True)
     next_promotion_date = models.DateField(_('Next promotion date'), null=True, blank=True)
     basic_salary = models.PositiveIntegerField(_('Salary'), default=0, blank=True)
     
     # Bank Information
-    bank_name = models.CharField(_('bank name'), max_length=100, null=True, blank=True)
+    bank_name = models.CharField(_('bank name'), max_length=30, null=True, blank=True)
     account_number = models.CharField(_('account number'), max_length=30, null=True, blank=True)
     account_name = models.CharField(_('account name'), max_length=100, null=True, blank=True)
     pension_id = models.CharField(_('pension ID'), max_length=30, null=True, blank=True)
@@ -149,7 +149,7 @@ class BaseUser(models.Model):
     # Other Information
     emergency_contacts = models.TextField(_('Emergency contacts'), null=True, blank=True)
     termination_resignation_date = models.DateField(_('Date of termination/resignation'), null=True, blank=True)
-    highest_qualification = models.CharField(_('Highest qualification'), max_length=100, null=True, blank=True)
+    highest_qualification = models.CharField(_('Highest qualification'), max_length=150, null=True, blank=True)
     highest_certificate = models.FileField(_('Highest certificate'), upload_to='employees/highest_certificates/', null=True, blank=True)
     employment_letter = models.FileField(_('Employment letter'), upload_to='employees/employment_letters/', null=True, blank=True)
     skills_qualifications = models.TextField(_('Skills/qualifications'), null=True, blank=True)
@@ -204,8 +204,8 @@ class Employee(BaseUser):
     """Model for employees managed by users"""
     adminuser = models.ForeignKey(AdminUser, on_delete=models.CASCADE, related_name='managed_employees')
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='employee')
-    first_name = models.CharField(_('First name'), max_length=30)
-    last_name = models.CharField(_('Last name'), max_length=30)
+    first_name = models.CharField(_('First name'), max_length=50)
+    last_name = models.CharField(_('Last name'), max_length=50)
     profile_picture = models.ImageField(_('Profile picture'), upload_to='employees/profile_pictures', default='default_picture.png', null=True, blank=True)
     
     class Meta:
