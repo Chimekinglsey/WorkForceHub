@@ -63,7 +63,7 @@ WorkforceHub is a web application compatible with most modern browsers, making i
 
 ### Sign Up for a Free Account:
 
-1. Visit our signup page at [workforcehub.spacedigit.tech/signup/](https://workforcehub.spacedigit.tech/signUp/).
+1. Visit our [signup page](https://workforcehub.spacedigit.tech/signUp/).
 2. Personalize your profile and add relevant information.
 
 ### Build Your Organization:
@@ -95,7 +95,7 @@ The support team is available to respond to any questions or issues promptly. Us
 
 ## Updates and Feedback
 
-Updates are released periodically as new features and improvements are developed by our dedicated team of engineers. Users are notified of updates through email communication. Feedback and suggestions for improvement can be sent to developers.workforcehub@gmail.com.
+Updates are released periodically as new features and improvements are developed by our dedicated team of engineers. Users are notified of updates through email communication. Feedback and suggestions for improvement can be sent to the [developers](mailto:developers.workforcehub@gmail.com) or directly to [Kingsley](mailto:onlinekingsley@gmail.com)
 
 
 For more information, visit the [FAQ section](https://workforcehub.spacedigit.tech/faq/).
