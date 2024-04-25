@@ -49,14 +49,12 @@
                     {% endblock dashboard %}
                     {% block logout %}<a class="logoutBtn btn" href="{% url 'logout' %}">Logout</a>{% endblock logout %}
                 {% else %}
-                    {% cache 86400 base_ananymous %}
                         {% block terms %}<a href="{% url 'terms' %}">Terms</a>{% endblock terms %}
                         {% block privacy %}<a href="{% url 'privacy' %}">Privacy</a>{% endblock privacy %}
                         {% block faq %}<a href="{% url 'faq' %}">FAQ</a>{% endblock faq %}
                         {% block about %}<a href="{% url 'about' %}">About Us</a>{% endblock about %}
                         {% block signUp %}<a class="registerBtn btn" href="{% url 'signUp' %}">Sign Up</a>{% endblock signUp %}
                         {% block signIn %}<a class="loginBtn btn" href="{% url 'login' %}" >Login</a>{% endblock signIn %}
-                    {% endcache %}
                 {% endif %}
             </nav>
         </header>
