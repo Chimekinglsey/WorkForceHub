@@ -20,25 +20,35 @@ $(document).ready(function() {
     $('input[type="search"]').attr('placeholder', 'Enter search text');
 
 
-    $('#menu-toggle').click(function() {
+    $('#menu-toggle').click(function(e) {
+        e.stopPropagation();
         $('.header-nav').slideToggle()
     });
 
 
     // Close the menu when clicking outside of it
+    //  apply this only when screen size is less than 900px. Attach this to resize and 
     $(document).click(function(event) {
-        let nav = $('.header-nav');
-        let menuToggle = $('#menu-toggle');
-        if (!nav.is(event.target) && !menuToggle.is(event.target) && nav.has(event.target).length === 0) {
-            nav.removeClass('show');
+            if ($(window).outerWidth() <= 900) {
+            let nav = $('.header-nav');
+            let menuToggle = $('#menu-toggle');
+            if (!nav.is(event.target) && !menuToggle.is(event.target) && nav.has(event.target).length === 0) {
+                nav.slideUp();
+                }
+            }
+        });
+    $(window).resize(function () {
+        if ($(window).outerWidth() > 900) {
+            $('.header-nav').css('display', 'flex');
         }
-    });
+    })
+    
     
     // Pagination dataTable
     let table = $('.dataTable').DataTable({
         "paging": true,
         "searching": true, // Disable DataTables search to use custom search
-        "info": false, // Hide information display
+        "info": true, // Show information display(1 of 10 out of nth entries)
     });
 
     

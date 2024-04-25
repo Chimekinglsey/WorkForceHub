@@ -1,55 +1,6 @@
 $(document).ready(function () {
-    // flash messages
-    // AJAX success callback function
-    function flashMessage(response) {
-        if (response.type === 'success') {
-            $('#messageBody').text(`Success:  ${response.message}`);
-            $('.flash-ajax-message').addClass('success-message');
-        } 
-        else if (response.type === 'error') {
-            // if response message contains internal server error, display `Error: You do not have permission to perform this action`
-            if (response.message.includes('Server') || response.message.includes('Internal') || response.message.includes('internal')) {
-                $('#messageBody').text(`Error:  You do not have permission to perform this action`);
-                $('.flash-ajax-message').addClass('error-message');
-            }
-            else {
-                $('#messageBody').text(`Error:  ${response.message}`);
-                $('.flash-ajax-message').addClass('error-message');
-                }
-        }
-        else {
-            if (response.message.includes('Server') || response.message.includes('Internal') || response.message.includes('internal')) {
-                $('#messageBody').text(`Error:  You do not have permission to perform this action`);
-                $('.flash-ajax-message').addClass('error-message');
-            }
-            else {
-                    $('#messageBody').text(response.slice(0, 50) + '...');
-                    $('.flash-ajax-message').addClass('error-message');
-                }
-        }
-        $('.flash-ajax-message').slideToggle(
-            timeoutFlashMessage()
-        );
-    }
-
-     $('.flash-close-btn').click(function() {
-        $('.flash-ajax-message').removeClass('success-message');
-        $('.flash-ajax-message').removeClass('error-message');
-        $('.flash-ajax-message').hide();
-        $('.backdrop').hide();
-     });
-     
-
-    // Timeout to fade out flash message
-    function timeoutFlashMessage() {
-    setTimeout(function() {
-        $('.flash-ajax-message').slideToggle(function() {
-            $('.flash-ajax-message').removeClass('success-message');
-            $('.flash-ajax-message').removeClass('error-message');
-        });
-    }, 5000); // 5 seconds
-    }
-
+    // TODO: Bring this entire script to less that 500 lines. Use functions to reduce the number of lines
+    // TODO: consider the impact of using document.on vs document.one (it seems using on is expensive)
     $('#add-employee').submit(function(){
         $('.spinner-container').show()
     })
@@ -152,10 +103,10 @@ $(document).ready(function () {
         });
 
 
-        // Employee Management
-        $('.dropdown').on('click', function(event) {
-            event.stopPropagation();
-            var dropdownMenu = $(this).find('.dropdown-menu');
+        // Close the dropdown menu when the user clicks outside of it
+        $(document).on('click', '.dropdown', function(event) { // without attaching the dropdown to the document, it won't work then dataTable dynamically loads the DOM
+            event.stopPropagation(); // When DOM Is loaded, only elements on the page are clickable, when dataTable loads next page, the dropdown events are not attached to the new elements, so we attach the event to the document
+            let dropdownMenu = $(this).find('.dropdown-menu');
             if (dropdownMenu.hasClass('open')) {
                 dropdownMenu.slideUp().removeClass('open');
             } else {
@@ -164,29 +115,29 @@ $(document).ready(function () {
             }
         });
 
+        
         // Close dropdown menu when clicking outside
         $(document).on('click', function() {
             $('.dropdown-menu.open').slideUp().removeClass('open');
         });
 
-
-    $('.moreEmpDetail#viewEmpDetailBtn').click(function(e) {
-        e.preventDefault();
-        $('.backdrop').show();
-        $('.spinner-container').show();
-        let employeeId = $(this).data('employeeid');
-        $.ajax({
-            url: `/api/employees/${employeeId}/`,
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                populateViewModal(response);  
-            },
-            error: function(xhr, status, error) {
-                flashMessage(error);
-                console.error('Error fetching employee data:', error);
-            }
-        });
+        $(document).on('click', '.moreEmpDetail.viewEmpDetailBtn', function(e) { 
+            e.preventDefault();
+            $('.backdrop').show();
+            $('.spinner-container').show();
+            let employeeId = $(this).data('employeeid');
+            $.ajax({
+                url: `/api/employees/${employeeId}/`,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    populateViewModal(response);  
+                },
+                error: function(xhr, status, error) {
+                    openModal('errorModal');
+                    console.error('Error fetching employee data:', error);
+                }
+            });
     });
         // Convert timestamp to YYYY-MM-DD HH:MM format
     function formatDateTime(timestamp) {
@@ -201,7 +152,6 @@ $(document).ready(function () {
         let minutes = ('0' + date.getMinutes()).slice(-2);
         return `${year}-${month}-${day} @ ${hours}:${minutes}`;
     }
-
 
     function populateViewModal(employeeData) {
         // populate profile picture
@@ -271,19 +221,19 @@ $(document).ready(function () {
         // Show the modal
         $('.spinner-container').hide();
             $('#viewEmpDetailContainer').slideToggle()
-            flashMessage(employeeData);
+            // openModal('successModal');
     }
 
     // Close modal and backdrop
-    $('.modal-content .close, span.close, .main_block .close').click(function() {
+    $(document).on('click', '.modal-content .close, span.close, .main_block .close, .multiUpload .close', function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
     });
+    
 
 
     // Update employee data
-
-    $('.moreEmpDetail#editEmpDetailBtn').click(function(e) {
+    $(document).on('click', '.moreEmpDetail.editEmpDetailBtn', function(e) {
         e.preventDefault();
         $('.backdrop').show(),
         $('.spinner-container').show();
@@ -367,8 +317,8 @@ $(document).ready(function () {
     }
 
     // update employee data with ajax and csfr token
-    $('#updateEmployeeBtn').on('click', function(event) {
-        event.preventDefault();
+    $(document).on('click', '#updateEmployeeBtn', function(e) {
+        e.preventDefault();
         $('.spinner-container').show();
 
         let employeeId = $('#eId').val();
@@ -382,7 +332,6 @@ $(document).ready(function () {
     
         // Get the CSRF token from hidden input field
         let csrfToken = $('[name=csrfmiddlewaretoken]').val();
-    
         $.ajax({
             url: `/updateEmployee/${employeeId}/`,
             method: 'POST',
@@ -396,7 +345,7 @@ $(document).ready(function () {
             },
     
             success: function(response) {
-                flashMessage(response);
+                openModal('successModal');
                 $('.spinner-container').hide();
                 $('#updateEmpDetailContainer').slideToggle();
                 $('.backdrop').hide();
@@ -404,7 +353,7 @@ $(document).ready(function () {
             },
             error: function(xhr, status, error) {
                 console.error('Error updating employee data:', error);
-                flashMessage(error);
+                openModal('errorModal');
                 $('.spinner-container').hide();
             }
         });
@@ -412,14 +361,14 @@ $(document).ready(function () {
     });
 
     // hide empModalContainer when cancelBtn is clicked
-    $('.cancelBtn').click(function() {
+    $(document).on('click', '.cancelBtn', function() {
         $('.backdrop').hide();
         $('.empModalContainer').hide();
         $('#updateBankContainer').hide();
     });
 
     // Archive employee
-    $('.moreEmpDetail#archiveEmpDetailBtn').click(function(e) {
+    $(document).on('click', '.moreEmpDetail.archiveEmpDetailBtn', function(e) {
         e.preventDefault();
         $('.spinner-container').show();
         let employeeId = $(this).data('employeeid');
@@ -448,25 +397,17 @@ $(document).ready(function () {
                 success: function(response) {
                     $('.spinner-container').hide();
                     window.location.reload()
-                    // flashMessage(response);
-                    // $('#archive-modal').slideToggle();
-                    // $('.backdrop').hide();
-                    // form.trigger('reset');
-                    // flashMessage(response);
-
-                    // // Remove the row from the table
-                    // rowToRemove.remove();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error archiving employee:', error);
-                    flashMessage(error);
+                    openModal('errorModal');
                 }
             });
         });
     });
 
     // unarchive employee
-    $('.EmpArchiveBtn').click(function(e) {
+    $(document).on('click', '.EmpArchiveBtn', function(e) {
         e.preventDefault();
         $('.spinner-container').show();
         let employeeId = $(this).data('employeeid');
@@ -487,14 +428,14 @@ $(document).ready(function () {
                 },
                 error: function(xhr, status, error) {
                     console.error('Error restoring employee:', error);
-                    flashMessage(error);
+                    openModal('errorModal');
                 }
             });
         });
     });
 
     // delete employee
-    $('.moreEmpDetail.DelArchiveBtn, .moreEmpDetail#deleteEmpDetailBtn').click(function(e) {
+    $(document).on('click', '.moreEmpDetail.DelArchiveBtn, .moreEmpDetail.deleteEmpDetailBtn', function(e) {
         e.preventDefault();
         // $('.spinner-container').show();
         let employeeId = $(this).data('employeeid');
@@ -510,10 +451,11 @@ $(document).ready(function () {
                 success: function() {
                     $('.spinner-container').hide();
                     window.location.reload()
-                },
+                },                   
+
                 error: function(xhr, status, error) {
                     console.error('Error deleting employee:', error);
-                    flashMessage(error);
+                    openModal('errorModal');
                 }
             });
         });
@@ -547,44 +489,52 @@ $(document).ready(function () {
                 },
                 error: function(xhr, status, error) {
                     console.error('Error archiving employee:', error);
-                    flashMessage(error);
+                    openModal('errorModal');
                 }
             });
         });
 
         });
     
-    // accept and decline leave
+    
+        $(document).on('change', '#endDate', function() {
+        let startDate = new Date($('#startDate').val());
+        let endDate = new Date($(this).val());
 
-    $('.approve-btn').click(function() {
+        if (endDate < startDate) {
+            openModal('errorModal', 'End date cannot be earlier than start date');
+            $(this).val($('#startDate').val());// Reset the end date input value to the start date value
+        }
+    });
+
+    $(document).on('click', '.approve-btn', function() {
         let leaveId = $(this).data('leaveid');
         $.post(`/manageLeaveRequest/${leaveId}/`, { action: 'accept' }, function(data) {
             if (data.error) {
-                flashMessage(data.error);
-            }
+                openModal('errorModal');
+                console.error('Error accepting leave request:', data.error);
+                }
             window.location.reload()
         });
     });
 
-    $('.decline-btn').click(function() {
+    $(document).on('click', '.decline-btn', function() {
         let leaveId = $(this).data('leaveid');
         $.post(`/manageLeaveRequest/${leaveId}/`, { action: 'decline' }, function(data) {
             // Handle success or error response from the server
             if (data.error) {
-                flashMessage(data.error);
+                openModal('errorModal');
+                console.error('Error declining leave request:', data.error);
             }
             window.location.reload()
-            message = "Success"
-            flashMessage(message);
-
          });
     });
-
+    // $('.dataTable').click(()=> alert('dtable clicked'))
 
     // update bank 
 
     // open updateBankContainer modal when edit-bank is clicked
-    $('.edit-bank').click(function(e) {
+    $(document).on('click', '.edit-bank', function(e) {
         e.preventDefault();
         $('.spinner-container').show();
         let employeeId = $(this).data('employeeid');
@@ -605,14 +555,14 @@ $(document).ready(function () {
                 $('#updateBankContainer').slideToggle();
             },
             error: function(xhr, status, error) {
-                flashMessage(error);
+                openModal('errorModal');
                 console.error('Error fetching employee data:', error);
             }
         });
     });
 
-    $('#updateEmployeeBankBtn').on('click', function(event) {
-        event.preventDefault();
+    $(document).on('click', '#updateEmployeeBankBtn', function(e) {
+        e.preventDefault();
         $('.spinner-container').show();
         let employeeId = $('#empId').val();
         form = $('#updateBankForm');
@@ -639,7 +589,7 @@ $(document).ready(function () {
             },
             error: function(xhr, status, error) {
                 console.error('Error updating employee data:', error);
-                flashMessage(error);
+                openModal('errorModal');
             }
         });
 
@@ -680,22 +630,22 @@ $(document).ready(function () {
         // Check if the clicked link has the specific href attribute
         if ($(this).attr('href') === '#employment-details') {
             // Generate random string
-            var randomString = generateRandomString();
+            let randomString = generateRandomString();
             if (!$('#id_employee_id').val()) {
                 $('#id_employee_id').val(randomString);
             }
         }
     });
     
-    // Function to generate random string
+    // Function to generate random string as auto employee_id
     function generateRandomString() {
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var digits = '0123456789';
-        var randomString = '';
-        for (var i = 0; i < 2; i++) {
+        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let digits = '0123456789';
+        let randomString = '';
+        for (let i = 0; i < 2; i++) {
             randomString += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        for (var i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
             randomString += digits.charAt(Math.floor(Math.random() * digits.length));
         }
         return randomString;
@@ -736,11 +686,128 @@ $(document).ready(function () {
                 })
         }
     });
-});
+
+
+    /**
+     * 
+     * This section handles the profile picture upload functionality
+     */
+    // Open the modal
+    function openModal(modalId, message=null) {
+        if (message && modalId === 'errorModal') {
+            $(`#${modalId} p`).text(message);
+        }
+        $(`#${modalId}`).css("display", "block");
+        let errMsg = 'There was an error processing your request. Please try again later'
+        if ($('#errorVal').text() !== errMsg){
+            $(document).one('click',()=>{$(`#errorVal`).text(errMsg)})
+        }
+    }
+    
+    // Close the modal
+    function closeModal() {
+        $('.backdrop').hide();
+        $(".modale").css("display", "none");
+    }
+
+    $('.profile_dp, .plus_container i').click(function() {
+        // Simulate a click on the file input when the plus sign or photo is clicked
+        $(this).closest('.profile-picture').find('.profile-picture-input').click();
+    });
+    
+    $('.profile-picture-input').change(function() {
+        $('.spinner-container').show();
+        // Get the selected file
+        openModal('uploadPhotoModal');
+        $('.spinner-container').hide()
+        let file = $(this)[0].files[0];
+        let isEmp = $(this).data('empdata');
+        let url;
+    
+        // Handle the click event of the proceedUploadBtn only once
+        $('.proceedUploadBtn').one('click', function() {
+            if (isEmp) {
+                let emp_id = $('#eId').val();
+                url = `/user/update_dp/${emp_id}/`;
+            } else {
+                url = `/user/update_dp/`;
+            }
+    
+            let formData = new FormData();
+            formData.append('profile_picture', file);
+    
+            // Send AJAX request to update profile picture
+            $('.spinner-container').show();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $('.tiny_images, .profile_dp').attr('src', data.profile_picture);
+                    $('.spinner-container').hide();
+                    openModal('successModal');
+                },
+                error: function(e) {
+                    openModal('errorModal');
+                    console.error(e)
+                }
+            });
+
+            $('.cancelConfirmBtn').click(function(){
+                closeModal()
+                $('.profile-picture-input').val('')
+            })
+        });
+    });
+
+    $('.closeModal').click(function() {
+        $('.modale').hide();
+        $('.profile-picture-input').val('');
+    });
+
+    //   close modals when document is clicked
+    $(document).click(function(){
+        $('.clickClose').hide();
+        $('.profile-picture-input').val('');
+    })
+
+    // Upload employee data from excel or csv file
+    $('#uploadDataBtn').click(function() {
+        $('.backdrop').show();
+        $('#empUploadForm').show();
+    });
+
+    $('#uploadPRollBtn').click(function() {
+        $('.backdrop').show();
+        $('#payrollUploadForm').show();
+    });
+
+
+    // Resolve last row issue in dataTable
+    $('.dataTable').on('click', '.dropdown', function() {
+        let dropdownMenu = $(this).find('.dropdown-menu');
+        let tableTop = $(this).closest('.dataTable').offset().top;
+        let tableHeight = $(this).closest('.dataTable').outerHeight();
+        let dropdownBottom = $(this).offset().top + dropdownMenu.outerHeight();
+        
+        if (dropdownBottom > (tableTop + tableHeight)) {
+            dropdownMenu.css('top', 'auto');
+            dropdownMenu.css('bottom', '100%');
+        } else {
+            dropdownMenu.css('top', '100%');
+            dropdownMenu.css('bottom', 'auto');
+        }
+        
+        dropdownMenu.toggle();
+        });
+
+        });
 
 $(document).ready(function() {
-    var features = $('.feature'); // Select all features
-    var index = 0; // Initialize index for tracking active feature
+    let features = $('.feature'); // Select all features
+    let index = 0; // Initialize index for tracking active feature
 
     function slideFeatures() {
         // Hide current feature

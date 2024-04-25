@@ -6,37 +6,10 @@ $(document).ready(function() {
         $('.modal').hide();
     });
 
-    //  Ajax to create organization
-    $('#organization-form').submit(function(e) {
-        // start spinner
-        e.preventDefault();
+//  Ajax to create organization
+    $('#organization-form').submit(function() {
         $('.spinner-container').show();
-        // Perform form validation here if needed - None for now
-
-        // Serialize form data
-        let formData = $(this).serialize();
-        let form = $(this);
-
-        // Send AJAX request to create organization
-        $.ajax({
-            url: '/orgDashboard/',
-            method: 'POST',
-            data: formData,
-            success: function(response) {
-                // Handle success response, e.g., redirect to branch creation
-                $('.spinner-container').hide();
-                form.trigger('reset');
-                // reload the page
-                window.location.href = '/orgDashboard/';
-            },
-            error: function(xhr, status, error) {
-                // Handle error response
-                $('.spinner-container').hide();
-                $('#ErrorModal').show()
-                console.error(error);
-            }
         });
-    });
 
         if ($(window).outerWidth() <= 768) {
             $('.ToggleContainer').show();
@@ -394,7 +367,7 @@ $(document).ready(function() {
         // Close the modal
         function closeModal() {
             $('.backdrop').hide();
-            $(".modal").css("display", "none");
+            $(".modale").css("display", "none");
         }
         
         // When the user clicks on the close button or cancel button, close the modal
@@ -603,11 +576,8 @@ $(document).ready(function() {
             $('.backdrop').show();
             $('.create-org').hide();
         });
+    });    
 
-//   modify dropdown
-
-    });
-    
     //   updateLeftPanePosition();
     $(document).ready(function() {
         // Function to update left pane position

@@ -78,6 +78,107 @@
   color: rgb(93, 178, 8);
 }
 
+
+/* upload modals */
+/* Overall container styling */
+.multiUpload {
+  line-height: 0.9;
+}
+.up-upload-header .close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.up-close:hover {
+  color: #999;
+}
+
+/* Upload header styling */
+.up-upload-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.up-upload-header h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #3979b9;
+}
+
+.up-info-text {
+  color: #666;
+}
+
+/* Instructions section styling */
+.up-instructions {
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95em;
+}
+
+/* Instruction list styling */
+.up-instruction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.up-instruction-list li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.up-highlight {
+  color: #3979b9; /* Blue for important instructions */
+  font-weight: bold;
+}
+
+/* File requirements list styling */
+.up-instruction-list li ul {
+  padding-left: 15px;
+  margin: 0;
+}
+
+/* Download text styling */
+.up-download-text {
+  margin-top: 15px;
+}
+
+/* Download link styling */
+.up-download-link {
+  color: #3979b9; /* Same blue as important instructions */
+  text-decoration: none; /* Remove underline */
+  margin-right: 10px; /* Add spacing between links */
+}
+
+.up-download-link:hover {
+  color: #007bff; /* Blue with higher contrast on hover */
+}
+
+/* Upload form styling */
+.up-upload-form {
+  margin-top: 15px; /* Add space after instructions */
+  text-align: center; /* Center form elements */
+}
+
+/* Upload field styling */
+.up-upload-field {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+
 @media screen and (max-width: 900px) {
   .featureSlide .feature h3 {
     font-size: 1.1rem;

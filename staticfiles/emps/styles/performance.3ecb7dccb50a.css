@@ -70,6 +70,11 @@
     overflow-y: auto;
   }
 
+  
+  .no-scroll {
+    overflow: hidden;
+  }
+
   .col-md {
     display: flex;
     justify-content: flex-end;

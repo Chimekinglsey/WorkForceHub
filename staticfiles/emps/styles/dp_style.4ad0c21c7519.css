@@ -1,8 +1,8 @@
 /* Modal container */
-.modal {
+.modale {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 100;
     left: 0;
     top: 0;
     width: 100%;
@@ -12,7 +12,7 @@
   }
   
   /* Modal content */
-  .modal-content {
+  .modal-contents {
     background-color: #fff;
     margin: 15% auto;
     padding: 30px;
@@ -20,24 +20,17 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     max-width: 700px;
     text-align: center;
+    position: relative;
   }
   
-  #deleteOrgModal .modal-content {
-    margin: 5% auto;
-  }
   /* Close button */
   .close {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 35px;
-    color: #aaa;
+    font-size: 30px;
   }
   
-  .close:hover {
-    color: #333;
-    cursor: pointer;
-  }
   
   /* Modal buttons */
   .modal-buttons {
@@ -47,7 +40,7 @@
   /* Button styles */
   button {
     padding: 12px 24px;
-    margin: 0 10px;
+    /* margin: 0 10px; */
     cursor: pointer;
     border: none;
     border-radius: 5px;
@@ -80,6 +73,20 @@
     justify-content: center;
   }
 
+  .user_name {
+    padding: 5px;
+ }
+.user_details{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'el messiri', 'Saira', sans-serif;
+    font-size: 14px;
+    line-height: 0px;
+    margin-bottom: 0px;
+    position: relative;
+    /* font-size: medium; */
+} 
 
   @media screen and  (max-width: 768px) {
     .close {
