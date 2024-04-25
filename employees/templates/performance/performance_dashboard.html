@@ -37,7 +37,7 @@
     <!-- Modals for forms -->
     <div id="review-modal" class="archive-modal">
       <!-- Review form content -->
-      <form class="container" action="{% url 'performance_review' employee.pk %}" method="post" enctype="multipart/form-data">
+      <form class="container" action="{% url 'performance_review' employee.employee_id %}" method="post" enctype="multipart/form-data">
         <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close">
           <span class="close openFlashMsg" aria-hidden="true"onclick="getElementById('review-modal').style.display='none'">&times;</span>
       </button>
@@ -79,6 +79,8 @@
               <thead>
                   <tr>
                       <th>SN</th>
+                      <th>Overall Review</th>
+                      <th>Overall Rating</th>
                       <th>Manager Asst.</th>
                       <th>Customer Feed.</th>
                       <th>Project perf.</th>
@@ -88,15 +90,21 @@
                       <th>Pro.dev. perf.</th>
                       <th>KPIs</th>
                       <th>Self-Asst.</th>
-                      <th>Overall Review</th>
-                      <th>Overall Rating</th>
                       <th>Date</th>
                   </tr>
               </thead>
               <tbody>
                 {% for perf in performance %}
                   <tr>
-                    <td title="{{ forloop.counter }}">{{ forloop.counter }}</td>
+                    <td title="{{ forloop.counter }}">{{ forloop.counter }}.</td>
+                    <td {% if perf.performance_review|length > 15 %}title="{{ perf.performance_review }}"{% endif %}>
+                        {% if perf.performance_review|length > 15 %}
+                            {{ perf.performance_review|slice:":15" }}...
+                        {% else %}
+                            {{ perf.performance_review|default:"N/A" }}
+                        {% endif %}
+                    </td>
+                    <td  title="{{ perf.performance_rating}}%">{{ perf.performance_rating }}%</td>
                     <td {% if perf.manager_assessment|length > 15 %}title="{{ perf.manager_assessment }}"{% endif %}>
                         {% if perf.manager_assessment|length > 15 %}
                             {{ perf.manager_assessment|slice:":15" }}...
@@ -160,14 +168,6 @@
                             {{ perf.self_assessment|default:"N/A" }}
                         {% endif %}
                     </td>
-                    <td {% if perf.performance_review|length > 15 %}title="{{ perf.performance_review }}"{% endif %}>
-                        {% if perf.performance_review|length > 15 %}
-                            {{ perf.performance_review|slice:":15" }}...
-                        {% else %}
-                            {{ perf.performance_review|default:"N/A" }}
-                        {% endif %}
-                    </td>
-                    <td  title="{{ perf.performance_rating}}%">{{ perf.performance_rating }}%</td>
                     <td title="{{ perf.created_at|date:'d/m/y' }}">{{ perf.created_at|date:'d/m/y' }}</td>
                 </tr>
                 {% endfor %}

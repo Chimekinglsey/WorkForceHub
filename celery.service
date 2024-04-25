@@ -1,0 +1,15 @@
+[Unit]
+Description=Celery Service
+After=network.target
+
+[Service]
+Type=forking
+User=kingsley
+Group=kingsley
+WorkingDirectory=/home/kingsley/workforcehub/WorkForceHub
+ExecStart=/home/kingsley/workforcehub/WorkForceHub -A employees worker --loglevel=INFO
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

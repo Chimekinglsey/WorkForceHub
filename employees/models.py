@@ -5,9 +5,8 @@ from django.contrib.auth.models import Group, Permission
 from datetime import datetime, date
 from django.utils import timezone
 from organizations.models import Branch
-from PIL import Image
-from django.core.files.storage import default_storage
-from statistics import mean
+# from PIL import Image
+# from django.core.files.storage import default_storage
 
 
 # choices
@@ -113,60 +112,6 @@ NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
     ('Friend', _('Friend')),
     ('Other', _('Other'))
 )
-# def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='JPEG'):
-#     """
-#     Resize the given image file and save it to the specified target path in AWS S3.
-#     """
-#     try:
-#         # Open the image
-#         image = Image.open(image_file)
-
-#         # Convert image to RGB mode if it's not already in RGB
-#         if image.mode not in ('RGB', 'L'):
-#             image = image.convert('RGB')
-
-#         if image.height > max_size[1] or image.width > max_size[0]:
-#             image.thumbnail(max_size)
-
-#         # Save the resized image to S3 using default_storage
-#         with default_storage.open(target_path, "wb") as fh:
-#             image.save(fh, format=format)
-
-#         return True  # Operation successful
-#     except Exception as e:
-#         # Log the error or handle it as needed
-#         print(f"Error resizing and saving image: {e}")
-#         return False  # Operation failed
-
-
-def resize_and_save_image(image_file, target_path, max_size=(300, 300), format='JPEG'):
-  """
-  Resize the given image file and save it to the specified target path in AWS S3.
-  Handles cases where no image is provided.
-  """
-  try:
-    if not image_file:  # Check if image_file is empty or None
-      return False  # No image to process
-
-    # Open the image
-    image = Image.open(image_file)
-
-    # Convert image to RGB mode if it's not already in RGB
-    if image.mode not in ('RGB', 'L'):
-      image = image.convert('RGB')
-
-    if image.height > max_size[1] or image.width > max_size[0]:
-      image.thumbnail(max_size)
-
-    # Save the resized image to S3 using default_storage
-    with default_storage.open(target_path, "wb") as fh:
-      image.save(fh, format=format)
-
-    return True  # Operation successful
-  except Exception as e:
-    # Log the error or handle it as needed
-    print(f"Error resizing and saving image: {e}")
-    return False  # Operation failed
 
 class BaseUser(models.Model):
     """Base model containing common fields for AdminUser and Employee"""
@@ -175,7 +120,7 @@ class BaseUser(models.Model):
     dob = models.DateField(_('Date of birth'), null=True, blank=True)
     gender = models.CharField(_('Gender'), max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     marital_status = models.CharField(_('Marital status'), choices=MARITAL_STATUS_CHOICES, max_length=15, null=True, blank=True)
-    email = models.EmailField(_("email address"), unique=True, blank=True)
+    email = models.EmailField(_("email address"), unique=True, blank=False)
     address = models.CharField(_('Address'), max_length=100, null=True, blank=True)
     nationality = models.CharField(_('Nationality'), max_length=30, null=True, blank=True)
     state_of_origin = models.CharField(_('State of origin'), max_length=30, null=True, blank=True)
@@ -186,7 +131,7 @@ class BaseUser(models.Model):
     department = models.CharField(_('Department/division'), max_length=100)
     job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
     joining_date = models.DateField(_('Joining date'), null=True, blank=True)
-    employment_type = models.CharField(_('Employment type'), choices=EMPLOYEE_STATUS_CHOICES, max_length=100)
+    employment_type = models.CharField(_('Employment type'), choices=EMPLOYEE_STATUS_CHOICES, max_length=100, default='Full-time')
     employment_status = models.CharField(_('Employment status'), choices=EMPLOYMENT_STATUS_CHOICES, max_length=20, default='Active')
     designation = models.CharField(_('Designation'), choices=DESIGNATION_CHOICES, max_length=30, default='Employee')
     level = models.CharField(_('Level'), choices=LEVEL_CHOICES, max_length=30, null=True, blank=True)
@@ -202,7 +147,7 @@ class BaseUser(models.Model):
     tax_id = models.CharField(_('tax ID'), max_length=30, null=True, blank=True)
 
     # Other Information
-    emergency_contacts = models.TextField(_('Emergency contacts'), null=True)
+    emergency_contacts = models.TextField(_('Emergency contacts'), null=True, blank=True)
     termination_resignation_date = models.DateField(_('Date of termination/resignation'), null=True, blank=True)
     highest_qualification = models.CharField(_('Highest qualification'), max_length=100, null=True, blank=True)
     highest_certificate = models.FileField(_('Highest certificate'), upload_to='employees/highest_certificates/', null=True, blank=True)
@@ -239,11 +184,11 @@ class AdminUser(BaseUser, AbstractUser):
     is_admin = models.BooleanField(_('Admin status'), default=True, help_text=_('Designates whether the user can log into this admin site.'))
     is_superuser = models.BooleanField(_('superuser status'), default=True, help_text=_('Designates that this user has all permissions without explicitly assigning them.'))
     can_change_password = models.BooleanField(_('Change password status'), default=True, help_text=_('Designates whether the user can change their password.'))
-    delegated_branches = models.ManyToManyField(Branch, related_name='authorized_delegates')
+    # delegated_branches = models.ManyToManyField(Branch, related_name='authorized_delegates')
     is_master_admin = models.BooleanField(_('Master admin status'), default=False, help_text=_('Designates whether the user is the master admin for the organization.'))
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='admin_user_permissions')
     groups = models.ManyToManyField(Group, blank=True, related_name='admin_user_groups')
-    # TODO: Allow delegate admins to manage multiple branches
+    # TODO: Allow delegate admins to manage multiple branches using delegated branches
     
 
     
@@ -251,16 +196,6 @@ class AdminUser(BaseUser, AbstractUser):
         verbose_name = _('Administrator')
         verbose_name_plural = _('Admins')
         ordering = ['last_name', 'first_name']
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the superclass save method
-        target_path = "adminuser/profile_pictures/"
-        if self.profile_picture:
-            try:
-                resize_and_save_image(self.profile_picture, target_path)
-            except Exception as e:
-                print(f"Error resizing and saving profile picture to S3: {e}")
-                # Optional: Handle the error here, like logging or raising a specific exception
 
     def __str__(self):
         return self.username
@@ -276,17 +211,7 @@ class Employee(BaseUser):
     class Meta:
         verbose_name = _('Employee')
         verbose_name_plural = _('Employees')
-        ordering = ['last_name', 'first_name']
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the superclass save method
-        target_path = "employees/profile_pictures/"
-        if self.profile_picture:
-            try:
-                resize_and_save_image(self.profile_picture, target_path)
-            except Exception as e:
-                print(f"Error resizing and saving profile picture to S3: {e}")
-                # Optional: Handle the error here, like logging or raising a specific exception
+        ordering = ['-updated_at', 'last_name', 'first_name']
                 
     def __str__(self):
         return f'{self.last_name} {self.first_name}'
@@ -445,53 +370,24 @@ class Payroll(models.Model):
         return f'{self.employee} - {self.month} {self.year}'
 
 
-    def calculate_attendance_bonus(self):
-        """ Logic to calculate attendance bonus based on attendance data"""
-        # For example, calculate based on number of days present
-        attendance_records = self.employee.attendances.filter(date__month=self.month, date__year=self.year)
-        total_days = attendance_records.count()
-        days_present = attendance_records.filter(time_out__isnull=False).count()
-        attendance_percentage = days_present / total_days if total_days and total_days > 0 else 0
-        attendance_bonus = self.employee.basic_salary * attendance_percentage * 0.05  # Assuming 5% bonus per attended day
-        print(attendance_bonus)
-        return attendance_bonus
-
-    def calculate_performance_bonus(self):
-        """Logic to calculate performance bonus based on performance data"""
-        # For example, calculate based on average performance rating
-        performance_records = self.employee.performances.filter(created_at__month=self.month, created_at__year=self.year)
-        performance_ratings = [performance.performance_rating for performance in performance_records]
-        average_performance_rating = mean(performance_ratings) if performance_ratings else 0
-        performance_bonus = self.employee.basic_salary * (average_performance_rating / 100) * 0.1  # Assuming 10% bonus per performance rating point
-        print(performance_bonus)
-        return performance_bonus
-    
-    def calculate_other_allowances(self):
-        other_allowances = self.feeding_allowance + self.transport_allowance + self.housing_allowance + self.utility_allowance + self.other_allowance
-        return other_allowances
-
-    def calculate_total_deductions(self):
-        """ Logic to calculate total deductions (tax, pension, loan, etc.)"""
-        total_deductions = self.tax + self.pension + self.loan + self.other_deductions
-        return total_deductions
-
     def save(self, *args, **kwargs):
-        # Calculate basic salary
-        basic_salary = self.employee.basic_salary
+        # Compute total allowance
+        self.total_allowance = (
+            self.housing_allowance + self.transport_allowance +
+            self.feeding_allowance + self.utility_allowance + self.other_allowance +
+            self.overtime_bonus + self.performance_bonus
+        )
 
-        # Calculate allowances based on attendance and performance
-        attendance_bonus = self.calculate_attendance_bonus()
-        performance_bonus = self.calculate_performance_bonus()
-        other_allowance = self.calculate_other_allowances()
-        total_deductions = self.calculate_total_deductions()
+        # Compute total deductions
+        self.total_deductions = (
+            self.tax + self.pension + self.loan + self.other_deductions +
+            self.late_penalty + self.absent_penalty + self.performance_penalty
+        )
 
-        net_pay = basic_salary + attendance_bonus + performance_bonus + other_allowance - total_deductions
+        # Compute net pay
+        self.net_pay = (self.total_allowance + self.basic_salary) - self.total_deductions
 
-        self.basic_salary = basic_salary
-        self.total_allowance = attendance_bonus + performance_bonus + other_allowance
-        self.total_deductions = total_deductions
-        self.net_pay = net_pay
-
+        # Call the save method of the parent class
         super().save(*args, **kwargs)
 
 
@@ -674,12 +570,3 @@ class Finance(models.Model):
 
     def __str__(self):
         return f"{self.organization.name} - {self.report_date}"
-
-# @receiver(pre_save, sender=Finance)
-# def update_finance_totals(sender, instance, **kwargs):
-#     # Calculate total income, expenses, and profit/loss
-#     total_income = instance.income_items.aggregate(total=models.Sum('amount'))['total']
-#     total_expenses = instance.expense_items.aggregate(total=models.Sum('amount'))['total']
-#     instance.total_income = total_income if total_income is not None else 0
-#     instance.total_expenses = total_expenses if total_expenses is not None else 0
-#     instance.total_profit_loss = instance.total_income - instance.total_expenses

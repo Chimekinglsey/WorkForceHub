@@ -3,6 +3,7 @@
     <head>
         {% load static %}
         {% load humanize %}
+        {% load cache %}
         <meta charset="UTF-8">
         <link rel="icon" type="image/png" href="{% static 'base/images/logo.png' %}">
         <script src="{% static 'base/scripts/jQuery.js' %}"></script>
@@ -24,76 +25,81 @@
         {% block head %}
         {% endblock head %}
     </head>
-<body>
-    <div class="wrapper-container">
-    <header>
-        {% block WorkForceHub %} 
-        <div class="tiny_images" id="homeLink">
-            <img src="{% static 'base/images/logo.png'%}" alt="logo">
-        </div>
-            {% endblock WorkForceHub %}
-        {% block menu %} <button id="menu-toggle"> Menu <span class="fas fa-bars"></span> </button>{% endblock menu %}
-
-        <nav class="header-nav">
-            {% if user.is_authenticated %}
-            {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
-                {% block dashboard %}
-                    {% if user.is_superuser %}
-                            <a href="{% url 'org_dashboard' %}">Dashboard</a>
-                    {% else%}
-                            <a href="{% url 'branch_dashboard' user.branch.branch_id %}">Dashboard</a>
-                    {% endif %}
-                {% endblock dashboard %}
-                {% block logout %}<a class="logoutBtn btn" href="{% url 'logout' %}">Logout</a>{% endblock logout %}
-            {% else %}
-                {% block terms %}<a href="{% url 'terms' %}">Terms</a>{% endblock terms %}
-                {% block privacy %}<a href="{% url 'privacy' %}">Privacy</a>{% endblock privacy %}
-                {% block faq %}<a href="{% url 'faq' %}">FAQ</a>{% endblock faq %}
-                {% block about %}<a href="{% url 'about' %}">About Us</a>{% endblock about %}
-                {% block signUp %}<a class="registerBtn btn" href="{% url 'signUp' %}">Sign Up</a>{% endblock signUp %}
-                {% block signIn %}<a class="loginBtn btn" href="{% url 'login' %}" >Login</a>{% endblock signIn %}
-            {% endif %}
-        </nav>
-    </header>
-    <div class="header-wrapper"></div>
-    {% comment %} Flash messages {% endcomment %}
-        {% block flash %}
-        <div class="flash-container">
-            {% if messages %}
-                <div class="container">
-                {% for message in messages %}
-                    {% if forloop.last %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true" onclick="getElementByClassName('flash-container').style.display='none'">&times;</span>
-                        </button>
-                    </div>
-                    {% endif %}
-                {% endfor %}
+    <body>
+        <div class="wrapper-container">
+            <header>
+            {% cache 864000 base_logo%}
+                {% block WorkForceHub %} 
+                <div class="tiny_images" id="homeLink">
+                    <img src="{% static 'base/images/logo.png'%}" alt="logo">
                 </div>
-        {% endif %}
-        </div>
-        {% endblock flash %}
+                    {% endblock WorkForceHub %}
+                    {% block menu %} <button id="menu-toggle"><span class="fas fa-bars"></span></button>{% endblock menu %}
+            {% endcache %}
 
+            <nav class="header-nav">
+                {% if user.is_authenticated %}
+                {% block home %}<a href="{% url 'landing_page' %}">Home</a>{% endblock home %}
+                    {% block dashboard %}
+                        {% if user.is_superuser %}
+                                <a href="{% url 'org_dashboard' %}">Dashboard</a>
+                        {% else%}
+                                <a href="{% url 'branch_dashboard' user.branch.branch_id %}">Dashboard</a>
+                        {% endif %}
+                    {% endblock dashboard %}
+                    {% block logout %}<a class="logoutBtn btn" href="{% url 'logout' %}">Logout</a>{% endblock logout %}
+                {% else %}
+                    {% cache 86400 base_ananymous %}
+                        {% block terms %}<a href="{% url 'terms' %}">Terms</a>{% endblock terms %}
+                        {% block privacy %}<a href="{% url 'privacy' %}">Privacy</a>{% endblock privacy %}
+                        {% block faq %}<a href="{% url 'faq' %}">FAQ</a>{% endblock faq %}
+                        {% block about %}<a href="{% url 'about' %}">About Us</a>{% endblock about %}
+                        {% block signUp %}<a class="registerBtn btn" href="{% url 'signUp' %}">Sign Up</a>{% endblock signUp %}
+                        {% block signIn %}<a class="loginBtn btn" href="{% url 'login' %}" >Login</a>{% endblock signIn %}
+                    {% endcache %}
+                {% endif %}
+            </nav>
+        </header>
+        <div class="header-wrapper"></div>
+        {% comment %} Flash messages {% endcomment %}
+            {% block flash %}
+            <div class="flash-container">
+                {% if messages %}
+                    <div class="container">
+                    {% for message in messages %}
+                        {% if forloop.last %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true" onclick="getElementByClassName('flash-container').style.display='none'">&times;</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+            {% endif %}
+            </div>
+            {% endblock flash %}
 
-        <div class="baseContainer">
-        {% block content %}
-            <div class="base_content">
-                <h2>This is base.html</h2>
-            </div>    
-        {% endblock content %}
+            <div class="baseContainer">
+            {% block content %}
+                <div class="base_content">
+                    <h2>This is base.html</h2>
+                </div>    
+            {% endblock content %}
+            </div>
         </div>
-    </div>
-    <footer>
-        <nav class="footer-nav">
-            <a href="{% url 'developers' %}">Developers</a>
-            <a href="{% url 'about' %}">About</a>
-            <a href="{% url 'privacy' %}">Privacy</a>
-            <a href="{% url 'terms' %}">Terms</a>
-            <a href="{% url 'faq' %}">FAQ</a>
-        </nav>
-        <p>All rights reserved &copy; WorkForceHub 2024</p>
-    </footer>
-</body>
+        {% cache 864000 base_footer%}
+        <footer>
+            <nav class="footer-nav">
+                <a href="{% url 'developers' %}">Developers</a>
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'privacy' %}">Privacy</a>
+                <a href="{% url 'terms' %}">Terms</a>
+                <a href="{% url 'faq' %}">FAQ</a>
+            </nav>
+            <p>All rights reserved &copy; WorkForceHub 2024</p>
+        </footer>
+        {% endcache %}
+    </body>
 </html>

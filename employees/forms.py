@@ -1,26 +1,21 @@
 # UserCreation and ProfileUpdate forms for the AdminUser model
 from django import forms
-from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import UserCreationForm
 from employees.models import AdminUser, Payroll, Finance
 from organizations.models import Branch, Organization,Transfer, OrgDocuments as OrgDocs, Report
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Field, Button
+from crispy_forms.layout import Layout, Row, Column, Submit, Div, Fieldset, Field, Button, ButtonHolder
 from crispy_forms.bootstrap import TabHolder, Tab
 from .models import Employee, Branch, GENDER_CHOICES, EMPLOYMENT_STATUS_CHOICES, DESIGNATION_CHOICES, NEXT_OF_KIN_RELATIONSHIP_CHOICES, EMPLOYEE_STATUS_CHOICES
 from .models import Performance
 from datetime import datetime
-
-
-# This method validates image file
-def validate_image_extension(value):
-    if not value.name.endswith(('.jpeg', '.jpg', '.JPEG', '.JPG', '.PNG', '.png')):
-        raise ValidationError('Only .jpeg, .jpg, .JPEG, .JPG, .PNG, .png formats are supported.')
+from django.core.validators import FileExtensionValidator
 
 
 # UserCreation form for the AdminUser model
 class SignUpForm(UserCreationForm):
+    """ Sign Up Form"""
     email = forms.EmailField(max_length=100, help_text='Required. Enter a valid email address.',
                              widget=forms.TextInput(attrs={'placeholder': 'Enter your email', 'autofocus': 'true'}))
     username = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Username'}))
@@ -53,6 +48,7 @@ class SignUpForm(UserCreationForm):
 
 
 class DelegateAdminCreationForm(UserCreationForm):
+    """Creates a new delegate admin from organization dashboard"""
     email = forms.EmailField(max_length=100, help_text='Enter a valid email address.')
     username = forms.CharField(max_length=30)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(),help_text='Must contain at least 8 characters, including alphanumeric and a special character')
@@ -74,11 +70,12 @@ class DelegateAdminCreationForm(UserCreationForm):
             'password1': forms.PasswordInput(attrs={'class': 'form-control validatePassword'}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control validatePassword1'}),
         }
-    def __init__(self, organization, *args, **kwargs):
+    def __init__(self, adminuser: AdminUser, organization: Organization, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.adminuser = adminuser
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
-        self.fields['branch'].queryset = Branch.objects.filter(organization=organization)
+        self.fields['branch'].queryset = Branch.objects.filter(organization=organization) 
         self.fields['branch'].empty_label = 'Select Branch'
         self.fields['can_change_password'].required = True
         self.helper = FormHelper()
@@ -105,9 +102,10 @@ class DelegateAdminCreationForm(UserCreationForm):
                 Column('can_change_password', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
+
             Row(
             Button('back', 'Back', css_class='btn btn-danger mr-5 backBtn'),
-            Submit('submit', 'Submit', css_class='btn btn-primary mr-5'),
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5', css_id='submit-del'),
             css_class='btnHandle2'
             )
         )
@@ -122,94 +120,111 @@ class DelegateAdminCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.adminuser = self.adminuser  # Assign adminuser attribute
+        user.is_delegate = True
+        user.is_superuser = False
         if commit:
             user.save()
         return user
 
 # ProfileUpdate form for the AdminUser model
 class ProfileUpdateForm(forms.ModelForm):
+    """ Admin basic profile update"""
     class Meta:
         model = AdminUser
-        fields = ['employee_id', 'department', 'dob', 'phone_number', 'profile_picture', 
-                  'job_role', 'joining_date', 'first_name', 'last_name', 'middle_name']
+        fields = ['employee_id', 'phone_number', 'profile_picture', 
+                   'first_name', 'last_name', 'middle_name']
         widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder': 'DD/MM/YYYY'}),
-            'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d'), 'placeholder': 'DD/MM/YYYY'}),
-            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000'}),
+            # 'dob': forms.DateInput(attrs={'type': 'date', 'placeholder': 'DD/MM/YYYY'}),
+            # 'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d'), 'placeholder': 'DD/MM/YYYY'}),
+            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000', 'id': 'phone-no'}),
             'employee_id': forms.TextInput(attrs={'placeholder': 'Employee ID', 'title': 'Override the employee ID if necessary'}),
+            'profile_picture': forms.FileInput(attrs={'id': 'pro-pics'})
         }
-    profile_picture = forms.ImageField(validators=[validate_image_extension])
+    profile_picture = forms.ImageField(validators=[FileExtensionValidator(allowed_extensions=['JPEG', 'JPG', 'PNG'])])
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-            TabHolder(
-                Tab(
-                    'Personal Information',
+            
                     Row(
-                        Column('first_name', css_class='form-group col-md-6 mb-0'),
-                        Column('middle_name', css_class='form-group col-md-6 mb-0'),
+                        Column('last_name', css_class='form-group col-md-6 mb-0', css_id='l_name'),
+                        Column('first_name', css_class='form-group col-md-6 mb-0', css_id='f_name'),
                         css_class='form-row'
                     ),
                     Row(
-                        Column('last_name', css_class='form-group col-md-6 mb-0'),
-                        Column('phone_number', css_class='form-group col-md-6 mb-0'),
+                        Column('middle_name', css_class='form-group col-md-6 mb-0', css_id='md_name'),
+                        Column('phone_number', css_class='form-group col-md-6 mb-0', css_id='p_number'),
                         css_class='form-row'
                     ),
                     
                     Row(
-                        Column('dob', css_class='form-group col-md-6 mb-0', type='date', placeholder='Date of Birth'),
+                        Column('employee_id', css_class='form-group col-md-6 mb-0'),
                         Column('profile_picture', css_class='form-group col-md-6 mb-0'),
                         css_class='form-row'
                     ),
-                ),
-                Tab(
-                    'Employment Details',
+
                     Row(
-                        Column('employee_id', css_class='form-group col-md-6 mb-0'),
-                        Column('department', css_class='form-group col-md-6 mb-0'),
-                        css_class='form-row'
+                        Submit('submit', 'Submit', css_class='btn btn-primary mr-5', css_id='sbmt-profile'), 
+                        css_class='form-row btnHandle'
                     ),
-                    Row(
-                        Column('job_role', css_class='form-group col-md-6 mb-0'),
-                        Column('joining_date', css_class='form-group col-md-6 mb-0'),
-                        css_class='form-row'
-                    ),
-                    Submit('submit', 'Submit', css_class='btn btn-primary mr-5') 
-                ),
-            )
-        )
-        self.fields['dob'].required = True
+                )
+        # self.fields['dob'].required = True
         self.fields['employee_id'].required = True
-        self.fields['department'].required = True
-        self.fields['job_role'].required = True
+        # self.fields['department'].required = True
+        # self.fields['job_role'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['phone_number'].required = True
         self.fields['profile_picture'].required = True
-        self.fields['dob'].label = 'Date of Birth'
-        self.fields['joining_date'].label = 'Date Employed'
-        self.fields['employee_id'].label = 'Employee ID'
-        self.fields['department'].label = 'Department'
-        self.fields['job_role'].label = 'Job Role'
+        # self.fields['dob'].label = 'Date of Birth'
+        # self.fields['joining_date'].label = 'Date Employed'
+        self.fields['employee_id'].label = 'Admin ID'
+        # self.fields['department'].label = 'Department'
+        # self.fields['job_role'].label = 'Job Role'
         self.fields['profile_picture'].label = 'Profile Picture'
         self.fields['phone_number'].label = 'Phone Number'
         self.fields['first_name'].label = 'First Name'
         self.fields['last_name'].label = 'Last Name'
         self.fields['middle_name'].label = 'Middle Name'
 
+# update dp form
+class Picture_update(forms.ModelForm):
+    """Admin profile picture update form"""
+    class Meta:
+        model = AdminUser
+        fields = ['profile_picture']
+        widgets = {
+            'profile_picture': forms.FileInput(attrs={'id': 'profile-p'})
+        }
+    profile_picture = forms.ImageField(validators=[FileExtensionValidator(allowed_extensions=['JPEG', 'JPG', 'PNG'])])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('profile_picture', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5 bthHandle2', css_id='submit-admin-pic')
+        )
+
+
+
 # Organizations branch form
 class BranchForm(forms.ModelForm):
+    """Branch Creation Form"""
     class Meta:
         model = Branch
         fields = ['organization', 'name', 'location', 'email', 'contact_phone', 'contact_email', 
                   'facebook', 'twitter', 'linkedin', 'description']
-        widget = {
+        widgets = {
             'contact_phone': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000'}),
             'contact_email': forms.EmailInput(attrs={'placeholder': 'e.g abc@example.com'}),
         }
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user: AdminUser, *args, **kwargs):
         super(BranchForm, self).__init__(*args, **kwargs)
         self.fields['organization'].queryset = Organization.objects.filter(admin_user=user)
         self.helper = FormHelper()
@@ -241,8 +256,8 @@ class BranchForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-            Button('back', 'Back', css_class='btn btn-danger mr-5 backBtn'),
-            Submit('submit', 'Submit', css_class='btn btn-primary mr-5'),
+            Button('back', 'Back', css_class='btn btn-danger mr-5 backBtn', css_id='back-org'),
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5', css_id='submit-org'),
             css_class='btnHandle2'
             )
         )
@@ -260,7 +275,6 @@ class BranchForm(forms.ModelForm):
         self.fields['linkedin'].widget.attrs['value'] = 'https://linkedin.com/in/yourpage'
 
 
-
 # Employee Detail Form
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -274,13 +288,18 @@ class EmployeeForm(forms.ModelForm):
                   ]
         # include fa icons in the placeholders  
         widgets = {
-            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'e.g abc@example.com'}),
-            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder': 'DD/MM/YYYY'}),
+            'phone_number': forms.TextInput(attrs={'type': 'tel', 'placeholder': 'e.g +2347008009000', 'id': 'tel'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'e.g abc@example.com', 'id': 'emp_email'}),
+            'dob': forms.DateInput(attrs={'type': 'date', 'placeholder': 'DD/MM/YYYY', 'id':'DoB'}),
             'joining_date': forms.DateInput(attrs={'type': 'date', 'max': datetime.now().strftime('%Y-%m-%d')}),
             'next_of_kin_phone_number': forms.TextInput(attrs={'type': 'tel'}),
             'emergency_contacts': forms.Textarea(attrs={'rows': 2}),
             'skills_qualifications': forms.Textarea(attrs={'rows': 2}),
+            'first_name': forms.TextInput(attrs={'id': 'name-first'}),
+            'last_name': forms.TextInput(attrs={'id': 'name-last'}),
+            'middle_name': forms.TextInput(attrs={'id': 'name-middle'}),
+            'profile_picture': forms.FileInput(attrs={'id': 'profile-pix'})
+
         }
         
 
@@ -401,10 +420,12 @@ class EmployeeForm(forms.ModelForm):
         self.fields['next_of_kin_relationship'].choices = NEXT_OF_KIN_RELATIONSHIP_CHOICES
         self.fields['joining_date'].label = 'Date Employed'
         self.fields['employee_id'].required = True
+        self.fields['email'].required = True
 
 
 # Payroll form
 class PayrollForm(forms.ModelForm):
+    """Create a single payroll for individual employee"""
     class Meta:
         model = Payroll
         fields = '__all__'
@@ -477,15 +498,16 @@ class PayrollForm(forms.ModelForm):
                     css_class='form-row'
                 ),
                 Row(
-                    Submit('submit', 'Update', css_class='btn btn-primary mr-2'), 
+                    Submit('submit', 'Update', css_class='btn btn-primary mr-2', css_id='submit-pr'), 
                     css_class='btnHandle'
                 ),
             ),
         )        
 
 
-#  Performance forms
+#  Performance form
 class PerformanceReviewForm(forms.ModelForm):
+    """Create comprehensive employee performance report"""
     class Meta:
         model = Performance
         fields = ['performance_review', 'performance_rating', 'project_performance', 'customer_feedback', 
@@ -545,7 +567,7 @@ class PerformanceReviewForm(forms.ModelForm):
                     Column('attendance_punctuality', css_class='form-group col-md-6 mb-0'),
                 ),
                 Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5', css_id='submit-review')),
                     css_class='btnHandle'
                 )
 
@@ -558,15 +580,18 @@ class PerformanceReviewForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
+    """Update delegate Profile with basic fields from branch dashboard"""
     class Meta:
         model = AdminUser
         fields = ['first_name', 'last_name', 'email', 'profile_picture']
         widgets = {
             # first_name and last_name are read-only fields
-            'first_name': forms.TextInput(attrs={'readonly': 'true'}),
-            'last_name': forms.TextInput(attrs={'readonly': 'true'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Email Address'}),
-            'profile_picture': forms.FileInput(attrs={'required': 'true'}),
+            'first_name': forms.TextInput(attrs={}),
+            'last_name': forms.TextInput(attrs={}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Email Address', 'id': 'mail'}),
+            'profile_picture': forms.FileInput(attrs={'required': 'true', 'id': 'profile-p'}),
+            'first_name': forms.TextInput(attrs={'id': 'first-n', 'readonly': 'true'}),
+            'last_name': forms.TextInput(attrs={'id': 'last-n', 'readonly': 'true'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -587,13 +612,14 @@ class UserProfileForm(forms.ModelForm):
                     css_class='form-row'
                 ),
                 Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5', css_id='submit-profile')),
                     css_class='btnHandle'
                 )
             )
         )
 
 class ChangePasswordForm(PasswordChangeForm):
+    """Allow superusers to change delegates password"""
     # inlcude fa icons in the placeholders
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -611,7 +637,7 @@ class ChangePasswordForm(PasswordChangeForm):
                     css_class='form-row'
                 ),
                 Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary mb-5')),
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary mb-5', css_id='submit-pwd')),
                     css_class='btnHandle'
                 )
             )
@@ -619,6 +645,7 @@ class ChangePasswordForm(PasswordChangeForm):
         self.helper.form_method = 'post'
         
 class BranchDocumentsForm(forms.ModelForm):
+    """Store docs pertaining to a branch"""
     class Meta:
         model = OrgDocs
         fields = ['document_name', 'document']
@@ -635,7 +662,7 @@ class BranchDocumentsForm(forms.ModelForm):
                     css_class='form-row'
                 ),
                 Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5', css_id='submit-doc')),
                     css_class='btnHandle'
                 )
             )
@@ -649,6 +676,7 @@ class BranchDocumentsForm(forms.ModelForm):
 
 # Transfer form
 class TransferForm(forms.ModelForm):
+    """Tranfer employees within branches in same organization"""
     class Meta:
         model = Transfer
         fields = ['organization', 'employee', 'source_branch', 'destination_branch', 'reason']
@@ -690,11 +718,12 @@ class TransferForm(forms.ModelForm):
                 ),
                 css_class='row form-row'
             ),
-            Submit('submit', 'Submit', css_class='btn btn-primary')
+            Submit('submit', 'Submit', css_class='btn btn-primary', css_id='submit-transfer')
         )
 
 # Branch reports form
 class ReportForm(forms.ModelForm):
+    """Create Branch Reports for Review"""
     class Meta:
         model = Report
         fields = ['title', 'branch', 'report_date', 'description', 'status', 'comments',
@@ -739,7 +768,7 @@ class ReportForm(forms.ModelForm):
                     css_class='form-row'
                 ),
                 Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5', css_id='submit-report')),
                     css_class='btnHandle'
                 )
             )
@@ -751,6 +780,7 @@ class ReportForm(forms.ModelForm):
         self.fields['created_by'].required = False
 
 class BasicFinanceForm(forms.ModelForm):
+    """Create Finance report with minimal fields"""
     class Meta:
         model = Finance
         fields = ['branch', 'report_date', 'total_revenue', 'total_expenses', 'created_by', 'status', 'description', 'attachments']
@@ -788,7 +818,7 @@ class BasicFinanceForm(forms.ModelForm):
                     css_class='form-row'
                 ),
                 Row(
-                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                    Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5', css_id='submit-bReport')),
                     css_class='btnHandle'
                 )
             )
@@ -917,7 +947,7 @@ class DetailedFinanceForm(forms.ModelForm):
                         css_class='form-row'
                     ),
                     Row(
-                        Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5')),
+                        Column(Submit('submit', 'Submit', css_class='btn btn-primary ml-auto mb-5', css_id='submit-finance')),
                         css_class='btnHandle'
                     )
                 )
@@ -928,3 +958,59 @@ class DetailedFinanceForm(forms.ModelForm):
         self.fields['created_by'].disabled = True
         self.fields['created_by'].required = False
 
+# update dp form
+class EmpDpForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['profile_picture']
+        widgets = {
+            'profile_picture': forms.FileInput(attrs={'id': 'pro-pics'})
+        }
+    profile_picture = forms.ImageField(validators=[FileExtensionValidator(allowed_extensions=['JPEG', 'JPG', 'PNG'])])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('profile_picture', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Submit', css_class='btn btn-primary mr-5 bthHandle2', css_id='submit-emp-dp')
+        )
+
+
+class EmployeesUploadForm(forms.Form):
+    """For creation of employees from Excel or CSV file"""
+    file = forms.FileField(label='Select Excel or CSV file', widget=forms.FileInput(attrs={'id': 'employee-file-input'}),
+                           validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'file',
+            ButtonHolder(
+                Button('cancel', 'Cancel', css_class='btn btn-primary cancelBtn', style='background-color: red;', css_id='cancel-employees'),
+                Submit('submit', 'Submit', css_class='btn btn-primary', css_id='submit-employees'),
+                css_class='btnHandle'
+            )
+        )
+
+
+class PayrollUploadForm(forms.Form):
+    """For creation of employees payroll from Excel or CSV file"""
+    file = forms.FileField(label='Select Excel or CSV file', widget=forms.FileInput(attrs={'id': 'file-input'}),
+                            validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'file',
+            ButtonHolder(
+                Button('cancel', 'Cancel', css_class='btn btn-primary cancelBtn', style='background-color: red;', css_id='cancel-payroll'),
+                Submit('submit', 'Submit', css_class='btn btn-primary', css_id='submit-payroll'),
+                css_class='btnHandle'
+            )
+        )

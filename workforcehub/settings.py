@@ -15,7 +15,6 @@ secret_params = get_secret()
 SECRET_KEY = secret_params.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = secret_params.get('DEBUG', 'True').lower() == 'true'
 DEBUG = False
 
 ALLOWED_HOSTS = secret_params.get('AWS_ALLOWED_HOSTS').split(' ') if secret_params.get('AWS_ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
@@ -55,7 +54,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'fontawesomefree',
     "crispy_bootstrap4",
-    'django_cron',
     'storages',
     'django.contrib.humanize',
     'django.contrib.admin',
@@ -171,10 +169,13 @@ USE_TZ = True
 
 APPEND_SLASH = False
 
-if not DEBUG:
-    SECURE_SSL_REDIRECT = False # Redirect all HTTP requests to HTTPS
-    SESSION_COOKIE_SECURE = False  # Ensure the session cookie is only sent over HTTPS
-    CSRF_COOKIE_SECURE = False  # Ensure the CSRF cookie is only sent over HTTPS
+# Settings for Celery   
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Lagos'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -184,25 +185,13 @@ if not DEBUG:
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-# Set s3 as the default file storage for media and static files
-# if not DEBUG:
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-
-#     },
-
-#     "staticfiles": {
-#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-#     },
-# } 
-# STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
-
-
-# else:
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+if DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+else:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATIC_URL = '/static/'
 
 # Additional directories where Django should look for static files

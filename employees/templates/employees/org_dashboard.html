@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load cache %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% load humanize %}
@@ -184,11 +185,24 @@
         </div>
     </div>
 
+    {% comment %} update profile photo {% endcomment %}
+    <div id="uploadPhotoModal" class="modal clickClose">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Upload</h2>
+            <p>Upload selected photo?</p>
+            <div class="modal-buttons">
+                <button class="cancelConfirmBtn">No</button>
+                <button class="proceedUploadBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+
 {% comment %} =============FORMS================== {% endcomment %}
 
 
       {% comment %} Create Organization Form {% endcomment %}
-    <form id="organization-form" method="post" class="container mt-5 tab-contents2">
+    <form id="organization-form" method="post" action="{% url 'create_org' %}" class="container mt-5 tab-contents2">
         <div class="close-btn">
             <span class="close">&times;</span>
         </div>
@@ -420,23 +434,43 @@
     </div>
         
     <!-- error modal -->
-    <div id="ErrorModal" class="modal">
-        <div class="modal-content">
-            <span class="closeModal close">&times;</span>
-            <h1 class="error-message"> An Error Occurred</h1>
-            <p >There was an issue processing your request. Please try again.</p>
+    <!-- Error Modal -->
+    <div class="modal clickClose" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>There was an error processing your request.</p>
+                    <i class="fas fa-exclamation-circle text-danger fa-3x"></i>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- success modal -->
-    <div id="SuccessModal" class="modal">
-        <div class="modal-content">
-            <span class="closeModal close">&times;</span>
-            <h1 class="success-message"> Success!</h1>
-            <p >Completed Successfully</p>
-        </div> 
-    </div>
 
+
+    <div class="modal clickClose" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Success!</h5>
+            </div>
+            <div class="modal-body">
+            <p>Operation completed successfully.</p>
+            <i class="fas fa-check-circle text-success fa-3x"></i>
+            </div>
+        </div>
+        </div>
+    </div>
+  
     <div class="create-org">
         <!-- Left Pane -->
         <div class="left-pane-org">
@@ -444,9 +478,13 @@
                 <div class="cardie">
                     <section class="user_details">
                         {% if user.profile_picture and user.profile_picture.url %}
-                        <img class="tiny_images" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                        <div class="profile-picture-container">
+                            <img class="tiny_images" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                        </div>
                         {% else %}
-                        <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="profile pics">
+                        <div class="profile-picture-container">
+                            <img class="tiny_images" src="{% static 'emps/images/default_profile.png' %}" alt="profile pics">
+                        </div>
                         {% endif %}
                         <center><p class="user_name">{{ user.username }}</p></center>
                     </section>
@@ -466,7 +504,11 @@
                         {% endif %}
                     {% endif %}
                 </div>
-                <div class="ToggleContainer" style="display: none;"> <h4> Dashboard</h4> <div class="rotate180"><i class="fas fa-angle-down"></i></div></div>
+                <div class="ToggleContainer" style="display: none;">
+                     <h4> Dashboard</h4> 
+                     <div class="rotate180">
+                        <i class="fas fa-angle-down"></i>
+                    </div></div>
                 <div class="actionContainer">
                     <div class="mobileLeft">
                         {% if org %}
@@ -577,10 +619,12 @@
                         {% endif %}
                     </div>
                         {% comment %} floating images {% endcomment %}
-                    <div class="">
-                        <h6 class="script">. . . your one-stop solution to employee management</h6>
-                        <img src="{% static 'base/images/employees8.jpg' %}" alt="efficiency"class="wfImage">
-                    </div>
+                    {% cache 86400 header_cache_key %}
+                        <div class="">
+                            <h6 class="script">. . . your one-stop solution to employee management</h6>
+                            <img src="{% static 'base/images/employees8.jpg' %}" alt="efficiency" class="wfImage">
+                        </div>
+                    {% endcache %}
                     <!-- About Card -->
                     <div class="cardie clearfix">
                         <h3>About WorkForceHub</h3>
@@ -943,7 +987,7 @@
                           <th>Branch Name</th>
                           <th>Location</th>
                           <th>Admin</th>
-                          <th class="no-space">Actions</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1003,6 +1047,7 @@
                                         <tr>
                                             <th>SN</th>
                                             <th>Name</th>
+                                            <th>Username</th>
                                             <th>Branch</th>
                                             <th>Last Login</th>
                                             <th>Status</th>
@@ -1013,7 +1058,8 @@
                                         {% for del in delegate_admins %}
                                             <tr>
                                                 <td>{{ forloop.counter }}.</td>
-                                                <td>{{ del.get_full_name }}</td>
+                                                <td>{{ del.get_full_name|truncatechars:30 }}</td>
+                                                <td>{{ del.username}}</td>
                                                 <td>{{ del.branch.name }}</td>
                                                 <td>{{ del.last_login|naturaltime }}</td>
                                                 <td>{{ del.employment_status }}</td>
@@ -1062,6 +1108,7 @@
                                     <tr>
                                         <th>SN</th>
                                         <th>Name</th>
+                                        <th>Username</th>
                                         <th>Last Login</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -1071,7 +1118,8 @@
                                     {% for admin in superusers %}
                                         <tr>
                                             <td>{{ forloop.counter }}.</td>
-                                            <td>{{ admin.get_full_name }}</td>
+                                            <td>{{ admin.get_full_name |truncatechars:30 }}</td>
+                                            <td>{{ admin.username }}</td>
                                             <td>{{ admin.last_login|naturaltime }}</td>
                                             <td>{{ admin.employment_status }}</td>
                                             <td class="">
@@ -1116,9 +1164,17 @@
                     <!-- Profile Picture -->
                     <section class="user_details profile-picture">
                         {% if user.profile_picture and user.profile_picture.url %}
-                        <img class="" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                            <img class="profile_dp" src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s pic">
+                            <input class="profile-picture-input" type="file" name="profile-picture-file" accept="image/*">
+                            <div class="plus_container">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
                         {% else %}
-                        <img class="" src="{% static 'emps/images/default_profile.png' %}" alt="{{user.first_name}}">
+                        <img class="profile_dp" src="{% static 'emps/images/default_profile.png' %}" alt="{{user.first_name}}">
+                        <div class="upload-overlay">
+                            <i class="fas fa-user-edit"></i>
+                            <input class="profile-picture-input" type="file" name="profile-picture-file" accept="image/*">
+                        </div>
                         {% endif %}
                     </section>        
                     <div class="dashboard-buttons">
