@@ -19,7 +19,7 @@ def generate_marital_status():
 
 # Function to generate fake email address
 def generate_email(first_name, last_name):
-    return f"{first_name.lower()}.{last_name.lower()}@example.com"
+    return f"{first_name.lower()}.{last_name.lower()}@example.com5"
 
 # Function to generate fake address
 def generate_address():
@@ -117,7 +117,7 @@ with open('employees/tests/files/csv/employees.csv', mode='w', newline='') as fi
         dob = generate_dob()
         gender = generate_gender()
         marital_status = generate_marital_status()
-        email = generate_email(first_name, last_name)
+        email = f"{generate_email(first_name, last_name)+str(i+1)}"
         address = generate_address()
         nationality = fake.country()
         state = fake.state()

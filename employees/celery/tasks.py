@@ -117,7 +117,7 @@ def process_employee_data(file_content:bytes=None, filename:str=None, branch_id:
                     nationality=row.get('Nationality'),
                     state_of_origin=row.get('State of origin'),
                     phone_number=row.get('Phone number'),
-                    employee_id=row.get('Employee ID') or generate_employee_id(),
+                    employee_id= generate_employee_id()  if pd.notna(row.get('Employee ID')) else row.get('Employee ID')
                     department=row.get('Department/division'),
                     job_role=row.get('Job role'),
                     employment_type=row.get('Employment type', 'Full-time'),
