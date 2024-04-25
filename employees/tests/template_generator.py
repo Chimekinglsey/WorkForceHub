@@ -42,12 +42,12 @@ def generate_template(headers, data, file_format1='csv', file_format2='xlsx', fi
 
     # Save DataFrame to filename.file_format1 or default to CSV
 
-    csv_template_file = f"static/sample/csv/{file_name}.{file_format1}"
+    csv_template_file = f"employees/tests/files/csv/{file_name}.{file_format1}"
     df.to_csv(csv_template_file, index=False)
     print(f'CSV template with sample data saved as: {csv_template_file}')
 
     # Save DataFrame to Excel file
-    excel_template_file = f"static/sample/excel/{file_name}.{file_format2}"
+    excel_template_file = f"employees/tests/files/excel/{file_name}.{file_format2}"
     df.to_excel(excel_template_file, index=False)
     print(f'Excel template with sample data saved as: {excel_template_file}')
 
