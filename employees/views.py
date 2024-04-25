@@ -310,9 +310,9 @@ def create_update_org(request):
 def update_dp(request):
     """Updates user profile picture. Delete previous photo to manage disk space efficiently"""
     user = get_object_or_404(AdminUser, pk=request.user.pk)
-    # Fetch existing profile picture path
-    existing_path = user.profile_picture.path if user.profile_picture else None
-    old_dp_path = existing_path    
+    # Fetch existing profile picture path # S3 does not support absolute path
+    # existing_path = user.profile_picture.path if user.profile_picture else None
+    # old_dp_path = existing_path    
     form = Picture_update(request.POST, request.FILES, instance=user)
     if form.is_valid():
         instance = form.save(commit=False)
@@ -326,13 +326,13 @@ def update_dp(request):
             instance.profile_picture = resized_image
         
         instance.save()
-        # Remove the old profile picture file from the file system. using.delete() was problematic at the moment
-        if (old_dp_path and not 'default' in str(old_dp_path) and
-            instance.profile_picture and old_dp_path != instance.profile_picture.path): # don't remove the default_profile_picture used by all Employees and Admin
-            try:
-                os.remove(old_dp_path)
-            except OSError as e:
-                print(f"Error removing old profile picture: {e}")
+        # # Remove the old profile picture file from the file system. using.delete() was problematic at the moment
+        # if (old_dp_path and not 'default' in str(old_dp_path) and
+        #     instance.profile_picture and old_dp_path != instance.profile_picture.path): # don't remove the default_profile_picture used by all Employees and Admin
+        #     try:
+        #         os.remove(old_dp_path)
+        #     except OSError as e:
+        #         print(f"Error removing old profile picture: {e}")
         
         messages.success(request, 'Profile picture updated successfully')
         return JsonResponse({'success': True, 'profile_picture': instance.profile_picture.url}, status=201)
@@ -350,8 +350,8 @@ def update_emp_dp(request, emp_id=None):
     """Updates user profile picture. Delete previous photo to manage disk space efficiently"""
     user = get_object_or_404(Employee, employee_id=emp_id)
     # Fetch existing profile picture path
-    existing_path = user.profile_picture.path if user.profile_picture else None
-    old_dp_path = existing_path
+    # existing_path = user.profile_picture.path if user.profile_picture else None
+    # old_dp_path = existing_path
     
     form = EmpDpForm(request.POST, request.FILES, instance=user)
     if form.is_valid():
@@ -367,12 +367,12 @@ def update_emp_dp(request, emp_id=None):
         
         instance.save()
         # Remove the old profile picture file from the file system. using.delete() was problematic at the moment
-        if (old_dp_path and not 'default' in str(old_dp_path) and
-            instance.profile_picture and old_dp_path != instance.profile_picture.path): # don't remove the default_profile_picture used by all Employees and Admin
-            try:
-                os.remove(old_dp_path)
-            except OSError as e:
-                print(f"Error removing old profile picture: {e}")
+        # if (old_dp_path and not 'default' in str(old_dp_path) and
+        #     instance.profile_picture and old_dp_path != instance.profile_picture.path): # don't remove the default_profile_picture used by all Employees and Admin
+        #     try:
+        #         os.remove(old_dp_path)
+        #     except OSError as e:
+        #         print(f"Error removing old profile picture: {e}")
         
         messages.success(request, 'Profile picture updated successfully')
         return JsonResponse({'success': True, 'profile_picture': instance.profile_picture.url}, status=201)

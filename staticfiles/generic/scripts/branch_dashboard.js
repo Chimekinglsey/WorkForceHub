@@ -750,6 +750,7 @@ $(document).ready(function () {
                     openModal('successModal');
                 },
                 error: function(e) {
+                    $('.spinner-container').hide();
                     openModal('errorModal');
                     console.error(e)
                 }
