@@ -8,14 +8,18 @@ $(document).ready(function() {
 
 //  Ajax to create organization
     $('#organization-form').submit(function() {
-        $('.spinner-container').show();
-        });
+        $('.spinner-container').show(
+            setTimeout(function(){
+                $('.spinner-container').hide()
+            }, 10000)
+        )
+    });
 
-        if ($(window).outerWidth() <= 768) {
-            $('.ToggleContainer').show();
-        } else {
-            $('.ToggleContainer').hide();
-        }
+    if ($(window).outerWidth() <= 768) {
+        $('.ToggleContainer').show();
+    } else {
+        $('.ToggleContainer').hide();
+    }
     // if outerWidth is <= 900px, toggle left pane down content when .ToggleContainer is clicked or hovered
     const toggleContainer = $('.ToggleContainer');
 
@@ -264,7 +268,11 @@ $(document).ready(function() {
         })
 
         $('#profileUpdateForm').submit(function (){
-            $('.spinner-container').show();
+            $('.spinner-container').show(
+                setTimeout(function(){
+                    $('.spinner-container').hide()
+                }, 5000)
+            )
         })
 
 

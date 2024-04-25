@@ -2,7 +2,11 @@ $(document).ready(function () {
     // TODO: Bring this entire script to less that 500 lines. Use functions to reduce the number of lines
     // TODO: consider the impact of using document.on vs document.one (it seems using on is expensive)
     $('#add-employee').submit(function(){
-        $('.spinner-container').show()
+        $('.spinner-container').show(
+            setTimeout(function(){
+                $('.spinner-container').hide()
+            }, 5000)
+        )
     })
 
     // Load content dynamically on link click
@@ -246,8 +250,9 @@ $(document).ready(function () {
                 populateEditModal(response);    
             },
             error: function(xhr, status, error) {
+                $('.spinner-container').hide();
+                openModal('errorModal');
                 console.error('Error fetching employee data:', error);
-                alert('Error fetching employee data');
             }
         });
     })
@@ -400,6 +405,7 @@ $(document).ready(function () {
                 },
                 error: function(xhr, status, error) {
                     console.error('Error archiving employee:', error);
+                    $('.spinner-container').hide();
                     openModal('errorModal');
                 }
             });
@@ -427,7 +433,7 @@ $(document).ready(function () {
                     window.location.reload()
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error restoring employee:', error);
+                    $('.spinner-container').hide();
                     openModal('errorModal');
                 }
             });
@@ -455,6 +461,7 @@ $(document).ready(function () {
 
                 error: function(xhr, status, error) {
                     console.error('Error deleting employee:', error);
+                    $('.spinner-container').hide();
                     openModal('errorModal');
                 }
             });
@@ -488,6 +495,7 @@ $(document).ready(function () {
                     window.location.reload()
                 },
                 error: function(xhr, status, error) {
+                    $('.spinner-container').hide();
                     console.error('Error archiving employee:', error);
                     openModal('errorModal');
                 }
@@ -555,6 +563,7 @@ $(document).ready(function () {
                 $('#updateBankContainer').slideToggle();
             },
             error: function(xhr, status, error) {
+                $('.spinner-container').hide();
                 openModal('errorModal');
                 console.error('Error fetching employee data:', error);
             }
@@ -588,6 +597,7 @@ $(document).ready(function () {
                 window.location.reload()
             },
             error: function(xhr, status, error) {
+                $('.spinner-container').hide();
                 console.error('Error updating employee data:', error);
                 openModal('errorModal');
             }
