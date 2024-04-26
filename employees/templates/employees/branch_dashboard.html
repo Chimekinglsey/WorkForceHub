@@ -1935,10 +1935,10 @@
                                 <tr class="s-card">
                                     <td>{{ forloop.counter }}</td>
                                     <td class="sf1">{{ employee.employee_id }}</td>
-                                    <td class="sf2">{{ employee.first_name }} {{ employee.last_name }}</td>
-                                    <td class="sf5">{{ employee.bank_name }}</td>
-                                    <td class="sf3">{{ employee.account_number }}</td>
-                                    <td class="sf4" >{{ employee.account_name }}</td>
+                                    <td class="sf2">{{ employee.first_name }} {{ employee.last_name|truncatechars:5 }}</td>
+                                    <td class="sf5">{{ employee.bank_name|truncatechars:15 }}</td>
+                                    <td class="sf3">{{ employee.account_number|truncatechars:15 }}</td>
+                                    <td class="sf4" >{{ employee.account_name|truncatechars:15 }}</td>
                                     <td>{{ employee.pension_id }}</td>
                                     <td>{{ employee.basic_salary|intcomma }}</td>
                                     <td class="controlButton">
