@@ -127,7 +127,7 @@ class BaseUser(models.Model):
     phone_number = models.CharField(_('Phone number'), max_length=50, null=True, blank=True)
     
     # Employment Information
-    employee_id = models.CharField(_('Employee ID'), max_length=0, null=True, blank=True) # removed unique contraint to allow for multiple employees with same employee_id
+    employee_id = models.CharField(_('Employee ID'), max_length=20, null=True, blank=True) # removed unique contraint to allow for multiple employees with same employee_id
     department = models.CharField(_('Department/division'), max_length=100)
     job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
     joining_date = models.DateField(_('Joining date'), null=True, blank=True)
