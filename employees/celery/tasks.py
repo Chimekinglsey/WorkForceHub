@@ -162,11 +162,10 @@ def process_employee_data(file_content:bytes=None, filename:str=None, branch_id:
 @shared_task
 def process_payroll_data(file_content:bytes=None, filename:str=None, branch_id:str = None):
     try:
-        # Load the data from the uploaded file
         if filename.lower().endswith('.xls') or filename.lower().endswith('.xlsx'):
-            df = pd.read_excel(file_content)
+            df = pd.read_excel(BytesIO(file_content))
         elif filename.lower().endswith('.csv'):
-            df = pd.read_csv(file_content)
+            df = pd.read_csv(BytesIO(file_content))
         else:
             # Handle unsupported file formats
             return {'success': False, 'message': 'Unsupported file format.'}

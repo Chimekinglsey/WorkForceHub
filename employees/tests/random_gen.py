@@ -117,7 +117,7 @@ with open('employees/tests/files/csv/employees.csv', mode='w', newline='') as fi
         dob = generate_dob()
         gender = generate_gender()
         marital_status = generate_marital_status()
-        email = f"{generate_email(first_name, last_name)+str(i)+ '.jp'}"
+        email = f"{generate_email(first_name, last_name)+'.uk'}"
         address = generate_address()
         nationality = fake.country()
         state = fake.state()
@@ -150,3 +150,64 @@ with open('employees/tests/files/csv/employees.csv', mode='w', newline='') as fi
                          skills, next_of_kin_name, next_of_kin_relation, next_of_kin_phone])
 
 print("Employees generated successfully.")
+
+
+# Function to generate fake payment status
+def generate_payment_status():
+    return random.choice(['Pending', 'Paid'])
+
+# Function to generate fake allowances
+def generate_allowances():
+    return fake.random_number(digits=4)
+
+# Function to generate fake deductions
+def generate_deductions():
+    return fake.random_number(digits=4)
+
+# Function to generate fake bonus
+def generate_bonus():
+    return fake.random_number(digits=4)
+
+# Function to generate fake payroll data
+def generate_payroll_data():
+    return {
+        'Employee ID': fake.random_number(digits=6),
+        'Year': fake.random_number(digits=4),
+        'Month': fake.random_number(digits=2),
+        'Payment Status': generate_payment_status(),
+        'Housing Allowance': generate_allowances(),
+        'Transport Allowance': generate_allowances(),
+        'Feeding Allowance': generate_allowances(),
+        'Utility Allowance': generate_allowances(),
+        'Other Allowance': generate_allowances(),
+        'Tax': generate_deductions(),
+        'Pension': generate_deductions(),
+        'Loan': generate_deductions(),
+        'Other Deductions': generate_deductions(),
+        'Late Penalty': generate_deductions(),
+        'Absent Penalty': generate_deductions(),
+        'Overtime Bonus': generate_bonus(),
+        'Performance Bonus': generate_bonus(),
+        'Performance Penalty': generate_deductions(),
+        'Basic Salary': generate_allowances(),
+    }
+
+# Payroll headers
+payroll_headers = [
+    'Employee ID', 'Year', 'Month', 'Payment Status', 'Housing Allowance', 'Transport Allowance',
+    'Feeding Allowance', 'Utility Allowance', 'Other Allowance', 'Tax', 'Pension',
+    'Loan', 'Other Deductions', 'Late Penalty', 'Absent Penalty', 'Overtime Bonus',
+    'Performance Bonus', 'Performance Penalty', 'Basic Salary'
+]
+
+n = 10
+# Generate sample data for payroll
+payroll_data = [generate_payroll_data() for _ in range(n)]  # Generate data for 10 employees
+
+# Write payroll data to CSV file
+with open(f'employees/tests/files/csv/payroll_data.csv', mode='w', newline='') as file:
+    writer = csv.DictWriter(file, fieldnames=payroll_headers)
+    writer.writeheader()
+    writer.writerows(payroll_data)
+
+print("Payroll data generated successfully.")
