@@ -173,8 +173,8 @@ def process_payroll_data(file_content:bytes=None, filename:str=None, branch_id:s
 
         # Iterate over the rows in the DataFrame and create payrolls
         for _, row in df.iterrows():
+            employee_id = row.get('Employee ID').upper()
             try:
-                employee_id = row.get('Employee ID').upper()
                 employee = get_object_or_404(Employee, employee_id=employee_id, branch__branch_id=branch_id)
                 payroll = Payroll.objects.create(
                     employee=employee,

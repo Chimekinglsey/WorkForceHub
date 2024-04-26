@@ -725,6 +725,10 @@ table .btn {
     line-height: 1;
 }
 
+.justify-content-md-center {
+    overflow: auto !important;
+}
+
 
 
   /* Optional: Make modal smaller on smaller screens */

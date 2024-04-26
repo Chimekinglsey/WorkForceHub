@@ -1,39 +1,35 @@
+
 from pathlib import Path
 import os
-from employees.get_params import lambda_handler as get_secret
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-secret_params = get_secret()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret_params.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(ezhsmy9s@^(izk18c_z6$9vhupbv+bkp&c)^@a9+hr+u0#lu=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = secret_params.get('AWS_ALLOWED_HOSTS').split(' ') if secret_params.get('AWS_ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ') if os.environ.get('ALLOWED_HOSTS') else ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = secret_params.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = secret_params.get('EMAIL_PORT', 587)
-EMAIL_USE_TLS = secret_params.get('EMAIL_USE_TLS', True)
-EMAIL_HOST_USER = secret_params.get('EMAIL_HOST_USER', None)
-EMAIL_HOST_PASSWORD = secret_params.get('EMAIL_HOST_PASSWORD', None)
-
-
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'developers.workforcehub@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'orkn lwki lwbk oxxi')
 
 
 # configure aws s3 bucket
-AWS_STORAGE_BUCKET_NAME = secret_params.get('AWS_STORAGE_BUCKET_NAME')
-AWS_ACCESS_KEY_ID = secret_params.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = secret_params.get('AWS_SECRET_ACCESS_KEY')
-AWS_S3_REGION_NAME = secret_params.get('AWS_S3_REGION_NAME')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', 'workforcehub')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', 'AKIAUQLGMTGVADMPRYU3')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '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')
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_DEFAULT_ACL = None
 AWS_S3_OBJECT_PARAMETERS = {
@@ -41,9 +37,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
-AWS_S3_VERIFY = True # Set to False if using a custom domain
-
-
+# AWS_S3_VERIFY = True
 AWS_LOCATION = 'media'
 
 
@@ -54,6 +48,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'fontawesomefree',
     "crispy_bootstrap4",
+    'django_cron',
     'storages',
     'django.contrib.humanize',
     'django.contrib.admin',
@@ -72,9 +67,11 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'employees.middleware.ErrorHandlerMiddleware',
-    'employees.middleware.NotFoundMiddleware',
-    'employees.middleware.Custom404Middleware',
+    # uncomment the following line to enable the custom middleware for production
+    # 'employees.middleware.ErrorHandlerMiddleware',
+    'employees.middleware.DisableCacheMiddleware',
+    # 'employees.middleware.NotFoundMiddleware',
+    # 'employees.middleware.Custom404Middleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -99,23 +96,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'workforcehub.wsgi.application'
 USE_L10N = True
 
-# Database
-username = secret_params.get('db_username')
-password = secret_params.get('db_password')
-db_name = secret_params.get('db_name')
-host = secret_params.get('db_host')
-port = secret_params.get('db_port')
+# Settings for Celery   
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Lagos'
+# CELERY_BEAT_SCHEDULE = {
+#     'send-reminder-emails': {
+#         'task': 'employees.tasks.send_reminder_emails',
+#         'schedule': 60.0,
+#     },
+# }
 
-if password and username and db_name and host and port:
+
+
+
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': db_name,
-            'USER': username,
-            'PASSWORD': password,
-            'HOST': host,
-            'PORT': port,
-        }
+        'default': dj_database_url.parse(database_url)
     }
 else:
     DATABASES = {
@@ -168,14 +171,6 @@ USE_I18N = True
 USE_TZ = True
 
 APPEND_SLASH = False
-
-# Settings for Celery   
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Africa/Lagos'
 
 
 # Static files (CSS, JavaScript, Images)

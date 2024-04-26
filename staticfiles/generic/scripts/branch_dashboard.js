@@ -5,7 +5,7 @@ $(document).ready(function () {
         $('.spinner-container').show(
             setTimeout(function(){
                 $('.spinner-container').hide()
-            }, 5000)
+            }, 10000)
         )
     })
 
@@ -336,7 +336,7 @@ $(document).ready(function () {
         let formData = new FormData($('#updateEmployeeForm')[0]);
     
         // Get the CSRF token from hidden input field
-        let csrfToken = $('[name=csrfmiddlewaretoken]').val();
+        let csrfToken = $('#updateEmployeeForm [name=csrfmiddlewaretoken]').val();
         $.ajax({
             url: `/updateEmployee/${employeeId}/`,
             method: 'POST',
