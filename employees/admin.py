@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Employee, Education, EmployeeDocs, WorkHistory, Performance, Appointments, Leave, Attendance, Payroll, Training, AdminUser
+from .models import Employee, Education, EmployeeDocs, WorkHistory, Performance, Appointments, Leave, Attendance, Payroll, Training, AdminUser, Finance
 
 models = [Employee, Education, EmployeeDocs, Performance, Appointments, 
-          Leave, Attendance, Payroll, Training, AdminUser, WorkHistory]
+          Leave, Attendance, Payroll, Training, AdminUser, WorkHistory, Finance]
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('username', 'last_name', 'email', 'phone', 'designation')
     list_filter = ('username', 'last_name', 'email', 'phone', 'designation')

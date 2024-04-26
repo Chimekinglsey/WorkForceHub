@@ -16,9 +16,9 @@ urlpatterns = [
     path('', cache_page(36000)(emp_view.landing_page), name='landing_page'),
 
     # Cache the admin user URLs for 15 minutes (900 seconds)
-    path('signUp/', cache_page(36000)(emp_view.signup), name='signUp'),
-    path('login/', cache_page(36000)(emp_view.login_view), name='login'),
-    path('logout/', cache_page(36000)(emp_view.logout_view), name='logout'),
+    path('signUp/', emp_view.signup, name='signUp'),
+    path('login/', emp_view.login_view, name='login'),
+    path('logout/', emp_view.logout_view, name='logout'),
     path('profileUpdate/', emp_view.profile_update, name='profile_update'),
     path('user/update_dp/', emp_view.update_dp, name='update_dp'),
     path('user/update_dp/<str:emp_id>/', emp_view.update_emp_dp, name='update_emp_dp'),

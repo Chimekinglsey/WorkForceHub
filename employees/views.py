@@ -1158,6 +1158,7 @@ def statistics(request):
     
     organization = Organization.objects.filter(id=request.user.branch.organization.id).first()
     fin_reports = Finance.objects.filter(branch__organization=organization)
+    print(fin_reports)
 
 
         # Overall Statistics

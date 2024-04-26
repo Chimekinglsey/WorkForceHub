@@ -116,18 +116,18 @@ NEXT_OF_KIN_RELATIONSHIP_CHOICES = (
 class BaseUser(models.Model):
     """Base model containing common fields for AdminUser and Employee"""
     # Personal Information
-    middle_name = models.CharField(_('Middle name'), max_length=30, null=True, blank=True)
+    middle_name = models.CharField(_('Middle name'), max_length=20, null=True, blank=True)
     dob = models.DateField(_('Date of birth'), null=True, blank=True)
-    gender = models.CharField(_('Gender'), max_length=30, choices=GENDER_CHOICES, null=True, blank=True)
+    gender = models.CharField(_('Gender'), max_length=20, choices=GENDER_CHOICES, null=True, blank=True)
     marital_status = models.CharField(_('Marital status'), choices=MARITAL_STATUS_CHOICES, max_length=30, null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True, blank=False)
     address = models.CharField(_('Address'), max_length=150, null=True, blank=True)
     nationality = models.CharField(_('Nationality'), max_length=100, null=True, blank=True)
     state_of_origin = models.CharField(_('State of origin'), max_length=100, null=True, blank=True)
-    phone_number = models.CharField(_('Phone number'), max_length=20, null=True, blank=True)
+    phone_number = models.CharField(_('Phone number'), max_length=50, null=True, blank=True)
     
     # Employment Information
-    employee_id = models.CharField(_('Employee ID'), max_length=20, null=True, blank=True) # removed unique contraint to allow for multiple employees with same employee_id
+    employee_id = models.CharField(_('Employee ID'), max_length=0, null=True, blank=True) # removed unique contraint to allow for multiple employees with same employee_id
     department = models.CharField(_('Department/division'), max_length=100)
     job_role = models.CharField(_('Job role'), max_length=100, null=True, blank=True)
     joining_date = models.DateField(_('Joining date'), null=True, blank=True)
@@ -569,4 +569,4 @@ class Finance(models.Model):
         ordering = ['-report_date']
 
     def __str__(self):
-        return f"{self.organization.name} - {self.report_date}"
+        return f"{self.branch.name} - {self.report_date}"
