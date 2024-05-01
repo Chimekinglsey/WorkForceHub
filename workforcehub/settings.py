@@ -20,11 +20,11 @@ DEBUG = False
 ALLOWED_HOSTS = secret_params.get('AWS_ALLOWED_HOSTS').split(' ') if secret_params.get('AWS_ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = secret_params.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = secret_params.get('EMAIL_PORT', 587)
-EMAIL_USE_TLS = secret_params.get('EMAIL_USE_TLS', True)
-EMAIL_HOST_USER = secret_params.get('EMAIL_HOST_USER', None)
-EMAIL_HOST_PASSWORD = secret_params.get('EMAIL_HOST_PASSWORD', None)
+EMAIL_HOST = secret_params.get('AWS_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = secret_params.get('AWS_EMAIL_PORT', 587)
+EMAIL_USE_TLS = secret_params.get('AWS_EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = secret_params.get('AWS_EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = secret_params.get('AWS_EMAIL_HOST_PASSWORD', None)
 
 
 
@@ -45,7 +45,6 @@ AWS_S3_VERIFY = True # Set to False if using a custom domain
 
 
 AWS_LOCATION = 'media'
-
 
 INSTALLED_APPS = [
     'employees',

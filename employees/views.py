@@ -1495,7 +1495,6 @@ def forgot_password(request):
 
         # Call the Celery task to send the password reset email asynchronously
         send_password_reset_email.delay(recipient, token)
-
         messages.success(request, 'Password reset code sent successfully')
         return render(request, 'password/reset_token.html', context={'user_email': recipient})
     return render(request, 'employee/login.html', context={'user_email': recipient})
@@ -1636,7 +1635,7 @@ def upload_employee_data(request, branch_id: str):
         filename = request.FILES['file'].name
 
         user_id = request.user.id
-        print(filename, filename.lower())
+        # print(filename, filename.lower())
         # Call the Celery task to process the uploaded file
         result = process_employee_data.delay(file_content=file_content, filename=filename, branch_id=branch_id, user_id=user_id)
 
